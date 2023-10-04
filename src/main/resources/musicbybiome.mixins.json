@@ -1,0 +1,19 @@
+{
+  "required": false,
+  "package": "io.github.maki99999.musicbybiome.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "musicbybiome.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "SoundEngineMixin",
+    "MusicMixin",
+    "MinecraftMixin",
+    "SoundEventsMixin",
+    "SoundManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}
