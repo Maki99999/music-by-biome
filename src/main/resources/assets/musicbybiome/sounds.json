@@ -1,0 +1,826 @@
+{
+  "test": {
+    "sounds": [
+      {
+        "name": "musicbybiome:test",
+        "stream": true
+      }
+    ]
+  },
+  "030craggycoast": {
+    "sounds": [
+      {
+        "name": "musicbybiome:030craggycoast",
+        "stream": true
+      }
+    ]
+  },
+  "032mthorn": {
+    "sounds": [
+      {
+        "name": "musicbybiome:032mthorn",
+        "stream": true
+      }
+    ]
+  },
+  "033foggyforest": {
+    "sounds": [
+      {
+        "name": "musicbybiome:033foggyforest",
+        "stream": true
+      }
+    ]
+  },
+  "034steamcave": {
+    "sounds": [
+      {
+        "name": "musicbybiome:034steamcave",
+        "stream": true
+      }
+    ]
+  },
+  "035uppersteamcave": {
+    "sounds": [
+      {
+        "name": "musicbybiome:035uppersteamcave",
+        "stream": true
+      }
+    ]
+  },
+  "036ampplains": {
+    "sounds": [
+      {
+        "name": "musicbybiome:036ampplains",
+        "stream": true
+      }
+    ]
+  },
+  "037farampplains": {
+    "sounds": [
+      {
+        "name": "musicbybiome:037farampplains",
+        "stream": true
+      }
+    ]
+  },
+  "040northerndesert": {
+    "sounds": [
+      {
+        "name": "musicbybiome:040northerndesert",
+        "stream": true
+      }
+    ]
+  },
+  "041quicksandcave": {
+    "sounds": [
+      {
+        "name": "musicbybiome:041quicksandcave",
+        "stream": true
+      }
+    ]
+  },
+  "042quicksandpit": {
+    "sounds": [
+      {
+        "name": "musicbybiome:042quicksandpit",
+        "stream": true
+      }
+    ]
+  },
+  "043crystalcave": {
+    "sounds": [
+      {
+        "name": "musicbybiome:043crystalcave",
+        "stream": true
+      }
+    ]
+  },
+  "045endoftheday": {
+    "sounds": [
+      {
+        "name": "musicbybiome:045endoftheday",
+        "stream": true
+      }
+    ]
+  },
+  "046inthefuture": {
+    "sounds": [
+      {
+        "name": "musicbybiome:046inthefuture",
+        "stream": true
+      }
+    ]
+  },
+  "047planetparalysis": {
+    "sounds": [
+      {
+        "name": "musicbybiome:047planetparalysis",
+        "stream": true
+      }
+    ]
+  },
+  "048chasmcave": {
+    "sounds": [
+      {
+        "name": "musicbybiome:048chasmcave",
+        "stream": true
+      }
+    ]
+  },
+  "052duskforest": {
+    "sounds": [
+      {
+        "name": "musicbybiome:052duskforest",
+        "stream": true
+      }
+    ]
+  },
+  "055treeshroudforest": {
+    "sounds": [
+      {
+        "name": "musicbybiome:055treeshroudforest",
+        "stream": true
+      }
+    ]
+  },
+  "058hiddenland": {
+    "sounds": [
+      {
+        "name": "musicbybiome:058hiddenland",
+        "stream": true
+      }
+    ]
+  },
+  "062throughtheseaoftime": {
+    "sounds": [
+      {
+        "name": "musicbybiome:062throughtheseaoftime",
+        "stream": true
+      }
+    ]
+  },
+  "064temporaltower": {
+    "sounds": [
+      {
+        "name": "musicbybiome:064temporaltower",
+        "stream": true
+      }
+    ]
+  },
+  "079doyourbest": {
+    "sounds": [
+      {
+        "name": "musicbybiome:079doyourbest",
+        "stream": true
+      }
+    ]
+  },
+  "080shayminvillage": {
+    "sounds": [
+      {
+        "name": "musicbybiome:080shayminvillage",
+        "stream": true
+      }
+    ]
+  },
+  "081skypeakforest": {
+    "sounds": [
+      {
+        "name": "musicbybiome:081skypeakforest",
+        "stream": true
+      }
+    ]
+  },
+  "082skypeakcave": {
+    "sounds": [
+      {
+        "name": "musicbybiome:082skypeakcave",
+        "stream": true
+      }
+    ]
+  },
+  "083skypeakprairie": {
+    "sounds": [
+      {
+        "name": "musicbybiome:083skypeakprairie",
+        "stream": true
+      }
+    ]
+  },
+  "085skypeaksnowfield": {
+    "sounds": [
+      {
+        "name": "musicbybiome:085skypeaksnowfield",
+        "stream": true
+      }
+    ]
+  },
+  "086skypeakfinalpass": {
+    "sounds": [
+      {
+        "name": "musicbybiome:086skypeakfinalpass",
+        "stream": true
+      }
+    ]
+  },
+  "088surroundedsea": {
+    "sounds": [
+      {
+        "name": "musicbybiome:088surroundedsea",
+        "stream": true
+      }
+    ]
+  },
+  "089miraclesea": {
+    "sounds": [
+      {
+        "name": "musicbybiome:089miraclesea",
+        "stream": true
+      }
+    ]
+  },
+  "090aegiscave": {
+    "sounds": [
+      {
+        "name": "musicbybiome:090aegiscave",
+        "stream": true
+      }
+    ]
+  },
+  "092concealedruins": {
+    "sounds": [
+      {
+        "name": "musicbybiome:092concealedruins",
+        "stream": true
+      }
+    ]
+  },
+  "096darkcrater": {
+    "sounds": [
+      {
+        "name": "musicbybiome:096darkcrater",
+        "stream": true
+      }
+    ]
+  },
+  "097deepdarkcrater": {
+    "sounds": [
+      {
+        "name": "musicbybiome:097deepdarkcrater",
+        "stream": true
+      }
+    ]
+  },
+  "100randomdungeontheme3": {
+    "sounds": [
+      {
+        "name": "musicbybiome:100randomdungeontheme3",
+        "stream": true
+      }
+    ]
+  },
+  "106starcave": {
+    "sounds": [
+      {
+        "name": "musicbybiome:106starcave",
+        "stream": true
+      }
+    ]
+  },
+  "111fortuneravine": {
+    "sounds": [
+      {
+        "name": "musicbybiome:111fortuneravine",
+        "stream": true
+      }
+    ]
+  },
+  "120southernjungle": {
+    "sounds": [
+      {
+        "name": "musicbybiome:120southernjungle",
+        "stream": true
+      }
+    ]
+  },
+  "127barrenvalley": {
+    "sounds": [
+      {
+        "name": "musicbybiome:127barrenvalley",
+        "stream": true
+      }
+    ]
+  },
+  "128darkwasteland": {
+    "sounds": [
+      {
+        "name": "musicbybiome:128darkwasteland",
+        "stream": true
+      }
+    ]
+  },
+  "135vasticemountainpeak": {
+    "sounds": [
+      {
+        "name": "musicbybiome:135vasticemountainpeak",
+        "stream": true
+      }
+    ]
+  },
+  "136inthemorningsun": {
+    "sounds": [
+      {
+        "name": "musicbybiome:136inthemorningsun",
+        "stream": true
+      }
+    ]
+  },
+  "166goodnightalternate": {
+    "sounds": [
+      {
+        "name": "musicbybiome:166goodnightalternate",
+        "stream": true
+      }
+    ]
+  },
+  "amitysquare": {
+    "sounds": [
+      {
+        "name": "musicbybiome:amitysquare",
+        "stream": true
+      }
+    ]
+  },
+  "beginningdimension": {
+    "sounds": [
+      {
+        "name": "musicbybiome:beginningdimension",
+        "stream": true
+      }
+    ]
+  },
+  "bicycle": {
+    "sounds": [
+      {
+        "name": "musicbybiome:bicycle",
+        "stream": true
+      }
+    ]
+  },
+  "canalavecity": {
+    "sounds": [
+      {
+        "name": "musicbybiome:canalavecity",
+        "stream": true
+      }
+    ]
+  },
+  "dawntheme": {
+    "sounds": [
+      {
+        "name": "musicbybiome:dawntheme",
+        "stream": true
+      }
+    ]
+  },
+  "deepwithinteamgalactichq": {
+    "sounds": [
+      {
+        "name": "musicbybiome:deepwithinteamgalactichq",
+        "stream": true
+      }
+    ]
+  },
+  "distortionworld": {
+    "sounds": [
+      {
+        "name": "musicbybiome:distortionworld",
+        "stream": true
+      }
+    ]
+  },
+  "ending": {
+    "sounds": [
+      {
+        "name": "musicbybiome:ending",
+        "stream": true
+      }
+    ]
+  },
+  "eternacity": {
+    "sounds": [
+      {
+        "name": "musicbybiome:eternacity",
+        "stream": true
+      }
+    ]
+  },
+  "eternaforest": {
+    "sounds": [
+      {
+        "name": "musicbybiome:eternaforest",
+        "stream": true
+      }
+    ]
+  },
+  "fightarea": {
+    "sounds": [
+      {
+        "name": "musicbybiome:fightarea",
+        "stream": true
+      }
+    ]
+  },
+  "floaromatown": {
+    "sounds": [
+      {
+        "name": "musicbybiome:floaromatown",
+        "stream": true
+      }
+    ]
+  },
+  "gamecorner": {
+    "sounds": [
+      {
+        "name": "musicbybiome:gamecorner",
+        "stream": true
+      }
+    ]
+  },
+  "globaltradestation": {
+    "sounds": [
+      {
+        "name": "musicbybiome:globaltradestation",
+        "stream": true
+      }
+    ]
+  },
+  "greatmarsh": {
+    "sounds": [
+      {
+        "name": "musicbybiome:greatmarsh",
+        "stream": true
+      }
+    ]
+  },
+  "hearthomecity": {
+    "sounds": [
+      {
+        "name": "musicbybiome:hearthomecity",
+        "stream": true
+      }
+    ]
+  },
+  "hearthomecitynight": {
+    "sounds": [
+      {
+        "name": "musicbybiome:hearthomecitynight",
+        "stream": true
+      }
+    ]
+  },
+  "jubilifecity": {
+    "sounds": [
+      {
+        "name": "musicbybiome:jubilifecity",
+        "stream": true
+      }
+    ]
+  },
+  "jubilifecitynight": {
+    "sounds": [
+      {
+        "name": "musicbybiome:jubilifecitynight",
+        "stream": true
+      }
+    ]
+  },
+  "lake": {
+    "sounds": [
+      {
+        "name": "musicbybiome:lake",
+        "stream": true
+      }
+    ]
+  },
+  "lucastheme": {
+    "sounds": [
+      {
+        "name": "musicbybiome:lucastheme",
+        "stream": true
+      }
+    ]
+  },
+  "menumusic": {
+    "sounds": [
+      {
+        "name": "musicbybiome:menumusic",
+        "stream": true
+      }
+    ]
+  },
+  "mtcoronet": {
+    "sounds": [
+      {
+        "name": "musicbybiome:mtcoronet",
+        "stream": true
+      }
+    ]
+  },
+  "oldchateau": {
+    "sounds": [
+      {
+        "name": "musicbybiome:oldchateau",
+        "stream": true
+      }
+    ]
+  },
+  "oreburghcity": {
+    "sounds": [
+      {
+        "name": "musicbybiome:oreburghcity",
+        "stream": true
+      }
+    ]
+  },
+  "oreburghmine": {
+    "sounds": [
+      {
+        "name": "musicbybiome:oreburghmine",
+        "stream": true
+      }
+    ]
+  },
+  "poffin": {
+    "sounds": [
+      {
+        "name": "musicbybiome:poffin",
+        "stream": true
+      }
+    ]
+  },
+  "pokemoncenter": {
+    "sounds": [
+      {
+        "name": "musicbybiome:pokemoncenter",
+        "stream": true
+      }
+    ]
+  },
+  "pokemonleague": {
+    "sounds": [
+      {
+        "name": "musicbybiome:pokemonleague",
+        "stream": true
+      }
+    ]
+  },
+  "route201": {
+    "sounds": [
+      {
+        "name": "musicbybiome:route201",
+        "stream": true
+      }
+    ]
+  },
+  "route203": {
+    "sounds": [
+      {
+        "name": "musicbybiome:route203",
+        "stream": true
+      }
+    ]
+  },
+  "route205": {
+    "sounds": [
+      {
+        "name": "musicbybiome:route205",
+        "stream": true
+      }
+    ]
+  },
+  "route206": {
+    "sounds": [
+      {
+        "name": "musicbybiome:route206",
+        "stream": true
+      }
+    ]
+  },
+  "route209": {
+    "sounds": [
+      {
+        "name": "musicbybiome:route209",
+        "stream": true
+      }
+    ]
+  },
+  "route210": {
+    "sounds": [
+      {
+        "name": "musicbybiome:route210",
+        "stream": true
+      }
+    ]
+  },
+  "route216": {
+    "sounds": [
+      {
+        "name": "musicbybiome:route216",
+        "stream": true
+      }
+    ]
+  },
+  "route225": {
+    "sounds": [
+      {
+        "name": "musicbybiome:route225",
+        "stream": true
+      }
+    ]
+  },
+  "sandgemtown": {
+    "sounds": [
+      {
+        "name": "musicbybiome:sandgemtown",
+        "stream": true
+      }
+    ]
+  },
+  "snowpointcity": {
+    "sounds": [
+      {
+        "name": "musicbybiome:snowpointcity",
+        "stream": true
+      }
+    ]
+  },
+  "solaceontown": {
+    "sounds": [
+      {
+        "name": "musicbybiome:solaceontown",
+        "stream": true
+      }
+    ]
+  },
+  "spearpillar": {
+    "sounds": [
+      {
+        "name": "musicbybiome:spearpillar",
+        "stream": true
+      }
+    ]
+  },
+  "starkmountain": {
+    "sounds": [
+      {
+        "name": "musicbybiome:starkmountain",
+        "stream": true
+      }
+    ]
+  },
+  "sunyshorecity": {
+    "sounds": [
+      {
+        "name": "musicbybiome:sunyshorecity",
+        "stream": true
+      }
+    ]
+  },
+  "surf": {
+    "sounds": [
+      {
+        "name": "musicbybiome:surf",
+        "stream": true
+      }
+    ]
+  },
+  "teamgalacticbuilding": {
+    "sounds": [
+      {
+        "name": "musicbybiome:teamgalacticbuilding",
+        "stream": true
+      }
+    ]
+  },
+  "twinleaftown": {
+    "sounds": [
+      {
+        "name": "musicbybiome:twinleaftown",
+        "stream": true
+      }
+    ]
+  },
+  "undergroundpassage": {
+    "sounds": [
+      {
+        "name": "musicbybiome:undergroundpassage",
+        "stream": true
+      }
+    ]
+  },
+  "valorlakefront": {
+    "sounds": [
+      {
+        "name": "musicbybiome:valorlakefront",
+        "stream": true
+      }
+    ]
+  },
+  "veilstonecity": {
+    "sounds": [
+      {
+        "name": "musicbybiome:veilstonecity",
+        "stream": true
+      }
+    ]
+  },
+  "villa": {
+    "sounds": [
+      {
+        "name": "musicbybiome:villa",
+        "stream": true
+      }
+    ]
+  },
+  "003welcome": {
+    "sounds": [
+      {
+        "name": "musicbybiome:003welcome",
+        "stream": true
+      }
+    ]
+  },
+  "010goodnight": {
+    "sounds": [
+      {
+        "name": "musicbybiome:010goodnight",
+        "stream": true
+      }
+    ]
+  },
+  "014treasuretown": {
+    "sounds": [
+      {
+        "name": "musicbybiome:014treasuretown",
+        "stream": true
+      }
+    ]
+  },
+  "015heartwarming": {
+    "sounds": [
+      {
+        "name": "musicbybiome:015heartwarming",
+        "stream": true
+      }
+    ]
+  },
+  "020timegearremix": {
+    "sounds": [
+      {
+        "name": "musicbybiome:020timegearremix",
+        "stream": true
+      }
+    ]
+  },
+  "024waterfallcave": {
+    "sounds": [
+      {
+        "name": "musicbybiome:024waterfallcave",
+        "stream": true
+      }
+    ]
+  },
+  "026teamskull": {
+    "sounds": [
+      {
+        "name": "musicbybiome:026teamskull",
+        "stream": true
+      }
+    ]
+  },
+  "027spindacafe": {
+    "sounds": [
+      {
+        "name": "musicbybiome:027spindacafe",
+        "stream": true
+      }
+    ]
+  },
+  "029applewoods": {
+    "sounds": [
+      {
+        "name": "musicbybiome:029applewoods",
+        "stream": true
+      }
+    ]
+  },
+  "": {
+    "sounds": [
+      {
+        "name": "musicbybiome:",
+        "stream": true
+      }
+    ]
+  }
+}

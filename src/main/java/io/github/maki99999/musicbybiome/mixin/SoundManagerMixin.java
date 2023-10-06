@@ -20,7 +20,7 @@ public class SoundManagerMixin
       final ResourceProvider resourceProvider,
       final CallbackInfoReturnable<Boolean> cir)
     {
-        if (sound.getPath().getNamespace().equals(MusicByBiome.MODID))
+        if (sound.getPath().getNamespace().equals(MusicByBiome.MOD_ID))
         {
             MusicByBiome.LOGGER.warn("Some warning here that can be ignored i think...");//TODO
             //cir.setReturnValue(false);

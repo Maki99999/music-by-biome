@@ -1,29 +1,29 @@
 package io.github.maki99999.musicbybiome;
 
 import com.cupboard.config.CupboardConfig;
-import net.minecraftforge.fml.IExtensionPoint;
-import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static io.github.maki99999.musicbybiome.MusicByBiome.MODID;
+import static io.github.maki99999.musicbybiome.MusicByBiome.MOD_ID;
 
-// The value here should match an entry in the META-INF/mods.toml file
-@Mod(MODID)
+@Mod(MOD_ID)
 public class MusicByBiome {
-    public static final String MODID = "musicbybiome";
+    public static final String MOD_ID = "musicbybiome";
     public static final Logger LOGGER = LogManager.getLogger();
-    public static CupboardConfig<Config> config = new CupboardConfig<>(MODID, new Config());
+    public static CupboardConfig<Config> config = new CupboardConfig<>(MOD_ID, new Config());
 
     public MusicByBiome() {
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "", (c, b) -> true));
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::setup);
+        MusicProvider.register(modEventBus);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        LOGGER.info(MODID + " mod initialized");
+        LOGGER.info(MOD_ID + " mod initialized");
+        MusicProvider.init();
     }
 }

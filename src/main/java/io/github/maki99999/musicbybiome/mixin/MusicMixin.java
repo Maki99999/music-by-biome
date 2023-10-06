@@ -26,7 +26,7 @@ public class MusicMixin {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void changeDelay(final Holder<SoundEvent> holder, final int p_263377_, final int p_263383_,
                              final boolean p_263387_, final CallbackInfo ci) {
-        minDelay *= 0;
-        maxDelay *= 0;
+        minDelay *= 0.001;
+        maxDelay *= 0.001;
     }
 }

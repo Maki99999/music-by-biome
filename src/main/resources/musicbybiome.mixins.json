@@ -9,7 +9,6 @@
     "SoundEngineMixin",
     "MusicMixin",
     "MinecraftMixin",
-    "SoundEventsMixin",
     "SoundManagerMixin"
   ],
   "injectors": {
