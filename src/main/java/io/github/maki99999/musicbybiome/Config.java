@@ -1,11 +1,9 @@
 package io.github.maki99999.musicbybiome;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +22,7 @@ public class Config {
             "is_wet/overworld",
             "is_dry/overworld",
             "is_coniferous",
+            "is_river",
             "is_spooky",
             "is_dead",
             "is_lush",
@@ -56,6 +55,8 @@ public class Config {
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
+    private static final ForgeConfigSpec.BooleanValue DEBUG;
+
     private static final Map<String, ForgeConfigSpec.ConfigValue<List<? extends String>>> SONGS_PER_TAG = new HashMap<>();
     private static final Map<String, ForgeConfigSpec.ConfigValue<List<? extends String>>> SONGS_PER_TAG_LOW_PRIORITY = new HashMap<>();
 
@@ -69,34 +70,37 @@ public class Config {
     static {
         BUILDER.push("Configs for the MusicByBiome mod");
 
+        DEBUG = BUILDER.comment("debug mode").define("debug_mode", false);
+
         //special
         MENU_SONGS = BUILDER.comment("menu music")
-                .defineListAllowEmpty(List.of("songs"), new ArrayList<>(), Config::validateItemName);
+                .defineListAllowEmpty("menu_songs", new ArrayList<>(), Config::validateItemName);
         NIGHT_SONGS = BUILDER.comment("night music (high priority)")
-                .defineListAllowEmpty("songs", new ArrayList<>(), o -> o instanceof String);
+                .defineListAllowEmpty("night_songs", new ArrayList<>(), o -> o instanceof String);
         RAIN_SONGS = BUILDER.comment("rain music (high priority)")
-                .defineListAllowEmpty("songs", new ArrayList<>(), o -> o instanceof String);
+                .defineListAllowEmpty("rain_songs", new ArrayList<>(), o -> o instanceof String);
         GENERIC_SONGS = BUILDER.comment("fallback music that plays when no other song can play (very low priority)")
-                .defineListAllowEmpty("songs", new ArrayList<>(), o -> o instanceof String);
+                .defineListAllowEmpty("generic_songs", new ArrayList<>(), o -> o instanceof String);
 
         //tags
         for (var tag : TAGS) {
             if (tag.contains("/overworld"))
                 SONGS_PER_TAG_LOW_PRIORITY.put(tag, BUILDER.comment("music for the tag '" + tag + "' (low priority)")
-                        .defineListAllowEmpty("songs", new ArrayList<>(), o -> o instanceof String));
+                        .defineListAllowEmpty("songs_" + tag.replace("/", "_"), new ArrayList<>(), o -> o instanceof String));
             else
                 SONGS_PER_TAG.put(tag, BUILDER.comment("music for the tag '" + tag + "'")
-                        .defineListAllowEmpty("songs", new ArrayList<>(), o -> o instanceof String));
+                        .defineListAllowEmpty("songs_" + tag, new ArrayList<>(), o -> o instanceof String));
         }
 
         BUILDER.pop();
         SPEC = BUILDER.build();
     }
 
-    private static boolean validateItemName(final Object obj)
-    {
+    private static boolean validateItemName(final Object obj) {
         return obj instanceof String;
     }
+
+    public static boolean debug;
 
     public static Map<String, List<String>> songsPerTag;
     public static Map<String, List<String>> songsPerTagLowPriority;
@@ -108,19 +112,25 @@ public class Config {
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
+        debug = DEBUG.get();
+
         songsPerTag = new HashMap<>();
         for (var entry : SONGS_PER_TAG.entrySet()) {
-            songsPerTag.put(entry.getKey(), new ArrayList<>(entry.getValue().get()));
+            songsPerTag.put(entry.getKey(), toLowerCaseList(entry.getValue().get()));
         }
 
         songsPerTagLowPriority = new HashMap<>();
         for (var entry : SONGS_PER_TAG_LOW_PRIORITY.entrySet()) {
-            songsPerTagLowPriority.put(entry.getKey(), new ArrayList<>(entry.getValue().get()));
+            songsPerTagLowPriority.put(entry.getKey(), toLowerCaseList(entry.getValue().get()));
         }
 
-        menuSongs = new ArrayList<>(MENU_SONGS.get());
-        nightSongs = new ArrayList<>(NIGHT_SONGS.get());
-        rainSongs = new ArrayList<>(RAIN_SONGS.get());
-        genericSongs = new ArrayList<>(GENERIC_SONGS.get());
+        menuSongs = toLowerCaseList(MENU_SONGS.get());
+        nightSongs = toLowerCaseList(NIGHT_SONGS.get());
+        rainSongs = toLowerCaseList(RAIN_SONGS.get());
+        genericSongs = toLowerCaseList(GENERIC_SONGS.get());
+    }
+
+    private static List<String> toLowerCaseList(List<? extends String> list) {
+        return list.stream().map(String::toLowerCase).collect(Collectors.toList());
     }
 }

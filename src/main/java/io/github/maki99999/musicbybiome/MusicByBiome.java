@@ -1,5 +1,6 @@
 package io.github.maki99999.musicbybiome;
 
+import io.github.maki99999.musicbybiome.music.MusicProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;

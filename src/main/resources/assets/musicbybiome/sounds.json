@@ -814,13 +814,5 @@
         "stream": true
       }
     ]
-  },
-  "": {
-    "sounds": [
-      {
-        "name": "musicbybiome:",
-        "stream": true
-      }
-    ]
   }
 }
