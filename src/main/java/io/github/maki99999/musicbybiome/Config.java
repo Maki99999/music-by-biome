@@ -1,41 +1,28 @@
 package io.github.maki99999.musicbybiome;
 
-import com.cupboard.config.ICommonConfig;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class Config implements ICommonConfig {
-    public static final List<String> tags = List.of(
-            "is_hot",
+@Mod.EventBusSubscriber(modid = MusicByBiome.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+public class Config {
+
+    public static final List<String> TAGS = List.of(
             "is_hot/overworld",
-            "is_hot/nether",
-            "is_hot/end",
-            "is_cold",
             "is_cold/overworld",
-            "is_cold/nether",
-            "is_cold/end",
-            "is_sparse",
             "is_sparse/overworld",
-            "is_sparse/nether",
-            "is_sparse/end",
-            "is_dense",
             "is_dense/overworld",
-            "is_dense/nether",
-            "is_dense/end",
-            "is_wet",
             "is_wet/overworld",
-            "is_wet/nether",
-            "is_wet/end",
-            "is_dry",
             "is_dry/overworld",
-            "is_dry/nether",
-            "is_dry/end",
             "is_coniferous",
             "is_spooky",
             "is_dead",
@@ -57,41 +44,83 @@ public class Config implements ICommonConfig {
             "is_cave",
             "is_peak",
             "is_slope",
-            "is_mountain"
-            );
-    public Map<String, List<String>> biomeTagStrings = new HashMap<>();
+            "is_mountain",
+            "is_beach",
+            "is_forest",
+            "is_ocean",
+            "is_deep_ocean",
+            "is_jungle",
+            "is_nether",
+            "is_end"
+    );
 
-    public JsonObject serialize() {
-        final JsonObject root = new JsonObject();
+    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
-        for (var tag: tags) {
-            JsonObject tagObject = new JsonObject();
-            tagObject.addProperty("desc", tag); // Use the tag name as the description
-            tagObject.add("songs", new JsonArray());
+    private static final Map<String, ForgeConfigSpec.ConfigValue<List<? extends String>>> SONGS_PER_TAG = new HashMap<>();
+    private static final Map<String, ForgeConfigSpec.ConfigValue<List<? extends String>>> SONGS_PER_TAG_LOW_PRIORITY = new HashMap<>();
 
-            root.add(tag, tagObject);
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MENU_SONGS;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> NIGHT_SONGS;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> RAIN_SONGS;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> GENERIC_SONGS;
+
+    static final ForgeConfigSpec SPEC;
+
+    static {
+        BUILDER.push("Configs for the MusicByBiome mod");
+
+        //special
+        MENU_SONGS = BUILDER.comment("menu music")
+                .defineListAllowEmpty(List.of("songs"), new ArrayList<>(), Config::validateItemName);
+        NIGHT_SONGS = BUILDER.comment("night music (high priority)")
+                .defineListAllowEmpty("songs", new ArrayList<>(), o -> o instanceof String);
+        RAIN_SONGS = BUILDER.comment("rain music (high priority)")
+                .defineListAllowEmpty("songs", new ArrayList<>(), o -> o instanceof String);
+        GENERIC_SONGS = BUILDER.comment("fallback music that plays when no other song can play (very low priority)")
+                .defineListAllowEmpty("songs", new ArrayList<>(), o -> o instanceof String);
+
+        //tags
+        for (var tag : TAGS) {
+            if (tag.contains("/overworld"))
+                SONGS_PER_TAG_LOW_PRIORITY.put(tag, BUILDER.comment("music for the tag '" + tag + "' (low priority)")
+                        .defineListAllowEmpty("songs", new ArrayList<>(), o -> o instanceof String));
+            else
+                SONGS_PER_TAG.put(tag, BUILDER.comment("music for the tag '" + tag + "'")
+                        .defineListAllowEmpty("songs", new ArrayList<>(), o -> o instanceof String));
         }
 
-        return root;
+        BUILDER.pop();
+        SPEC = BUILDER.build();
     }
 
-    public void deserialize(JsonObject data) {
-        for (String tag : tags) {
-            if (data.has(tag) && data.get(tag).isJsonObject()) {
-                JsonObject tagObject = data.getAsJsonObject(tag);
-                JsonArray tagArray = tagObject.getAsJsonArray("songs");
+    private static boolean validateItemName(final Object obj)
+    {
+        return obj instanceof String;
+    }
 
-                List<String> tagStrings = new ArrayList<>();
-                if (tagArray != null) {
-                    for (JsonElement element : tagArray) {
-                        if (element.isJsonPrimitive()) {
-                            tagStrings.add(element.getAsString());
-                        }
-                    }
-                }
+    public static Map<String, List<String>> songsPerTag;
+    public static Map<String, List<String>> songsPerTagLowPriority;
 
-                biomeTagStrings.put(tag, tagStrings);
-            }
+    public static List<String> menuSongs;
+    public static List<String> nightSongs;
+    public static List<String> rainSongs;
+    public static List<String> genericSongs;
+
+    @SubscribeEvent
+    static void onLoad(final ModConfigEvent event) {
+        songsPerTag = new HashMap<>();
+        for (var entry : SONGS_PER_TAG.entrySet()) {
+            songsPerTag.put(entry.getKey(), new ArrayList<>(entry.getValue().get()));
         }
+
+        songsPerTagLowPriority = new HashMap<>();
+        for (var entry : SONGS_PER_TAG_LOW_PRIORITY.entrySet()) {
+            songsPerTagLowPriority.put(entry.getKey(), new ArrayList<>(entry.getValue().get()));
+        }
+
+        menuSongs = new ArrayList<>(MENU_SONGS.get());
+        nightSongs = new ArrayList<>(NIGHT_SONGS.get());
+        rainSongs = new ArrayList<>(RAIN_SONGS.get());
+        genericSongs = new ArrayList<>(GENERIC_SONGS.get());
     }
 }

@@ -61,9 +61,9 @@ public class MinecraftMixin {
             }
 
             currentBiome.getTagKeys().forEach((tagKey) -> {
-                for(var tag : Config.tags) {
+                for(var tag : Config.TAGS) {
                     if(tagKey.toString().contains(tag)) {
-                        List<String> songNames = MusicByBiome.config.getCommonConfig().biomeTagStrings.get(tag);
+                        List<String> songNames = Config.songsPerTag.get(tag);
                         if (songNames != null) {
                             MusicByBiome.LOGGER.debug(songNames.size());
                             for (var songName : songNames) {
