@@ -1,5 +1,6 @@
 package io.github.maki99999.musicbybiome.mixin;
 
+import io.github.maki99999.musicbybiome.Config;
 import io.github.maki99999.musicbybiome.MusicByBiome;
 import io.github.maki99999.musicbybiome.music.CustomMusic;
 import io.github.maki99999.musicbybiome.music.MusicProvider;
