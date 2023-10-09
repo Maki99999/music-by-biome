@@ -82,7 +82,7 @@ public abstract class MinecraftMixin {
                 currentBiome = null;
             }
 
-            replaceMusic = !isPlayingMusic ||
+            replaceMusic = !isPlayingMusic || currentMusic == null ||
                     (currentBiome != null && shouldReplaceCurrentMusic(isRaining, isNight, currentBiome.value()));
             if (!replaceMusic) {
                 cir.setReturnValue(currentMusic.getMusic());
@@ -103,6 +103,8 @@ public abstract class MinecraftMixin {
                 return;
         }
 
+        if(Config.debug)
+            MusicByBiome.LOGGER.info("Choosing a new song from " + possibleTracks.size() + " songs.");
         CustomMusic nextSong = possibleTracks.get(rand.nextInt(possibleTracks.size()));
         currentMusic = nextSong;
         cir.setReturnValue(nextSong.getReplacingMusic());
@@ -112,6 +114,8 @@ public abstract class MinecraftMixin {
         // Check if coming from menu
         if (inMenu) {
             inMenu = false;
+            if(Config.debug)
+                MusicByBiome.LOGGER.info("Player is now in menu. Replacing music with menu music...");
             return true;
         }
 
@@ -123,16 +127,22 @@ public abstract class MinecraftMixin {
 
         // Check if the player has been in the current biome for 10 seconds
         if (timeInCurrentBiome == 200) {
+            if(Config.debug)
+                MusicByBiome.LOGGER.info("Player was 10 s in a new biome. Replacing music...");
             return true;
         }
         // Check if it starts or stops raining
         if (this.isRaining != isRaining) {
             this.isRaining = isRaining;
+            if(Config.debug)
+                MusicByBiome.LOGGER.info("Detected weather change. Replacing music...");
             return true;
         }
         // Check if it transitions from day to night or night to day
         if (this.isNight != isNight) {
             this.isNight = isNight;
+            if(Config.debug)
+                MusicByBiome.LOGGER.info("Detected daytime changing. Replacing music...");
             return true;
         }
         return false;
