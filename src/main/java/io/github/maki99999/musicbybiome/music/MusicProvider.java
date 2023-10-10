@@ -3,11 +3,9 @@ package io.github.maki99999.musicbybiome.music;
 import io.github.maki99999.musicbybiome.Config;
 import io.github.maki99999.musicbybiome.MusicByBiome;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -280,6 +278,8 @@ public class MusicProvider {
     }
 
     public static List<CustomMusic> getGenericSongs() {
+        if (!isInitialized)
+            return new ArrayList<>();
         return Config.genericSongs.stream().map(musicByName::get).collect(Collectors.toList());
     }
 
