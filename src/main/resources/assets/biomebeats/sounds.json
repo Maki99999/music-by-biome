@@ -1,8 +1,800 @@
 {
-  "test": {
+  "custom0": {
     "sounds": [
       {
-        "name": "biomebeats:test",
+        "name": "biomebeats:custom0",
+        "stream": true
+      }
+    ]
+  },
+  "custom1": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom1",
+        "stream": true
+      }
+    ]
+  },
+  "custom2": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom2",
+        "stream": true
+      }
+    ]
+  },
+  "custom3": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom3",
+        "stream": true
+      }
+    ]
+  },
+  "custom4": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom4",
+        "stream": true
+      }
+    ]
+  },
+  "custom5": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom5",
+        "stream": true
+      }
+    ]
+  },
+  "custom6": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom6",
+        "stream": true
+      }
+    ]
+  },
+  "custom7": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom7",
+        "stream": true
+      }
+    ]
+  },
+  "custom8": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom8",
+        "stream": true
+      }
+    ]
+  },
+  "custom9": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom9",
+        "stream": true
+      }
+    ]
+  },
+  "custom10": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom10",
+        "stream": true
+      }
+    ]
+  },
+  "custom11": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom11",
+        "stream": true
+      }
+    ]
+  },
+  "custom12": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom12",
+        "stream": true
+      }
+    ]
+  },
+  "custom13": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom13",
+        "stream": true
+      }
+    ]
+  },
+  "custom14": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom14",
+        "stream": true
+      }
+    ]
+  },
+  "custom15": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom15",
+        "stream": true
+      }
+    ]
+  },
+  "custom16": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom16",
+        "stream": true
+      }
+    ]
+  },
+  "custom17": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom17",
+        "stream": true
+      }
+    ]
+  },
+  "custom18": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom18",
+        "stream": true
+      }
+    ]
+  },
+  "custom19": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom19",
+        "stream": true
+      }
+    ]
+  },
+  "custom20": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom20",
+        "stream": true
+      }
+    ]
+  },
+  "custom21": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom21",
+        "stream": true
+      }
+    ]
+  },
+  "custom22": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom22",
+        "stream": true
+      }
+    ]
+  },
+  "custom23": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom23",
+        "stream": true
+      }
+    ]
+  },
+  "custom24": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom24",
+        "stream": true
+      }
+    ]
+  },
+  "custom25": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom25",
+        "stream": true
+      }
+    ]
+  },
+  "custom26": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom26",
+        "stream": true
+      }
+    ]
+  },
+  "custom27": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom27",
+        "stream": true
+      }
+    ]
+  },
+  "custom28": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom28",
+        "stream": true
+      }
+    ]
+  },
+  "custom29": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom29",
+        "stream": true
+      }
+    ]
+  },
+  "custom30": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom30",
+        "stream": true
+      }
+    ]
+  },
+  "custom31": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom31",
+        "stream": true
+      }
+    ]
+  },
+  "custom32": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom32",
+        "stream": true
+      }
+    ]
+  },
+  "custom33": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom33",
+        "stream": true
+      }
+    ]
+  },
+  "custom34": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom34",
+        "stream": true
+      }
+    ]
+  },
+  "custom35": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom35",
+        "stream": true
+      }
+    ]
+  },
+  "custom36": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom36",
+        "stream": true
+      }
+    ]
+  },
+  "custom37": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom37",
+        "stream": true
+      }
+    ]
+  },
+  "custom38": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom38",
+        "stream": true
+      }
+    ]
+  },
+  "custom39": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom39",
+        "stream": true
+      }
+    ]
+  },
+  "custom40": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom40",
+        "stream": true
+      }
+    ]
+  },
+  "custom41": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom41",
+        "stream": true
+      }
+    ]
+  },
+  "custom42": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom42",
+        "stream": true
+      }
+    ]
+  },
+  "custom43": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom43",
+        "stream": true
+      }
+    ]
+  },
+  "custom44": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom44",
+        "stream": true
+      }
+    ]
+  },
+  "custom45": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom45",
+        "stream": true
+      }
+    ]
+  },
+  "custom46": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom46",
+        "stream": true
+      }
+    ]
+  },
+  "custom47": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom47",
+        "stream": true
+      }
+    ]
+  },
+  "custom48": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom48",
+        "stream": true
+      }
+    ]
+  },
+  "custom49": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom49",
+        "stream": true
+      }
+    ]
+  },
+  "custom50": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom50",
+        "stream": true
+      }
+    ]
+  },
+  "custom51": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom51",
+        "stream": true
+      }
+    ]
+  },
+  "custom52": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom52",
+        "stream": true
+      }
+    ]
+  },
+  "custom53": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom53",
+        "stream": true
+      }
+    ]
+  },
+  "custom54": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom54",
+        "stream": true
+      }
+    ]
+  },
+  "custom55": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom55",
+        "stream": true
+      }
+    ]
+  },
+  "custom56": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom56",
+        "stream": true
+      }
+    ]
+  },
+  "custom57": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom57",
+        "stream": true
+      }
+    ]
+  },
+  "custom58": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom58",
+        "stream": true
+      }
+    ]
+  },
+  "custom59": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom59",
+        "stream": true
+      }
+    ]
+  },
+  "custom60": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom60",
+        "stream": true
+      }
+    ]
+  },
+  "custom61": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom61",
+        "stream": true
+      }
+    ]
+  },
+  "custom62": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom62",
+        "stream": true
+      }
+    ]
+  },
+  "custom63": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom63",
+        "stream": true
+      }
+    ]
+  },
+  "custom64": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom64",
+        "stream": true
+      }
+    ]
+  },
+  "custom65": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom65",
+        "stream": true
+      }
+    ]
+  },
+  "custom66": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom66",
+        "stream": true
+      }
+    ]
+  },
+  "custom67": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom67",
+        "stream": true
+      }
+    ]
+  },
+  "custom68": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom68",
+        "stream": true
+      }
+    ]
+  },
+  "custom69": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom69",
+        "stream": true
+      }
+    ]
+  },
+  "custom70": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom70",
+        "stream": true
+      }
+    ]
+  },
+  "custom71": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom71",
+        "stream": true
+      }
+    ]
+  },
+  "custom72": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom72",
+        "stream": true
+      }
+    ]
+  },
+  "custom73": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom73",
+        "stream": true
+      }
+    ]
+  },
+  "custom74": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom74",
+        "stream": true
+      }
+    ]
+  },
+  "custom75": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom75",
+        "stream": true
+      }
+    ]
+  },
+  "custom76": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom76",
+        "stream": true
+      }
+    ]
+  },
+  "custom77": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom77",
+        "stream": true
+      }
+    ]
+  },
+  "custom78": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom78",
+        "stream": true
+      }
+    ]
+  },
+  "custom79": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom79",
+        "stream": true
+      }
+    ]
+  },
+  "custom80": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom80",
+        "stream": true
+      }
+    ]
+  },
+  "custom81": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom81",
+        "stream": true
+      }
+    ]
+  },
+  "custom82": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom82",
+        "stream": true
+      }
+    ]
+  },
+  "custom83": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom83",
+        "stream": true
+      }
+    ]
+  },
+  "custom84": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom84",
+        "stream": true
+      }
+    ]
+  },
+  "custom85": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom85",
+        "stream": true
+      }
+    ]
+  },
+  "custom86": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom86",
+        "stream": true
+      }
+    ]
+  },
+  "custom87": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom87",
+        "stream": true
+      }
+    ]
+  },
+  "custom88": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom88",
+        "stream": true
+      }
+    ]
+  },
+  "custom89": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom89",
+        "stream": true
+      }
+    ]
+  },
+  "custom90": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom90",
+        "stream": true
+      }
+    ]
+  },
+  "custom91": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom91",
+        "stream": true
+      }
+    ]
+  },
+  "custom92": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom92",
+        "stream": true
+      }
+    ]
+  },
+  "custom93": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom93",
+        "stream": true
+      }
+    ]
+  },
+  "custom94": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom94",
+        "stream": true
+      }
+    ]
+  },
+  "custom95": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom95",
+        "stream": true
+      }
+    ]
+  },
+  "custom96": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom96",
+        "stream": true
+      }
+    ]
+  },
+  "custom97": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom97",
+        "stream": true
+      }
+    ]
+  },
+  "custom98": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom98",
+        "stream": true
+      }
+    ]
+  },
+  "custom99": {
+    "sounds": [
+      {
+        "name": "biomebeats:custom99",
         "stream": true
       }
     ]

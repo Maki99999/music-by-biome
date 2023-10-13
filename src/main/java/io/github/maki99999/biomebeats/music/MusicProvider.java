@@ -28,7 +28,107 @@ public class MusicProvider {
             DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, BiomeBeats.MOD_ID);
 
     //<editor-fold defaultstate="collapsed" desc="all sound event registrations">
-    //public static RegistryObject<SoundEvent> test = registerSoundEvent("test");
+    private static final RegistryObject<SoundEvent> m_custom0 = registerSoundEvent("custom0");
+    private static final RegistryObject<SoundEvent> m_custom1 = registerSoundEvent("custom1");
+    private static final RegistryObject<SoundEvent> m_custom2 = registerSoundEvent("custom2");
+    private static final RegistryObject<SoundEvent> m_custom3 = registerSoundEvent("custom3");
+    private static final RegistryObject<SoundEvent> m_custom4 = registerSoundEvent("custom4");
+    private static final RegistryObject<SoundEvent> m_custom5 = registerSoundEvent("custom5");
+    private static final RegistryObject<SoundEvent> m_custom6 = registerSoundEvent("custom6");
+    private static final RegistryObject<SoundEvent> m_custom7 = registerSoundEvent("custom7");
+    private static final RegistryObject<SoundEvent> m_custom8 = registerSoundEvent("custom8");
+    private static final RegistryObject<SoundEvent> m_custom9 = registerSoundEvent("custom9");
+    private static final RegistryObject<SoundEvent> m_custom10 = registerSoundEvent("custom10");
+    private static final RegistryObject<SoundEvent> m_custom11 = registerSoundEvent("custom11");
+    private static final RegistryObject<SoundEvent> m_custom12 = registerSoundEvent("custom12");
+    private static final RegistryObject<SoundEvent> m_custom13 = registerSoundEvent("custom13");
+    private static final RegistryObject<SoundEvent> m_custom14 = registerSoundEvent("custom14");
+    private static final RegistryObject<SoundEvent> m_custom15 = registerSoundEvent("custom15");
+    private static final RegistryObject<SoundEvent> m_custom16 = registerSoundEvent("custom16");
+    private static final RegistryObject<SoundEvent> m_custom17 = registerSoundEvent("custom17");
+    private static final RegistryObject<SoundEvent> m_custom18 = registerSoundEvent("custom18");
+    private static final RegistryObject<SoundEvent> m_custom19 = registerSoundEvent("custom19");
+    private static final RegistryObject<SoundEvent> m_custom20 = registerSoundEvent("custom20");
+    private static final RegistryObject<SoundEvent> m_custom21 = registerSoundEvent("custom21");
+    private static final RegistryObject<SoundEvent> m_custom22 = registerSoundEvent("custom22");
+    private static final RegistryObject<SoundEvent> m_custom23 = registerSoundEvent("custom23");
+    private static final RegistryObject<SoundEvent> m_custom24 = registerSoundEvent("custom24");
+    private static final RegistryObject<SoundEvent> m_custom25 = registerSoundEvent("custom25");
+    private static final RegistryObject<SoundEvent> m_custom26 = registerSoundEvent("custom26");
+    private static final RegistryObject<SoundEvent> m_custom27 = registerSoundEvent("custom27");
+    private static final RegistryObject<SoundEvent> m_custom28 = registerSoundEvent("custom28");
+    private static final RegistryObject<SoundEvent> m_custom29 = registerSoundEvent("custom29");
+    private static final RegistryObject<SoundEvent> m_custom30 = registerSoundEvent("custom30");
+    private static final RegistryObject<SoundEvent> m_custom31 = registerSoundEvent("custom31");
+    private static final RegistryObject<SoundEvent> m_custom32 = registerSoundEvent("custom32");
+    private static final RegistryObject<SoundEvent> m_custom33 = registerSoundEvent("custom33");
+    private static final RegistryObject<SoundEvent> m_custom34 = registerSoundEvent("custom34");
+    private static final RegistryObject<SoundEvent> m_custom35 = registerSoundEvent("custom35");
+    private static final RegistryObject<SoundEvent> m_custom36 = registerSoundEvent("custom36");
+    private static final RegistryObject<SoundEvent> m_custom37 = registerSoundEvent("custom37");
+    private static final RegistryObject<SoundEvent> m_custom38 = registerSoundEvent("custom38");
+    private static final RegistryObject<SoundEvent> m_custom39 = registerSoundEvent("custom39");
+    private static final RegistryObject<SoundEvent> m_custom40 = registerSoundEvent("custom40");
+    private static final RegistryObject<SoundEvent> m_custom41 = registerSoundEvent("custom41");
+    private static final RegistryObject<SoundEvent> m_custom42 = registerSoundEvent("custom42");
+    private static final RegistryObject<SoundEvent> m_custom43 = registerSoundEvent("custom43");
+    private static final RegistryObject<SoundEvent> m_custom44 = registerSoundEvent("custom44");
+    private static final RegistryObject<SoundEvent> m_custom45 = registerSoundEvent("custom45");
+    private static final RegistryObject<SoundEvent> m_custom46 = registerSoundEvent("custom46");
+    private static final RegistryObject<SoundEvent> m_custom47 = registerSoundEvent("custom47");
+    private static final RegistryObject<SoundEvent> m_custom48 = registerSoundEvent("custom48");
+    private static final RegistryObject<SoundEvent> m_custom49 = registerSoundEvent("custom49");
+    private static final RegistryObject<SoundEvent> m_custom50 = registerSoundEvent("custom50");
+    private static final RegistryObject<SoundEvent> m_custom51 = registerSoundEvent("custom51");
+    private static final RegistryObject<SoundEvent> m_custom52 = registerSoundEvent("custom52");
+    private static final RegistryObject<SoundEvent> m_custom53 = registerSoundEvent("custom53");
+    private static final RegistryObject<SoundEvent> m_custom54 = registerSoundEvent("custom54");
+    private static final RegistryObject<SoundEvent> m_custom55 = registerSoundEvent("custom55");
+    private static final RegistryObject<SoundEvent> m_custom56 = registerSoundEvent("custom56");
+    private static final RegistryObject<SoundEvent> m_custom57 = registerSoundEvent("custom57");
+    private static final RegistryObject<SoundEvent> m_custom58 = registerSoundEvent("custom58");
+    private static final RegistryObject<SoundEvent> m_custom59 = registerSoundEvent("custom59");
+    private static final RegistryObject<SoundEvent> m_custom60 = registerSoundEvent("custom60");
+    private static final RegistryObject<SoundEvent> m_custom61 = registerSoundEvent("custom61");
+    private static final RegistryObject<SoundEvent> m_custom62 = registerSoundEvent("custom62");
+    private static final RegistryObject<SoundEvent> m_custom63 = registerSoundEvent("custom63");
+    private static final RegistryObject<SoundEvent> m_custom64 = registerSoundEvent("custom64");
+    private static final RegistryObject<SoundEvent> m_custom65 = registerSoundEvent("custom65");
+    private static final RegistryObject<SoundEvent> m_custom66 = registerSoundEvent("custom66");
+    private static final RegistryObject<SoundEvent> m_custom67 = registerSoundEvent("custom67");
+    private static final RegistryObject<SoundEvent> m_custom68 = registerSoundEvent("custom68");
+    private static final RegistryObject<SoundEvent> m_custom69 = registerSoundEvent("custom69");
+    private static final RegistryObject<SoundEvent> m_custom70 = registerSoundEvent("custom70");
+    private static final RegistryObject<SoundEvent> m_custom71 = registerSoundEvent("custom71");
+    private static final RegistryObject<SoundEvent> m_custom72 = registerSoundEvent("custom72");
+    private static final RegistryObject<SoundEvent> m_custom73 = registerSoundEvent("custom73");
+    private static final RegistryObject<SoundEvent> m_custom74 = registerSoundEvent("custom74");
+    private static final RegistryObject<SoundEvent> m_custom75 = registerSoundEvent("custom75");
+    private static final RegistryObject<SoundEvent> m_custom76 = registerSoundEvent("custom76");
+    private static final RegistryObject<SoundEvent> m_custom77 = registerSoundEvent("custom77");
+    private static final RegistryObject<SoundEvent> m_custom78 = registerSoundEvent("custom78");
+    private static final RegistryObject<SoundEvent> m_custom79 = registerSoundEvent("custom79");
+    private static final RegistryObject<SoundEvent> m_custom80 = registerSoundEvent("custom80");
+    private static final RegistryObject<SoundEvent> m_custom81 = registerSoundEvent("custom81");
+    private static final RegistryObject<SoundEvent> m_custom82 = registerSoundEvent("custom82");
+    private static final RegistryObject<SoundEvent> m_custom83 = registerSoundEvent("custom83");
+    private static final RegistryObject<SoundEvent> m_custom84 = registerSoundEvent("custom84");
+    private static final RegistryObject<SoundEvent> m_custom85 = registerSoundEvent("custom85");
+    private static final RegistryObject<SoundEvent> m_custom86 = registerSoundEvent("custom86");
+    private static final RegistryObject<SoundEvent> m_custom87 = registerSoundEvent("custom87");
+    private static final RegistryObject<SoundEvent> m_custom88 = registerSoundEvent("custom88");
+    private static final RegistryObject<SoundEvent> m_custom89 = registerSoundEvent("custom89");
+    private static final RegistryObject<SoundEvent> m_custom90 = registerSoundEvent("custom90");
+    private static final RegistryObject<SoundEvent> m_custom91 = registerSoundEvent("custom91");
+    private static final RegistryObject<SoundEvent> m_custom92 = registerSoundEvent("custom92");
+    private static final RegistryObject<SoundEvent> m_custom93 = registerSoundEvent("custom93");
+    private static final RegistryObject<SoundEvent> m_custom94 = registerSoundEvent("custom94");
+    private static final RegistryObject<SoundEvent> m_custom95 = registerSoundEvent("custom95");
+    private static final RegistryObject<SoundEvent> m_custom96 = registerSoundEvent("custom96");
+    private static final RegistryObject<SoundEvent> m_custom97 = registerSoundEvent("custom97");
+    private static final RegistryObject<SoundEvent> m_custom98 = registerSoundEvent("custom98");
+    private static final RegistryObject<SoundEvent> m_custom99 = registerSoundEvent("custom99");
+
     private static final RegistryObject<SoundEvent> m_030CraggyCoast = registerSoundEvent("030craggycoast");
     private static final RegistryObject<SoundEvent> m_032MtHorn = registerSoundEvent("032mthorn");
     private static final RegistryObject<SoundEvent> m_033FoggyForest = registerSoundEvent("033foggyforest");
@@ -142,8 +242,110 @@ public class MusicProvider {
     }
 
     public static void init() {
+        //<editor-fold defaultstate="collapsed" desc="all sound event mappings">
         //noinspection RedundantTypeArguments (explicit type arguments speedup compilation and analysis time)
         Map<String, RegistryObject<SoundEvent>> allSoundEvents = Map.<String, RegistryObject<SoundEvent>>ofEntries(
+                Map.entry("custom0", m_custom0),
+                Map.entry("custom1", m_custom1),
+                Map.entry("custom2", m_custom2),
+                Map.entry("custom3", m_custom3),
+                Map.entry("custom4", m_custom4),
+                Map.entry("custom5", m_custom5),
+                Map.entry("custom6", m_custom6),
+                Map.entry("custom7", m_custom7),
+                Map.entry("custom8", m_custom8),
+                Map.entry("custom9", m_custom9),
+                Map.entry("custom10", m_custom10),
+                Map.entry("custom11", m_custom11),
+                Map.entry("custom12", m_custom12),
+                Map.entry("custom13", m_custom13),
+                Map.entry("custom14", m_custom14),
+                Map.entry("custom15", m_custom15),
+                Map.entry("custom16", m_custom16),
+                Map.entry("custom17", m_custom17),
+                Map.entry("custom18", m_custom18),
+                Map.entry("custom19", m_custom19),
+                Map.entry("custom20", m_custom20),
+                Map.entry("custom21", m_custom21),
+                Map.entry("custom22", m_custom22),
+                Map.entry("custom23", m_custom23),
+                Map.entry("custom24", m_custom24),
+                Map.entry("custom25", m_custom25),
+                Map.entry("custom26", m_custom26),
+                Map.entry("custom27", m_custom27),
+                Map.entry("custom28", m_custom28),
+                Map.entry("custom29", m_custom29),
+                Map.entry("custom30", m_custom30),
+                Map.entry("custom31", m_custom31),
+                Map.entry("custom32", m_custom32),
+                Map.entry("custom33", m_custom33),
+                Map.entry("custom34", m_custom34),
+                Map.entry("custom35", m_custom35),
+                Map.entry("custom36", m_custom36),
+                Map.entry("custom37", m_custom37),
+                Map.entry("custom38", m_custom38),
+                Map.entry("custom39", m_custom39),
+                Map.entry("custom40", m_custom40),
+                Map.entry("custom41", m_custom41),
+                Map.entry("custom42", m_custom42),
+                Map.entry("custom43", m_custom43),
+                Map.entry("custom44", m_custom44),
+                Map.entry("custom45", m_custom45),
+                Map.entry("custom46", m_custom46),
+                Map.entry("custom47", m_custom47),
+                Map.entry("custom48", m_custom48),
+                Map.entry("custom49", m_custom49),
+                Map.entry("custom50", m_custom50),
+                Map.entry("custom51", m_custom51),
+                Map.entry("custom52", m_custom52),
+                Map.entry("custom53", m_custom53),
+                Map.entry("custom54", m_custom54),
+                Map.entry("custom55", m_custom55),
+                Map.entry("custom56", m_custom56),
+                Map.entry("custom57", m_custom57),
+                Map.entry("custom58", m_custom58),
+                Map.entry("custom59", m_custom59),
+                Map.entry("custom60", m_custom60),
+                Map.entry("custom61", m_custom61),
+                Map.entry("custom62", m_custom62),
+                Map.entry("custom63", m_custom63),
+                Map.entry("custom64", m_custom64),
+                Map.entry("custom65", m_custom65),
+                Map.entry("custom66", m_custom66),
+                Map.entry("custom67", m_custom67),
+                Map.entry("custom68", m_custom68),
+                Map.entry("custom69", m_custom69),
+                Map.entry("custom70", m_custom70),
+                Map.entry("custom71", m_custom71),
+                Map.entry("custom72", m_custom72),
+                Map.entry("custom73", m_custom73),
+                Map.entry("custom74", m_custom74),
+                Map.entry("custom75", m_custom75),
+                Map.entry("custom76", m_custom76),
+                Map.entry("custom77", m_custom77),
+                Map.entry("custom78", m_custom78),
+                Map.entry("custom79", m_custom79),
+                Map.entry("custom80", m_custom80),
+                Map.entry("custom81", m_custom81),
+                Map.entry("custom82", m_custom82),
+                Map.entry("custom83", m_custom83),
+                Map.entry("custom84", m_custom84),
+                Map.entry("custom85", m_custom85),
+                Map.entry("custom86", m_custom86),
+                Map.entry("custom87", m_custom87),
+                Map.entry("custom88", m_custom88),
+                Map.entry("custom89", m_custom89),
+                Map.entry("custom90", m_custom90),
+                Map.entry("custom91", m_custom91),
+                Map.entry("custom92", m_custom92),
+                Map.entry("custom93", m_custom93),
+                Map.entry("custom94", m_custom94),
+                Map.entry("custom95", m_custom95),
+                Map.entry("custom96", m_custom96),
+                Map.entry("custom97", m_custom97),
+                Map.entry("custom98", m_custom98),
+                Map.entry("custom99", m_custom99),
+
                 Map.entry("030CraggyCoast", m_030CraggyCoast),
                 Map.entry("032MtHorn", m_032MtHorn),
                 Map.entry("033FoggyForest", m_033FoggyForest),
@@ -246,6 +448,7 @@ public class MusicProvider {
                 Map.entry("027SpindaCafe", m_027SpindaCafe),
                 Map.entry("029AppleWoods", m_029AppleWoods)
         );
+//</editor-fold>
 
         for (var entry : allSoundEvents.entrySet()) {
             musicByName.put(entry.getKey().toLowerCase(), new CustomMusic(entry.getKey(), entry.getValue().get()));
