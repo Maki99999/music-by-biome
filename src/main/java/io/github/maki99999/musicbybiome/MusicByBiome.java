@@ -10,12 +10,15 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Random;
+
 import static io.github.maki99999.musicbybiome.MusicByBiome.MOD_ID;
 
 @Mod(MOD_ID)
 public class MusicByBiome {
     public static final String MOD_ID = "musicbybiome";
     public static final Logger LOGGER = LogManager.getLogger();
+    public static final Random RANDOM = new Random();
 
     public MusicByBiome() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -27,5 +30,10 @@ public class MusicByBiome {
     private void setup(final FMLClientSetupEvent event) {
         LOGGER.info(MOD_ID + " mod initialized");
         MusicProvider.init();
+    }
+
+    public static void debugMsg(String msg) {
+        if(Config.debug)
+            LOGGER.info(msg);
     }
 }

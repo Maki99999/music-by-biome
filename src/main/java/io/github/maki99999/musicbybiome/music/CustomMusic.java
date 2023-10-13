@@ -6,13 +6,19 @@ import net.minecraft.sounds.SoundEvent;
 
 public class CustomMusic {
 
+    private final String name;
     private final Music music;
     private final Music replacingMusic;
 
-    public CustomMusic(SoundEvent soundEvent) {
+    public CustomMusic(String name, SoundEvent soundEvent) {
+        this.name = name;
         Holder<SoundEvent> soundEventHolder = new Holder.Direct<>(soundEvent);
         music = new Music(soundEventHolder, 0, 0, false);
         replacingMusic = new Music(soundEventHolder, 0, 0, true);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Music getMusic() {

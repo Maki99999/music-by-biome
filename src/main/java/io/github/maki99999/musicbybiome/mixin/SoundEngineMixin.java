@@ -16,15 +16,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SoundEngineMixin {
     @Inject(method = "play", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/sounds/SoundInstance;getSound()Lnet/minecraft/client/resources/sounds/Sound;"))
     private void displayCurrentMusic(final SoundInstance sound, final CallbackInfo ci) {
-        if (!Config.debug || sound.getSource() != SoundSource.MUSIC)
+        if (!Config.debug || sound.getSource() != SoundSource.MUSIC
+                || sound.getSound().getLocation().toString().equals("minecraft:empty"))
             return;
 
-        MusicByBiome.LOGGER.info("playing: " + sound.getLocation() + " sound:" + sound.getSound().getLocation());
-        if (Minecraft.getInstance().player != null) {
-            Minecraft.getInstance().player.displayClientMessage(
-                    Component.literal("playing: " + sound.getSound().getLocation()),
-                    true
-            );
-        }
+        MusicByBiome.LOGGER.info("playing: " + sound.getLocation() + " [sound: " + sound.getSound().getLocation() + "]");
+        var player = Minecraft.getInstance().player;
+        if (player != null)
+            player.displayClientMessage(Component.literal("playing: " + sound.getSound().getLocation()), true);
     }
 }

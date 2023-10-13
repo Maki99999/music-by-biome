@@ -248,7 +248,7 @@ public class MusicProvider {
         );
 
         for (var entry : allSoundEvents.entrySet()) {
-            musicByName.put(entry.getKey().toLowerCase(), new CustomMusic(entry.getValue().get()));
+            musicByName.put(entry.getKey().toLowerCase(), new CustomMusic(entry.getKey(), entry.getValue().get()));
         }
 
         isInitialized = true;
