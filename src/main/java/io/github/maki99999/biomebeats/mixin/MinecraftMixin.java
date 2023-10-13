@@ -1,9 +1,9 @@
-package io.github.maki99999.musicbybiome.mixin;
+package io.github.maki99999.biomebeats.mixin;
 
-import io.github.maki99999.musicbybiome.Config;
-import io.github.maki99999.musicbybiome.MusicByBiome;
-import io.github.maki99999.musicbybiome.music.CustomMusic;
-import io.github.maki99999.musicbybiome.music.MusicProvider;
+import io.github.maki99999.biomebeats.BiomeBeats;
+import io.github.maki99999.biomebeats.Config;
+import io.github.maki99999.biomebeats.music.CustomMusic;
+import io.github.maki99999.biomebeats.music.MusicProvider;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -66,7 +66,7 @@ public abstract class MinecraftMixin {
         if (currentMusic != null && !getMusicManager().isPlayingMusic(currentMusic.getReplacingMusic())
                 && currentMusicTicks >= ticksBeforeReplacing) {
             currentMusic = null;
-            MusicByBiome.debugMsg("No music for " + currentMusicTicks + " ticks...");
+            BiomeBeats.debugMsg("No music for " + currentMusicTicks + " ticks...");
         }
 
         boolean replaceMusic;
@@ -77,7 +77,7 @@ public abstract class MinecraftMixin {
         if (player == null) {
             replaceMusic = !inMenu || currentMusic == null;
             if (!inMenu)
-                MusicByBiome.debugMsg("Player is now in menu. Replacing music...");
+                BiomeBeats.debugMsg("Player is now in menu. Replacing music...");
             inMenu = true;
             if (!replaceMusic) {
                 cir.setReturnValue(currentMusic.getMusic());
@@ -97,7 +97,7 @@ public abstract class MinecraftMixin {
                 isRaining = currLevel.isRaining();
                 isNight = currLevel.isNight();
             } catch (IOException e) {
-                MusicByBiome.LOGGER.warn("Couldn't find player's biome!");
+                BiomeBeats.LOGGER.warn("Couldn't find player's biome!");
                 currentBiomeHolder = null;
             }
 
@@ -124,18 +124,22 @@ public abstract class MinecraftMixin {
                 return;
         }
 
-        if ((currentMusicTicks < ticksBeforeReplacing || possibleTracks.contains(currentMusic)) && currentMusic != null) {
+        if (currentMusic != null && currentMusicTicks < ticksBeforeReplacing) {
+            BiomeBeats.debugMsg("Not replacing music because it was just replaced.");
             cir.setReturnValue(currentMusic.getMusic());
-            if (currentMusicTicks < ticksBeforeReplacing)
-                MusicByBiome.debugMsg("Not replacing music because it was just replaced.");
-            if (possibleTracks.contains(currentMusic))
-                MusicByBiome.debugMsg("Not replacing music because it still fits.");
+            currentMusicBiome = currentBiome;
+            ticksNotInCurrentBiome = 0;
+            return;
+        }
+        if (currentMusic != null && possibleTracks.contains(currentMusic)) {
+            BiomeBeats.debugMsg("Not replacing music because it still fits.");
+            cir.setReturnValue(currentMusic.getMusic());
             return;
         }
 
-        MusicByBiome.debugMsg("Choosing a new song from " + possibleTracks.size() + " music track(s):");
+        BiomeBeats.debugMsg("Choosing a new song from " + possibleTracks.size() + " music track(s):");
 
-        int nextSongIndex = MusicByBiome.RANDOM.nextInt(possibleTracks.size());
+        int nextSongIndex = BiomeBeats.RANDOM.nextInt(possibleTracks.size());
         CustomMusic nextSong = possibleTracks.get(nextSongIndex);
         if (Objects.equals(currentMusic, nextSong))
             nextSong = possibleTracks.get((nextSongIndex + 1) % possibleTracks.size());
@@ -144,7 +148,7 @@ public abstract class MinecraftMixin {
         currentMusicBiome = currentBiome;
         currentMusicTicks = 0;
         ticksNotInCurrentBiome = 0;
-        MusicByBiome.debugMsg("New song: " + currentMusic.getName());
+        BiomeBeats.debugMsg("New song: " + currentMusic.getName());
         cir.setReturnValue(nextSong.getReplacingMusic());
     }
 
@@ -152,7 +156,7 @@ public abstract class MinecraftMixin {
         // Check if coming from menu
         if (inMenu) {
             inMenu = false;
-            MusicByBiome.debugMsg("Player came from menu. Replacing music...");
+            BiomeBeats.debugMsg("Player came from menu. Replacing music...");
             return true;
         }
 
@@ -164,7 +168,7 @@ public abstract class MinecraftMixin {
         }
         // Check if the player has been in another biome for a few seconds
         if (ticksNotInCurrentBiome >= ticksBeforeReplacing) {
-            MusicByBiome.debugMsg("Player was " + ticksBeforeReplacing + " ticks in another biome. Replacing music...");
+            BiomeBeats.debugMsg("Player was " + ticksBeforeReplacing + " ticks in another biome. Replacing music...");
             debugMsgCurrentAndNextBiomeName(currentBiome);
             return true;
         }
@@ -172,13 +176,13 @@ public abstract class MinecraftMixin {
         // Check if it starts or stops raining
         if (this.isRaining != isRaining) {
             this.isRaining = isRaining;
-            MusicByBiome.debugMsg("Detected weather change. Replacing music...");
+            BiomeBeats.debugMsg("Detected weather change. Replacing music...");
             return true;
         }
         // Check if it transitions from day to night or night to day
         if (this.isNight != isNight) {
             this.isNight = isNight;
-            MusicByBiome.debugMsg("Detected daytime changing. Replacing music...");
+            BiomeBeats.debugMsg("Detected daytime changing. Replacing music...");
             return true;
         }
         return false;
@@ -191,7 +195,7 @@ public abstract class MinecraftMixin {
         var biomeRegistry = level.registryAccess().registry(Registries.BIOME).isPresent() ?
                 level.registryAccess().registry(Registries.BIOME).get() : null;
         if (biomeRegistry != null) {
-            MusicByBiome.debugMsg("[old biome: " + biomeRegistry.getKey(currentMusicBiome) + ", new biome: " +
+            BiomeBeats.debugMsg("[old biome: " + biomeRegistry.getKey(currentMusicBiome) + ", new biome: " +
                     biomeRegistry.getKey(nextBiome) + "]");
         }
     }

@@ -1,4 +1,4 @@
-package io.github.maki99999.musicbybiome.music;
+package io.github.maki99999.biomebeats.music;
 
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.Music;

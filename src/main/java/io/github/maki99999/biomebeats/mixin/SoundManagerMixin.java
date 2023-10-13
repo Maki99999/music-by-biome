@@ -1,6 +1,6 @@
-package io.github.maki99999.musicbybiome.mixin;
+package io.github.maki99999.biomebeats.mixin;
 
-import io.github.maki99999.musicbybiome.MusicByBiome;
+import io.github.maki99999.biomebeats.BiomeBeats;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +20,7 @@ public class SoundManagerMixin
       final ResourceProvider resourceProvider,
       final CallbackInfoReturnable<Boolean> cir)
     {
-        if (sound.getPath().getNamespace().equals(MusicByBiome.MOD_ID))
+        if (sound.getPath().getNamespace().equals(BiomeBeats.MOD_ID))
             cir.setReturnValue(false);
     }
 }

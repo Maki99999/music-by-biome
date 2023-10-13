@@ -1,7 +1,7 @@
-package io.github.maki99999.musicbybiome.music;
+package io.github.maki99999.biomebeats.music;
 
-import io.github.maki99999.musicbybiome.Config;
-import io.github.maki99999.musicbybiome.MusicByBiome;
+import io.github.maki99999.biomebeats.Config;
+import io.github.maki99999.biomebeats.BiomeBeats;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
@@ -25,7 +25,7 @@ public class MusicProvider {
     private static final Map<String, CustomMusic> musicByName = new HashMap<>();
 
     private static final DeferredRegister<SoundEvent> MUSIC_SOUND_EVENTS =
-            DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MusicByBiome.MOD_ID);
+            DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, BiomeBeats.MOD_ID);
 
     //<editor-fold defaultstate="collapsed" desc="all sound event registrations">
     //public static RegistryObject<SoundEvent> test = registerSoundEvent("test");
@@ -133,7 +133,7 @@ public class MusicProvider {
 //</editor-fold>
 
     private static RegistryObject<SoundEvent> registerSoundEvent(String name) {
-        ResourceLocation location = new ResourceLocation(MusicByBiome.MOD_ID, name);
+        ResourceLocation location = new ResourceLocation(BiomeBeats.MOD_ID, name);
         return MUSIC_SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(location));
     }
 

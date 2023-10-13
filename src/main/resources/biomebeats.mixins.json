@@ -1,8 +1,8 @@
 {
   "required": false,
-  "package": "io.github.maki99999.musicbybiome.mixin",
+  "package": "io.github.maki99999.biomebeats.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "musicbybiome.refmap.json",
+  "refmap": "biomebeats.refmap.json",
   "mixins": [
   ],
   "client": [
@@ -13,5 +13,5 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "minVersion": "0.8"
+  "minVersion": "0.8.3"
 }

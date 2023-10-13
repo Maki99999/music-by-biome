@@ -2,7 +2,7 @@
   "test": {
     "sounds": [
       {
-        "name": "musicbybiome:test",
+        "name": "biomebeats:test",
         "stream": true
       }
     ]
@@ -10,7 +10,7 @@
   "030craggycoast": {
     "sounds": [
       {
-        "name": "musicbybiome:030craggycoast",
+        "name": "biomebeats:030craggycoast",
         "stream": true
       }
     ]
@@ -18,7 +18,7 @@
   "032mthorn": {
     "sounds": [
       {
-        "name": "musicbybiome:032mthorn",
+        "name": "biomebeats:032mthorn",
         "stream": true
       }
     ]
@@ -26,7 +26,7 @@
   "033foggyforest": {
     "sounds": [
       {
-        "name": "musicbybiome:033foggyforest",
+        "name": "biomebeats:033foggyforest",
         "stream": true
       }
     ]
@@ -34,7 +34,7 @@
   "034steamcave": {
     "sounds": [
       {
-        "name": "musicbybiome:034steamcave",
+        "name": "biomebeats:034steamcave",
         "stream": true
       }
     ]
@@ -42,7 +42,7 @@
   "035uppersteamcave": {
     "sounds": [
       {
-        "name": "musicbybiome:035uppersteamcave",
+        "name": "biomebeats:035uppersteamcave",
         "stream": true
       }
     ]
@@ -50,7 +50,7 @@
   "036ampplains": {
     "sounds": [
       {
-        "name": "musicbybiome:036ampplains",
+        "name": "biomebeats:036ampplains",
         "stream": true
       }
     ]
@@ -58,7 +58,7 @@
   "037farampplains": {
     "sounds": [
       {
-        "name": "musicbybiome:037farampplains",
+        "name": "biomebeats:037farampplains",
         "stream": true
       }
     ]
@@ -66,7 +66,7 @@
   "040northerndesert": {
     "sounds": [
       {
-        "name": "musicbybiome:040northerndesert",
+        "name": "biomebeats:040northerndesert",
         "stream": true
       }
     ]
@@ -74,7 +74,7 @@
   "041quicksandcave": {
     "sounds": [
       {
-        "name": "musicbybiome:041quicksandcave",
+        "name": "biomebeats:041quicksandcave",
         "stream": true
       }
     ]
@@ -82,7 +82,7 @@
   "042quicksandpit": {
     "sounds": [
       {
-        "name": "musicbybiome:042quicksandpit",
+        "name": "biomebeats:042quicksandpit",
         "stream": true
       }
     ]
@@ -90,7 +90,7 @@
   "043crystalcave": {
     "sounds": [
       {
-        "name": "musicbybiome:043crystalcave",
+        "name": "biomebeats:043crystalcave",
         "stream": true
       }
     ]
@@ -98,7 +98,7 @@
   "045endoftheday": {
     "sounds": [
       {
-        "name": "musicbybiome:045endoftheday",
+        "name": "biomebeats:045endoftheday",
         "stream": true
       }
     ]
@@ -106,7 +106,7 @@
   "046inthefuture": {
     "sounds": [
       {
-        "name": "musicbybiome:046inthefuture",
+        "name": "biomebeats:046inthefuture",
         "stream": true
       }
     ]
@@ -114,7 +114,7 @@
   "047planetparalysis": {
     "sounds": [
       {
-        "name": "musicbybiome:047planetparalysis",
+        "name": "biomebeats:047planetparalysis",
         "stream": true
       }
     ]
@@ -122,7 +122,7 @@
   "048chasmcave": {
     "sounds": [
       {
-        "name": "musicbybiome:048chasmcave",
+        "name": "biomebeats:048chasmcave",
         "stream": true
       }
     ]
@@ -130,7 +130,7 @@
   "052duskforest": {
     "sounds": [
       {
-        "name": "musicbybiome:052duskforest",
+        "name": "biomebeats:052duskforest",
         "stream": true
       }
     ]
@@ -138,7 +138,7 @@
   "055treeshroudforest": {
     "sounds": [
       {
-        "name": "musicbybiome:055treeshroudforest",
+        "name": "biomebeats:055treeshroudforest",
         "stream": true
       }
     ]
@@ -146,7 +146,7 @@
   "058hiddenland": {
     "sounds": [
       {
-        "name": "musicbybiome:058hiddenland",
+        "name": "biomebeats:058hiddenland",
         "stream": true
       }
     ]
@@ -154,7 +154,7 @@
   "062throughtheseaoftime": {
     "sounds": [
       {
-        "name": "musicbybiome:062throughtheseaoftime",
+        "name": "biomebeats:062throughtheseaoftime",
         "stream": true
       }
     ]
@@ -162,7 +162,7 @@
   "064temporaltower": {
     "sounds": [
       {
-        "name": "musicbybiome:064temporaltower",
+        "name": "biomebeats:064temporaltower",
         "stream": true
       }
     ]
@@ -170,7 +170,7 @@
   "079doyourbest": {
     "sounds": [
       {
-        "name": "musicbybiome:079doyourbest",
+        "name": "biomebeats:079doyourbest",
         "stream": true
       }
     ]
@@ -178,7 +178,7 @@
   "080shayminvillage": {
     "sounds": [
       {
-        "name": "musicbybiome:080shayminvillage",
+        "name": "biomebeats:080shayminvillage",
         "stream": true
       }
     ]
@@ -186,7 +186,7 @@
   "081skypeakforest": {
     "sounds": [
       {
-        "name": "musicbybiome:081skypeakforest",
+        "name": "biomebeats:081skypeakforest",
         "stream": true
       }
     ]
@@ -194,7 +194,7 @@
   "082skypeakcave": {
     "sounds": [
       {
-        "name": "musicbybiome:082skypeakcave",
+        "name": "biomebeats:082skypeakcave",
         "stream": true
       }
     ]
@@ -202,7 +202,7 @@
   "083skypeakprairie": {
     "sounds": [
       {
-        "name": "musicbybiome:083skypeakprairie",
+        "name": "biomebeats:083skypeakprairie",
         "stream": true
       }
     ]
@@ -210,7 +210,7 @@
   "085skypeaksnowfield": {
     "sounds": [
       {
-        "name": "musicbybiome:085skypeaksnowfield",
+        "name": "biomebeats:085skypeaksnowfield",
         "stream": true
       }
     ]
@@ -218,7 +218,7 @@
   "086skypeakfinalpass": {
     "sounds": [
       {
-        "name": "musicbybiome:086skypeakfinalpass",
+        "name": "biomebeats:086skypeakfinalpass",
         "stream": true
       }
     ]
@@ -226,7 +226,7 @@
   "088surroundedsea": {
     "sounds": [
       {
-        "name": "musicbybiome:088surroundedsea",
+        "name": "biomebeats:088surroundedsea",
         "stream": true
       }
     ]
@@ -234,7 +234,7 @@
   "089miraclesea": {
     "sounds": [
       {
-        "name": "musicbybiome:089miraclesea",
+        "name": "biomebeats:089miraclesea",
         "stream": true
       }
     ]
@@ -242,7 +242,7 @@
   "090aegiscave": {
     "sounds": [
       {
-        "name": "musicbybiome:090aegiscave",
+        "name": "biomebeats:090aegiscave",
         "stream": true
       }
     ]
@@ -250,7 +250,7 @@
   "092concealedruins": {
     "sounds": [
       {
-        "name": "musicbybiome:092concealedruins",
+        "name": "biomebeats:092concealedruins",
         "stream": true
       }
     ]
@@ -258,7 +258,7 @@
   "096darkcrater": {
     "sounds": [
       {
-        "name": "musicbybiome:096darkcrater",
+        "name": "biomebeats:096darkcrater",
         "stream": true
       }
     ]
@@ -266,7 +266,7 @@
   "097deepdarkcrater": {
     "sounds": [
       {
-        "name": "musicbybiome:097deepdarkcrater",
+        "name": "biomebeats:097deepdarkcrater",
         "stream": true
       }
     ]
@@ -274,7 +274,7 @@
   "100randomdungeontheme3": {
     "sounds": [
       {
-        "name": "musicbybiome:100randomdungeontheme3",
+        "name": "biomebeats:100randomdungeontheme3",
         "stream": true
       }
     ]
@@ -282,7 +282,7 @@
   "106starcave": {
     "sounds": [
       {
-        "name": "musicbybiome:106starcave",
+        "name": "biomebeats:106starcave",
         "stream": true
       }
     ]
@@ -290,7 +290,7 @@
   "111fortuneravine": {
     "sounds": [
       {
-        "name": "musicbybiome:111fortuneravine",
+        "name": "biomebeats:111fortuneravine",
         "stream": true
       }
     ]
@@ -298,7 +298,7 @@
   "120southernjungle": {
     "sounds": [
       {
-        "name": "musicbybiome:120southernjungle",
+        "name": "biomebeats:120southernjungle",
         "stream": true
       }
     ]
@@ -306,7 +306,7 @@
   "127barrenvalley": {
     "sounds": [
       {
-        "name": "musicbybiome:127barrenvalley",
+        "name": "biomebeats:127barrenvalley",
         "stream": true
       }
     ]
@@ -314,7 +314,7 @@
   "128darkwasteland": {
     "sounds": [
       {
-        "name": "musicbybiome:128darkwasteland",
+        "name": "biomebeats:128darkwasteland",
         "stream": true
       }
     ]
@@ -322,7 +322,7 @@
   "135vasticemountainpeak": {
     "sounds": [
       {
-        "name": "musicbybiome:135vasticemountainpeak",
+        "name": "biomebeats:135vasticemountainpeak",
         "stream": true
       }
     ]
@@ -330,7 +330,7 @@
   "136inthemorningsun": {
     "sounds": [
       {
-        "name": "musicbybiome:136inthemorningsun",
+        "name": "biomebeats:136inthemorningsun",
         "stream": true
       }
     ]
@@ -338,7 +338,7 @@
   "166goodnightalternate": {
     "sounds": [
       {
-        "name": "musicbybiome:166goodnightalternate",
+        "name": "biomebeats:166goodnightalternate",
         "stream": true
       }
     ]
@@ -346,7 +346,7 @@
   "amitysquare": {
     "sounds": [
       {
-        "name": "musicbybiome:amitysquare",
+        "name": "biomebeats:amitysquare",
         "stream": true
       }
     ]
@@ -354,7 +354,7 @@
   "beginningdimension": {
     "sounds": [
       {
-        "name": "musicbybiome:beginningdimension",
+        "name": "biomebeats:beginningdimension",
         "stream": true
       }
     ]
@@ -362,7 +362,7 @@
   "bicycle": {
     "sounds": [
       {
-        "name": "musicbybiome:bicycle",
+        "name": "biomebeats:bicycle",
         "stream": true
       }
     ]
@@ -370,7 +370,7 @@
   "canalavecity": {
     "sounds": [
       {
-        "name": "musicbybiome:canalavecity",
+        "name": "biomebeats:canalavecity",
         "stream": true
       }
     ]
@@ -378,7 +378,7 @@
   "dawntheme": {
     "sounds": [
       {
-        "name": "musicbybiome:dawntheme",
+        "name": "biomebeats:dawntheme",
         "stream": true
       }
     ]
@@ -386,7 +386,7 @@
   "deepwithinteamgalactichq": {
     "sounds": [
       {
-        "name": "musicbybiome:deepwithinteamgalactichq",
+        "name": "biomebeats:deepwithinteamgalactichq",
         "stream": true
       }
     ]
@@ -394,7 +394,7 @@
   "distortionworld": {
     "sounds": [
       {
-        "name": "musicbybiome:distortionworld",
+        "name": "biomebeats:distortionworld",
         "stream": true
       }
     ]
@@ -402,7 +402,7 @@
   "ending": {
     "sounds": [
       {
-        "name": "musicbybiome:ending",
+        "name": "biomebeats:ending",
         "stream": true
       }
     ]
@@ -410,7 +410,7 @@
   "eternacity": {
     "sounds": [
       {
-        "name": "musicbybiome:eternacity",
+        "name": "biomebeats:eternacity",
         "stream": true
       }
     ]
@@ -418,7 +418,7 @@
   "eternaforest": {
     "sounds": [
       {
-        "name": "musicbybiome:eternaforest",
+        "name": "biomebeats:eternaforest",
         "stream": true
       }
     ]
@@ -426,7 +426,7 @@
   "fightarea": {
     "sounds": [
       {
-        "name": "musicbybiome:fightarea",
+        "name": "biomebeats:fightarea",
         "stream": true
       }
     ]
@@ -434,7 +434,7 @@
   "floaromatown": {
     "sounds": [
       {
-        "name": "musicbybiome:floaromatown",
+        "name": "biomebeats:floaromatown",
         "stream": true
       }
     ]
@@ -442,7 +442,7 @@
   "gamecorner": {
     "sounds": [
       {
-        "name": "musicbybiome:gamecorner",
+        "name": "biomebeats:gamecorner",
         "stream": true
       }
     ]
@@ -450,7 +450,7 @@
   "globaltradestation": {
     "sounds": [
       {
-        "name": "musicbybiome:globaltradestation",
+        "name": "biomebeats:globaltradestation",
         "stream": true
       }
     ]
@@ -458,7 +458,7 @@
   "greatmarsh": {
     "sounds": [
       {
-        "name": "musicbybiome:greatmarsh",
+        "name": "biomebeats:greatmarsh",
         "stream": true
       }
     ]
@@ -466,7 +466,7 @@
   "hearthomecity": {
     "sounds": [
       {
-        "name": "musicbybiome:hearthomecity",
+        "name": "biomebeats:hearthomecity",
         "stream": true
       }
     ]
@@ -474,7 +474,7 @@
   "hearthomecitynight": {
     "sounds": [
       {
-        "name": "musicbybiome:hearthomecitynight",
+        "name": "biomebeats:hearthomecitynight",
         "stream": true
       }
     ]
@@ -482,7 +482,7 @@
   "jubilifecity": {
     "sounds": [
       {
-        "name": "musicbybiome:jubilifecity",
+        "name": "biomebeats:jubilifecity",
         "stream": true
       }
     ]
@@ -490,7 +490,7 @@
   "jubilifecitynight": {
     "sounds": [
       {
-        "name": "musicbybiome:jubilifecitynight",
+        "name": "biomebeats:jubilifecitynight",
         "stream": true
       }
     ]
@@ -498,7 +498,7 @@
   "lake": {
     "sounds": [
       {
-        "name": "musicbybiome:lake",
+        "name": "biomebeats:lake",
         "stream": true
       }
     ]
@@ -506,7 +506,7 @@
   "lucastheme": {
     "sounds": [
       {
-        "name": "musicbybiome:lucastheme",
+        "name": "biomebeats:lucastheme",
         "stream": true
       }
     ]
@@ -514,7 +514,7 @@
   "menumusic": {
     "sounds": [
       {
-        "name": "musicbybiome:menumusic",
+        "name": "biomebeats:menumusic",
         "stream": true
       }
     ]
@@ -522,7 +522,7 @@
   "mtcoronet": {
     "sounds": [
       {
-        "name": "musicbybiome:mtcoronet",
+        "name": "biomebeats:mtcoronet",
         "stream": true
       }
     ]
@@ -530,7 +530,7 @@
   "oldchateau": {
     "sounds": [
       {
-        "name": "musicbybiome:oldchateau",
+        "name": "biomebeats:oldchateau",
         "stream": true
       }
     ]
@@ -538,7 +538,7 @@
   "oreburghcity": {
     "sounds": [
       {
-        "name": "musicbybiome:oreburghcity",
+        "name": "biomebeats:oreburghcity",
         "stream": true
       }
     ]
@@ -546,7 +546,7 @@
   "oreburghmine": {
     "sounds": [
       {
-        "name": "musicbybiome:oreburghmine",
+        "name": "biomebeats:oreburghmine",
         "stream": true
       }
     ]
@@ -554,7 +554,7 @@
   "poffin": {
     "sounds": [
       {
-        "name": "musicbybiome:poffin",
+        "name": "biomebeats:poffin",
         "stream": true
       }
     ]
@@ -562,7 +562,7 @@
   "pokemoncenter": {
     "sounds": [
       {
-        "name": "musicbybiome:pokemoncenter",
+        "name": "biomebeats:pokemoncenter",
         "stream": true
       }
     ]
@@ -570,7 +570,7 @@
   "pokemonleague": {
     "sounds": [
       {
-        "name": "musicbybiome:pokemonleague",
+        "name": "biomebeats:pokemonleague",
         "stream": true
       }
     ]
@@ -578,7 +578,7 @@
   "route201": {
     "sounds": [
       {
-        "name": "musicbybiome:route201",
+        "name": "biomebeats:route201",
         "stream": true
       }
     ]
@@ -586,7 +586,7 @@
   "route203": {
     "sounds": [
       {
-        "name": "musicbybiome:route203",
+        "name": "biomebeats:route203",
         "stream": true
       }
     ]
@@ -594,7 +594,7 @@
   "route205": {
     "sounds": [
       {
-        "name": "musicbybiome:route205",
+        "name": "biomebeats:route205",
         "stream": true
       }
     ]
@@ -602,7 +602,7 @@
   "route206": {
     "sounds": [
       {
-        "name": "musicbybiome:route206",
+        "name": "biomebeats:route206",
         "stream": true
       }
     ]
@@ -610,7 +610,7 @@
   "route209": {
     "sounds": [
       {
-        "name": "musicbybiome:route209",
+        "name": "biomebeats:route209",
         "stream": true
       }
     ]
@@ -618,7 +618,7 @@
   "route210": {
     "sounds": [
       {
-        "name": "musicbybiome:route210",
+        "name": "biomebeats:route210",
         "stream": true
       }
     ]
@@ -626,7 +626,7 @@
   "route216": {
     "sounds": [
       {
-        "name": "musicbybiome:route216",
+        "name": "biomebeats:route216",
         "stream": true
       }
     ]
@@ -634,7 +634,7 @@
   "route225": {
     "sounds": [
       {
-        "name": "musicbybiome:route225",
+        "name": "biomebeats:route225",
         "stream": true
       }
     ]
@@ -642,7 +642,7 @@
   "sandgemtown": {
     "sounds": [
       {
-        "name": "musicbybiome:sandgemtown",
+        "name": "biomebeats:sandgemtown",
         "stream": true
       }
     ]
@@ -650,7 +650,7 @@
   "snowpointcity": {
     "sounds": [
       {
-        "name": "musicbybiome:snowpointcity",
+        "name": "biomebeats:snowpointcity",
         "stream": true
       }
     ]
@@ -658,7 +658,7 @@
   "solaceontown": {
     "sounds": [
       {
-        "name": "musicbybiome:solaceontown",
+        "name": "biomebeats:solaceontown",
         "stream": true
       }
     ]
@@ -666,7 +666,7 @@
   "spearpillar": {
     "sounds": [
       {
-        "name": "musicbybiome:spearpillar",
+        "name": "biomebeats:spearpillar",
         "stream": true
       }
     ]
@@ -674,7 +674,7 @@
   "starkmountain": {
     "sounds": [
       {
-        "name": "musicbybiome:starkmountain",
+        "name": "biomebeats:starkmountain",
         "stream": true
       }
     ]
@@ -682,7 +682,7 @@
   "sunyshorecity": {
     "sounds": [
       {
-        "name": "musicbybiome:sunyshorecity",
+        "name": "biomebeats:sunyshorecity",
         "stream": true
       }
     ]
@@ -690,7 +690,7 @@
   "surf": {
     "sounds": [
       {
-        "name": "musicbybiome:surf",
+        "name": "biomebeats:surf",
         "stream": true
       }
     ]
@@ -698,7 +698,7 @@
   "teamgalacticbuilding": {
     "sounds": [
       {
-        "name": "musicbybiome:teamgalacticbuilding",
+        "name": "biomebeats:teamgalacticbuilding",
         "stream": true
       }
     ]
@@ -706,7 +706,7 @@
   "twinleaftown": {
     "sounds": [
       {
-        "name": "musicbybiome:twinleaftown",
+        "name": "biomebeats:twinleaftown",
         "stream": true
       }
     ]
@@ -714,7 +714,7 @@
   "undergroundpassage": {
     "sounds": [
       {
-        "name": "musicbybiome:undergroundpassage",
+        "name": "biomebeats:undergroundpassage",
         "stream": true
       }
     ]
@@ -722,7 +722,7 @@
   "valorlakefront": {
     "sounds": [
       {
-        "name": "musicbybiome:valorlakefront",
+        "name": "biomebeats:valorlakefront",
         "stream": true
       }
     ]
@@ -730,7 +730,7 @@
   "veilstonecity": {
     "sounds": [
       {
-        "name": "musicbybiome:veilstonecity",
+        "name": "biomebeats:veilstonecity",
         "stream": true
       }
     ]
@@ -738,7 +738,7 @@
   "villa": {
     "sounds": [
       {
-        "name": "musicbybiome:villa",
+        "name": "biomebeats:villa",
         "stream": true
       }
     ]
@@ -746,7 +746,7 @@
   "003welcome": {
     "sounds": [
       {
-        "name": "musicbybiome:003welcome",
+        "name": "biomebeats:003welcome",
         "stream": true
       }
     ]
@@ -754,7 +754,7 @@
   "010goodnight": {
     "sounds": [
       {
-        "name": "musicbybiome:010goodnight",
+        "name": "biomebeats:010goodnight",
         "stream": true
       }
     ]
@@ -762,7 +762,7 @@
   "014treasuretown": {
     "sounds": [
       {
-        "name": "musicbybiome:014treasuretown",
+        "name": "biomebeats:014treasuretown",
         "stream": true
       }
     ]
@@ -770,7 +770,7 @@
   "015heartwarming": {
     "sounds": [
       {
-        "name": "musicbybiome:015heartwarming",
+        "name": "biomebeats:015heartwarming",
         "stream": true
       }
     ]
@@ -778,7 +778,7 @@
   "020timegearremix": {
     "sounds": [
       {
-        "name": "musicbybiome:020timegearremix",
+        "name": "biomebeats:020timegearremix",
         "stream": true
       }
     ]
@@ -786,7 +786,7 @@
   "024waterfallcave": {
     "sounds": [
       {
-        "name": "musicbybiome:024waterfallcave",
+        "name": "biomebeats:024waterfallcave",
         "stream": true
       }
     ]
@@ -794,7 +794,7 @@
   "026teamskull": {
     "sounds": [
       {
-        "name": "musicbybiome:026teamskull",
+        "name": "biomebeats:026teamskull",
         "stream": true
       }
     ]
@@ -802,7 +802,7 @@
   "027spindacafe": {
     "sounds": [
       {
-        "name": "musicbybiome:027spindacafe",
+        "name": "biomebeats:027spindacafe",
         "stream": true
       }
     ]
@@ -810,7 +810,7 @@
   "029applewoods": {
     "sounds": [
       {
-        "name": "musicbybiome:029applewoods",
+        "name": "biomebeats:029applewoods",
         "stream": true
       }
     ]

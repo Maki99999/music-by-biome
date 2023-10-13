@@ -1,7 +1,7 @@
-package io.github.maki99999.musicbybiome.mixin;
+package io.github.maki99999.biomebeats.mixin;
 
-import io.github.maki99999.musicbybiome.Config;
-import io.github.maki99999.musicbybiome.MusicByBiome;
+import io.github.maki99999.biomebeats.BiomeBeats;
+import io.github.maki99999.biomebeats.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
@@ -16,11 +16,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SoundEngineMixin {
     @Inject(method = "play", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/sounds/SoundInstance;getSound()Lnet/minecraft/client/resources/sounds/Sound;"))
     private void displayCurrentMusic(final SoundInstance sound, final CallbackInfo ci) {
-        if (!Config.debug || sound.getSource() != SoundSource.MUSIC
-                || sound.getSound().getLocation().toString().equals("minecraft:empty"))
+        if (!Config.debug || sound.getSource() != SoundSource.MUSIC)
             return;
 
-        MusicByBiome.LOGGER.info("playing: " + sound.getLocation() + " [sound: " + sound.getSound().getLocation() + "]");
+        BiomeBeats.LOGGER.info("playing: " + sound.getLocation() + " [sound: " + sound.getSound().getLocation() + "]");
         var player = Minecraft.getInstance().player;
         if (player != null)
             player.displayClientMessage(Component.literal("playing: " + sound.getSound().getLocation()), true);

@@ -37,7 +37,7 @@ For the mod to work you need a resource pack that holds all your music files.
 1. **Create Nested Folders:** Now, organize your sound files with the following folder structure:
     ```
     ├── assets
-    │   └── musicbybiome
+    │   └── biomebeats
     │       └── sounds
     │           └── ... (your .ogg music files)
     └── pack.mcmeta
@@ -46,7 +46,7 @@ For the mod to work you need a resource pack that holds all your music files.
 
 ### Configuring Biome-Based Music
 
-1. **Edit the Configuration File:** In your Minecraft installation folder, you'll find a `musicbybiome-client.toml` config file. This file is generated after running Minecraft at least once with the mod installed. Open it using a text editor.
+1. **Edit the Configuration File:** In your Minecraft installation folder, you'll find a `biomebeats-client.toml` config file. This file is generated after running Minecraft at least once with the mod installed. Open it using a text editor.
 2. **Assign Music to Biome Tags:** The mod uses biome tags to determine which music to play. In the config file, you'll find entries for various tags, including menu, rain, and night music. To assign music to these tags, refer to the table on the [Minecraft Wiki](https://minecraft.fandom.com/wiki/Tag#Biomes) to identify the tags associated with different biomes. Also included are a few tags added by Forge ([Forge biome tags](https://github.com/MinecraftForge/MinecraftForge/tree/1.20.x/src/generated/resources/data/forge/tags/worldgen/biome)).
    For example, configure the file like this:
     ```toml

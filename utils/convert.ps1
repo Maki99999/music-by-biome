@@ -1,8 +1,8 @@
 # Define the target zip file name
-$zipFileName = "MusicByBiome.zip"
+$zipFileName = "BiomeBeats.zip"
 
-# Create the "assets/musicbybiome/sounds" folder structure
-$assetsFolder = "MusicByBiome\assets\musicbybiome\sounds"
+# Create the "assets/biomebeats/sounds" folder structure
+$assetsFolder = "BiomeBeats\assets\biomebeats\sounds"
 if (-not (Test-Path -Path $assetsFolder -PathType Container)) {
     New-Item -ItemType Directory -Path $assetsFolder -Force
 }
@@ -24,14 +24,14 @@ $packMcmetaContent = @"
 {
   "pack": {
     "pack_format": 15,
-    "description": "Music for the MusicByBiome mod"
+    "description": "Music for the BiomeBeats mod"
   }
 }
 "@
-$packMcmetaPath = Join-Path -Path "MusicByBiome" -ChildPath "pack.mcmeta"
+$packMcmetaPath = Join-Path -Path "BiomeBeats" -ChildPath "pack.mcmeta"
 $packMcmetaContent | Set-Content -Path $packMcmetaPath -Encoding UTF8
 
 # Zip the folder structure
-#Compress-Archive -Path "MusicByBiome\assets", "MusicByBiome\pack.mcmeta" -DestinationPath $zipFileName -CompressionLevel "NoCompression" -Force
+#Compress-Archive -Path "BiomeBeats\assets", "BiomeBeats\pack.mcmeta" -DestinationPath $zipFileName -CompressionLevel "NoCompression" -Force
 
 Write-Host "Conversion, pack.mcmeta creation, and zip file creation complete."

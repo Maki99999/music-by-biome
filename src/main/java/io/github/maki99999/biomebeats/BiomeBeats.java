@@ -1,6 +1,6 @@
-package io.github.maki99999.musicbybiome;
+package io.github.maki99999.biomebeats;
 
-import io.github.maki99999.musicbybiome.music.MusicProvider;
+import io.github.maki99999.biomebeats.music.MusicProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -12,15 +12,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
-import static io.github.maki99999.musicbybiome.MusicByBiome.MOD_ID;
+import static io.github.maki99999.biomebeats.BiomeBeats.MOD_ID;
 
 @Mod(MOD_ID)
-public class MusicByBiome {
-    public static final String MOD_ID = "musicbybiome";
+public class BiomeBeats {
+    public static final String MOD_ID = "biomebeats";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final Random RANDOM = new Random();
 
-    public MusicByBiome() {
+    public BiomeBeats() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::setup);
         MusicProvider.register(modEventBus);

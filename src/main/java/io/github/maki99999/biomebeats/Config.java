@@ -1,4 +1,4 @@
-package io.github.maki99999.musicbybiome;
+package io.github.maki99999.biomebeats;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Mod.EventBusSubscriber(modid = MusicByBiome.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = BiomeBeats.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Config {
 
     public static final List<String> TAGS = List.of(
@@ -68,7 +68,7 @@ public class Config {
     static final ForgeConfigSpec SPEC;
 
     static {
-        BUILDER.push("Configs for the MusicByBiome mod");
+        BUILDER.push("Configs for the BiomeBeats mod");
 
         DEBUG = BUILDER.comment("debug mode").define("debug_mode", false);
 
