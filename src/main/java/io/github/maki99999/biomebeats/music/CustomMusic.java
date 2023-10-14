@@ -13,8 +13,8 @@ public class CustomMusic {
     public CustomMusic(String name, SoundEvent soundEvent) {
         this.name = name;
         Holder<SoundEvent> soundEventHolder = new Holder.Direct<>(soundEvent);
-        music = new Music(soundEventHolder, 0, 0, false);
-        replacingMusic = new Music(soundEventHolder, 0, 0, true);
+        music = new Music(soundEventHolder, 10, 10, false);
+        replacingMusic = new Music(soundEventHolder, 10, 10, true);
     }
 
     public String getName() {

@@ -5,11 +5,12 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.LocalTime;
 import java.util.Random;
 
 import static io.github.maki99999.biomebeats.BiomeBeats.MOD_ID;
@@ -34,6 +35,6 @@ public class BiomeBeats {
 
     public static void debugMsg(String msg) {
         if(Config.debug)
-            LOGGER.info(msg);
+            LOGGER.info(LocalTime.now() + " " + msg);
     }
 }

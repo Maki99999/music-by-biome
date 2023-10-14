@@ -19,7 +19,7 @@ public class SoundEngineMixin {
         if (!Config.debug || sound.getSource() != SoundSource.MUSIC)
             return;
 
-        BiomeBeats.LOGGER.info("playing: " + sound.getLocation() + " [sound: " + sound.getSound().getLocation() + "]");
+        BiomeBeats.debugMsg("playing: " + sound.getLocation() + " [sound: " + sound.getSound().getLocation() + "]");
         var player = Minecraft.getInstance().player;
         if (player != null)
             player.displayClientMessage(Component.literal("playing: " + sound.getSound().getLocation()), true);

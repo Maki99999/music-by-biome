@@ -44,11 +44,10 @@ public abstract class MinecraftMixin {
     @Shadow
     public abstract MusicManager getMusicManager();
 
-    private final long ticksBeforeReplacing = 5 * 20;
-
     private CustomMusic currentMusic = null;
     private Biome currentMusicBiome = null;
     private long currentMusicTicks = 0;
+    private long noMusicTicks = 0;
     private long ticksNotInCurrentBiome = Integer.MAX_VALUE;
 
     private boolean isRaining = false;
@@ -63,10 +62,15 @@ public abstract class MinecraftMixin {
             return;
         }
 
-        if (currentMusic != null && !getMusicManager().isPlayingMusic(currentMusic.getReplacingMusic())
-                && currentMusicTicks >= ticksBeforeReplacing) {
-            currentMusic = null;
-            BiomeBeats.debugMsg("No music for " + currentMusicTicks + " ticks...");
+        boolean musicIsPlaying = currentMusic != null;
+        if (musicIsPlaying && !getMusicManager().isPlayingMusic(currentMusic.getReplacingMusic())) {
+            noMusicTicks++;
+            if (noMusicTicks >= 5) {
+                musicIsPlaying = false;
+                BiomeBeats.debugMsg("No music for " + noMusicTicks + " ticks...");
+            }
+        } else {
+            noMusicTicks = 0;
         }
 
         boolean replaceMusic;
@@ -75,7 +79,7 @@ public abstract class MinecraftMixin {
         List<CustomMusic> possibleTracks = new ArrayList<>();
 
         if (player == null) {
-            replaceMusic = !inMenu || currentMusic == null;
+            replaceMusic = !inMenu || !musicIsPlaying;
             if (!inMenu)
                 BiomeBeats.debugMsg("Player is now in menu. Replacing music...");
             inMenu = true;
@@ -101,7 +105,7 @@ public abstract class MinecraftMixin {
                 currentBiomeHolder = null;
             }
 
-            replaceMusic = shouldReplaceCurrentMusic(isRaining, isNight, currentBiome) || currentMusic == null;
+            replaceMusic = shouldReplaceCurrentMusic(isRaining, isNight, currentBiome) || !musicIsPlaying;
             if (!replaceMusic) {
                 cir.setReturnValue(currentMusic.getMusic());
                 return;
@@ -118,22 +122,24 @@ public abstract class MinecraftMixin {
                 possibleTracks.addAll(MusicProvider.getSongsFromTagStream(currentBiomeHolder.getTagKeys()));
         }
 
+        // Wants to replace the music
+
         if (possibleTracks.isEmpty()) {
             possibleTracks.addAll(MusicProvider.getGenericSongs());
             if (possibleTracks.isEmpty())
                 return;
         }
 
-        if (currentMusic != null && currentMusicTicks < ticksBeforeReplacing) {
-            BiomeBeats.debugMsg("Not replacing music because it was just replaced.");
+        if (currentMusic != null && currentMusicTicks < 15) {
+            BiomeBeats.debugMsg("Not replacing music because it was replaced just " + currentMusicTicks + " ticks ago.");
+            cir.setReturnValue(currentMusic.getMusic());
+            return;
+        }
+        if (musicIsPlaying && possibleTracks.contains(currentMusic)) {
+            BiomeBeats.debugMsg("Not replacing music because it still fits.");
             cir.setReturnValue(currentMusic.getMusic());
             currentMusicBiome = currentBiome;
             ticksNotInCurrentBiome = 0;
-            return;
-        }
-        if (currentMusic != null && possibleTracks.contains(currentMusic)) {
-            BiomeBeats.debugMsg("Not replacing music because it still fits.");
-            cir.setReturnValue(currentMusic.getMusic());
             return;
         }
 
@@ -148,6 +154,7 @@ public abstract class MinecraftMixin {
         currentMusicBiome = currentBiome;
         currentMusicTicks = 0;
         ticksNotInCurrentBiome = 0;
+        noMusicTicks = 0;
         BiomeBeats.debugMsg("New song: " + currentMusic.getName());
         cir.setReturnValue(nextSong.getReplacingMusic());
     }
@@ -166,9 +173,9 @@ public abstract class MinecraftMixin {
         } else {
             ticksNotInCurrentBiome = 0;
         }
-        // Check if the player has been in another biome for a few seconds
-        if (ticksNotInCurrentBiome >= ticksBeforeReplacing) {
-            BiomeBeats.debugMsg("Player was " + ticksBeforeReplacing + " ticks in another biome. Replacing music...");
+        // Check if the player has been in another biome for 5 seconds
+        if (ticksNotInCurrentBiome >= 5 * 20) {
+            BiomeBeats.debugMsg("Player was " + ticksNotInCurrentBiome + " ticks in another biome. Replacing music...");
             debugMsgCurrentAndNextBiomeName(currentBiome);
             return true;
         }
