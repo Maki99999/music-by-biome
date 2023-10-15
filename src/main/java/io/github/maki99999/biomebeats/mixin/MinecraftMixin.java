@@ -100,7 +100,7 @@ public abstract class MinecraftMixin implements MinecraftMixinAccessor {
                 currentBiome = currentBiomeHolder.value();
                 inOverworld = currentBiomeHolder.is(BiomeTags.IS_OVERWORLD);
                 isRaining = currLevel.isRaining();
-                isNight = currLevel.isNight();
+                isNight = currLevel.getDayTime() > 13000 && currLevel.getDayTime() < 23000;
             } catch (IOException e) {
                 BiomeBeats.LOGGER.warn("Couldn't find player's biome!");
                 currentBiomeHolder = null;
