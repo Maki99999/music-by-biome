@@ -3,6 +3,7 @@ package io.github.maki99999.biomebeats.mixin;
 import io.github.maki99999.biomebeats.BiomeBeats;
 import io.github.maki99999.biomebeats.Config;
 import io.github.maki99999.biomebeats.music.CustomMusic;
+import io.github.maki99999.biomebeats.music.MinecraftMixinAccessor;
 import io.github.maki99999.biomebeats.music.MusicProvider;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
@@ -28,7 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Mixin(Minecraft.class)
-public abstract class MinecraftMixin {
+public abstract class MinecraftMixin implements MinecraftMixinAccessor {
     @Shadow
     @Nullable
     public Screen screen;
@@ -205,5 +206,19 @@ public abstract class MinecraftMixin {
             BiomeBeats.debugMsg("[old biome: " + biomeRegistry.getKey(currentMusicBiome) + ", new biome: " +
                     biomeRegistry.getKey(nextBiome) + "]");
         }
+    }
+
+    @Override
+    @Nullable
+    public String getCurrentSongName() {
+        if (currentMusic == null)
+            return null;
+        else
+            return currentMusic.getName();
+    }
+
+    @Override
+    public void skipSong() {
+        getMusicManager().stopPlaying();
     }
 }
