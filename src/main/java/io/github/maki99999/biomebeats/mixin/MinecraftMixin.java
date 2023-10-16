@@ -112,15 +112,7 @@ public abstract class MinecraftMixin implements MinecraftMixinAccessor {
                 return;
             }
 
-            if (inOverworld && isNight && isRaining) {
-                possibleTracks.addAll(MusicProvider.getNightSongs());
-                possibleTracks.addAll(MusicProvider.getRainSongs());
-            } else if (inOverworld && isNight)
-                possibleTracks.addAll(MusicProvider.getNightSongs());
-            else if (inOverworld && isRaining)
-                possibleTracks.addAll(MusicProvider.getRainSongs());
-            else if (currentBiomeHolder != null)
-                possibleTracks.addAll(MusicProvider.getSongsFromTagStream(currentBiomeHolder.getTagKeys()));
+            possibleTracks.addAll(getFittingMusic(inOverworld, isNight, isRaining, currentBiomeHolder));
         }
 
         // Wants to replace the music
@@ -158,6 +150,44 @@ public abstract class MinecraftMixin implements MinecraftMixinAccessor {
         noMusicTicks = 0;
         BiomeBeats.debugMsg("New song: " + currentMusic.getName());
         cir.setReturnValue(nextSong.getReplacingMusic());
+    }
+
+    private List<CustomMusic> getFittingMusic(boolean inOverworld, boolean isNight, boolean isRaining, Holder<Biome> currentBiomeHolder) {
+        // Get songs
+        List<CustomMusic> lowPriorityMusic = new ArrayList<>();
+        List<CustomMusic> standardPriorityMusic = new ArrayList<>();
+        List<CustomMusic> highPriorityMusic = new ArrayList<>();
+
+        if (inOverworld && isNight)
+            highPriorityMusic.addAll(MusicProvider.getNightSongs());
+        if (inOverworld && isRaining)
+            highPriorityMusic.addAll(MusicProvider.getRainSongs());
+        if (currentBiomeHolder != null) {
+            var otherSongs = MusicProvider.getSongsFromTagStream(currentBiomeHolder.getTagKeys());
+            lowPriorityMusic.addAll(otherSongs.getRight());
+            standardPriorityMusic.addAll(otherSongs.getLeft());
+        }
+
+        // Get weights
+        float weightLow = 0;
+        float weightStandard = 0;
+        float weightHigh = 0;
+        if (lowPriorityMusic.size() > 0)
+            weightLow = 20;
+        if (standardPriorityMusic.size() > 0)
+            weightStandard = 50;
+        if (highPriorityMusic.size() > 0)
+            weightHigh = 80;
+        float maxWeight = weightLow + weightStandard + weightHigh;
+
+        // Choose a song
+        var rand = BiomeBeats.RANDOM.nextFloat();
+        if (rand < weightLow / maxWeight)
+            return lowPriorityMusic;
+        else if (rand < (weightLow + weightStandard) / maxWeight)
+            return standardPriorityMusic;
+        else
+            return highPriorityMusic;
     }
 
     private boolean shouldReplaceCurrentMusic(boolean isRaining, boolean isNight, Biome currentBiome) {

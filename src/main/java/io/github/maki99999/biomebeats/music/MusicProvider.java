@@ -10,6 +10,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -486,20 +487,21 @@ public class MusicProvider {
         return Config.genericSongs.stream().map(musicByName::get).collect(Collectors.toList());
     }
 
-    public static List<CustomMusic> getSongsFromTagStream(Stream<TagKey<Biome>> tags) {
-        final List<CustomMusic> songs = new ArrayList<>();
+    public static Pair<List<CustomMusic>, List<CustomMusic>> getSongsFromTagStream(Stream<TagKey<Biome>> tags) {
+        final List<CustomMusic> normalPrioritySongs = new ArrayList<>();
+        final List<CustomMusic> lowPrioritySongs = new ArrayList<>();
 
         tags.forEach((tagKey) -> {
             String cleanTag = getCleanTag(tagKey.toString());
 
             if (cleanTag != null) {
                 if (Config.songsPerTag.containsKey(cleanTag))
-                    songs.addAll(Config.songsPerTag.get(cleanTag).stream().map(musicByName::get).toList());
+                    normalPrioritySongs.addAll(Config.songsPerTag.get(cleanTag).stream().map(musicByName::get).toList());
                 else if (Config.songsPerTagLowPriority.containsKey(cleanTag))
-                    songs.addAll(Config.songsPerTagLowPriority.get(cleanTag).stream().map(musicByName::get).toList());
+                    lowPrioritySongs.addAll(Config.songsPerTagLowPriority.get(cleanTag).stream().map(musicByName::get).toList());
             }
         });
 
-        return songs;
+        return Pair.of(normalPrioritySongs, lowPrioritySongs);
     }
 }
