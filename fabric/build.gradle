@@ -1,0 +1,74 @@
+plugins {
+    id 'multiloader-loader'
+    id 'fabric-loom' version '1.6-SNAPSHOT'
+    id 'com.gradleup.shadow' version '8.3.0'
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation 'com.google.auto.service:auto-service-annotations:1.1.1'
+    annotationProcessor 'com.google.auto.service:auto-service:1.1.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+    implementation 'com.github.goxr3plus:java-stream-player:9.0.4'
+}
+
+loom {
+    def aw = project(":common").file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("runs/client")
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("runs/server")
+        }
+    }
+}
+
+shadowJar {
+    // Define which dependencies to include from the common project
+    dependencies {
+        include(dependency('com.github.goxr3plus:java-stream-player:9.0.4'))
+    }
+
+    // Optionally, specify which configurations to include (if necessary)
+    configurations = [project.configurations.runtimeClasspath]
+
+    // Merge service files if any
+    mergeServiceFiles()
+}
+
+tasks.named('jar') {
+    enabled = false
+}
+
+tasks.build {
+    dependsOn shadowJar
+}
+
+tasks.named('remapJar').configure {
+    dependsOn shadowJar
+}
+
+tasks.named('remapSourcesJar').configure {
+    dependsOn shadowJar
+}
+
+tasks.shadowJar.configure {
+    dependsOn 'processResources'
+    finalizedBy 'remapJar', 'remapSourcesJar'
+}

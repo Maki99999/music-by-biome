@@ -1,0 +1,28 @@
+- Choosing a music track:
+  - ignore conditions with lower priority than any fulfilled conditions
+  - combine music tracks of the fulfilled conditions (same highest priority)
+  - randomly choose a track, don't play the same song twice
+
+- New Tab: "Combined":
+  - add a button or new UI element for users to add custom combined conditions
+  - user can choose a set of conditions from all non-custom conditions
+  - all sub conditions have to be active at the same time for the custom condition to be true
+
+- Improve condition list readability:
+  - in condition list show the last 5 visited biomes/relevant biome tags (configurable)
+  - then sort alphabetically
+
+- Improve music list readability:
+  - sort tracks alphabetically
+  - sort groups: Custom > Minecraft (BGM) > Minecraft (Music Disc) > Mod 1 (BGM) > Mod 1 (Music Disc) > Mod 2 (BGM) > ...
+
+- default settings is how minecraft plays their songs:
+  1. currentScreen == WinScreen -> CREDITS
+  2. no player (not in game) -> MENU
+  3. in end ->
+    a. gui.getBossOverlay().shouldPlayMusic() -> END_BOSS
+    b. else -> END
+  4. is under water && biome has tag PLAYS_UNDERWATER_MUSIC -> UNDER_WATER
+  5. not in nether && this.player.getAbilities().instabuild and .mayfly -> CREATIVE
+  6. getBackgroundMusic of biome the player is in
+  7. GAME
