@@ -1,7 +1,7 @@
-- Choosing a music track:
-  - ignore conditions with lower priority than any fulfilled conditions
-  - combine music tracks of the fulfilled conditions (same highest priority)
-  - randomly choose a track, don't play the same song twice
+- Improvements:
+  - make menu music work
+    - stop music when level turns null (when going into main menu)
+  - after closing the config menu (onAfterConfigSave), reevaluate which songs to play
 
 - New Tab: "Combined":
   - add a button or new UI element for users to add custom combined conditions
@@ -10,10 +10,8 @@
 
 - Improve condition list readability:
   - in condition list show the last 5 visited biomes/relevant biome tags (configurable)
-  - then sort alphabetically
 
 - Improve music list readability:
-  - sort tracks alphabetically
   - sort groups: Custom > Minecraft (BGM) > Minecraft (Music Disc) > Mod 1 (BGM) > Mod 1 (Music Disc) > Mod 2 (BGM) > ...
 
 - default settings is how minecraft plays their songs:
