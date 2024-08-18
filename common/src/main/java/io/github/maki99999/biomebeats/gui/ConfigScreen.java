@@ -22,7 +22,7 @@ import static io.github.maki99999.biomebeats.util.DrawUtils.drawRect;
 import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
 
 public class ConfigScreen extends Screen implements ConfigChangeListener {
-    private static final ResourceLocation BASE_RL = new ResourceLocation(Constants.MOD_ID, "textures/gui/base.png");
+    private static final ResourceLocation BASE_RL = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/base.png");
     private static final int SIDES_PADDING = 60;
     private static final int BORDER_PADDING = 4;
     private static final int ELEMENT_HEIGHT = 17;

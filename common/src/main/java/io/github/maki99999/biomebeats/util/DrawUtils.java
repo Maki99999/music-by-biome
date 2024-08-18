@@ -22,13 +22,12 @@ public class DrawUtils {
         Matrix4f lastPose = guiGraphics.pose().last().pose();
         RenderSystem.setShaderTexture(0, resourceLocation);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.vertex(lastPose, pos.x1(), pos.y1(), 0f).uv(uv.x1() / 256f, uv.y1() / 256f).endVertex();
-        bufferBuilder.vertex(lastPose, pos.x1(), pos.y2(), 0f).uv(uv.x1() / 256f, uv.y2() / 256f).endVertex();
-        bufferBuilder.vertex(lastPose, pos.x2(), pos.y2(), 0f).uv(uv.x2() / 256f, uv.y2() / 256f).endVertex();
-        bufferBuilder.vertex(lastPose, pos.x2(), pos.y1(), 0f).uv(uv.x2() / 256f, uv.y1() / 256f).endVertex();
-        BufferUploader.drawWithShader(bufferBuilder.end());
+        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.addVertex(lastPose, pos.x1(), pos.y1(), 0f).setUv(uv.x1() / 256f, uv.y1() / 256f);
+        bufferBuilder.addVertex(lastPose, pos.x1(), pos.y2(), 0f).setUv(uv.x1() / 256f, uv.y2() / 256f);
+        bufferBuilder.addVertex(lastPose, pos.x2(), pos.y2(), 0f).setUv(uv.x2() / 256f, uv.y2() / 256f);
+        bufferBuilder.addVertex(lastPose, pos.x2(), pos.y1(), 0f).setUv(uv.x2() / 256f, uv.y1() / 256f);
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }
 
     public static void drawScrollingString(GuiGraphics guiGraphics, Font font, Component text,

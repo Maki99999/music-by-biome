@@ -26,7 +26,7 @@ public class ImageButton {
     public static final Rect CHECKBOX_EMPTY_UV = new Rect(54, 60, 16, 16);
     public static final Rect CHECKBOX_CHECKED_UV = new Rect(72, 60, 16, 16);
 
-    protected static final ResourceLocation RL = new ResourceLocation(Constants.MOD_ID, "textures/gui/base.png");
+    protected static final ResourceLocation RL = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/base.png");
 
     private final WidgetTooltipHolder tooltip = new WidgetTooltipHolder();
     private final int x;
