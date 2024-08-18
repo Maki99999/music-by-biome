@@ -52,8 +52,10 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
 
     @Override
     public void close() {
-        javaStreamPlayer.close();
-        executorService.close();
+        if (javaStreamPlayer != null)
+            javaStreamPlayer.close();
+        if (executorService != null)
+            executorService.close();
     }
 
     @Override

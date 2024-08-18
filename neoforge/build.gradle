@@ -1,6 +1,7 @@
 plugins {
     id 'multiloader-loader'
     id 'net.neoforged.gradle.userdev' version '7.0.133'
+    id 'com.gradleup.shadow' version '8.3.0'
 }
 
 // Automatically enable neoforge AccessTransformers if the file exists
@@ -13,6 +14,10 @@ if (at.exists()) {
 runs {
     configureEach {
         modSource project.sourceSets.main
+        dependencies {
+            runtime 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+            runtime 'com.github.goxr3plus:java-stream-player:9.0.4'
+        }
     }
     client {
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
@@ -37,6 +42,18 @@ dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
     implementation 'com.google.auto.service:auto-service-annotations:1.1.1'
     annotationProcessor 'com.google.auto.service:auto-service:1.1.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
-    implementation 'com.github.goxr3plus:java-stream-player:9.0.4'
+    shadow(implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2')
+    shadow(implementation 'com.github.goxr3plus:java-stream-player:9.0.4')
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    relocate("com.fasterxml.jackson.core", "${project.property('group')}.com.fasterxml.jackson.core")
+    relocate("com.github.goxr3plus", "${project.property('group')}.com.github.goxr3plus")
+    archiveClassifier.set('')
+}
+
+jar {
+    dependsOn shadowJar
+    enabled = false
 }

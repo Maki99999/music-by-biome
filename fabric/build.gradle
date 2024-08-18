@@ -41,10 +41,12 @@ loom {
 
 shadowJar {
     configurations = [project.configurations.shadow]
-    archiveClassifier.set('all')
+    relocate("com.fasterxml.jackson.core", "${project.property('group')}.com.fasterxml.jackson.core")
+    relocate("com.github.goxr3plus", "${project.property('group')}.com.github.goxr3plus")
+    archiveClassifier.set('')
 }
 
 remapJar {
-    dependsOn(shadowJar)
+    dependsOn shadowJar
     inputFile = tasks.shadowJar.archiveFile
 }

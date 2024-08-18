@@ -1,3 +1,15 @@
+- Tester feedback:
+  - needs a max size
+  - increase scroll sensitivity by at least 3
+  - preview pause
+  - preview stop when leaving config ui
+  - improve checkmark (pressed down beacon button)
+  - minecraft music doesn't work in built jar (javax.sound.sampled.UnsupportedAudioFileException -> missing dependency again?)
+  - music groups sort alphabetically
+
+
+- Forge support
+
 - Improvements:
   - make menu music work
     - stop music when level turns null (when going into main menu)
