@@ -28,7 +28,7 @@ public class BiomeBeatsCommon {
             public void write(int b) {}
         }));
 
-        if (Services.PLATFORM.isDevelopmentEnvironment()) {
+        if (Services.PLATFORM.getPlatformName().equals("Fabric") && Services.PLATFORM.isDevelopmentEnvironment()) {
             //setLevel does not work for some reason so here is a roundabout way
             final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
             final Configuration config = ctx.getConfiguration();

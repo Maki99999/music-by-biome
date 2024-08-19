@@ -95,3 +95,17 @@ sourceSets.each {
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
 }
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    mergeServiceFiles()
+    relocate("com", "${project.property('group')}.com")
+    relocate("javazoom", "${project.property('group')}.javazoom")
+    relocate("junit", "${project.property('group')}.junit")
+    relocate("org", "${project.property('group')}.org")
+}
+
+jar {
+    dependsOn shadowJar
+    enabled = false
+}

@@ -1,8 +1,7 @@
-package biomebeats.service;
+package io.github.maki99999.biomebeats.service;
 
 import com.google.auto.service.AutoService;
 import io.github.maki99999.biomebeats.Constants;
-import io.github.maki99999.biomebeats.service.IPlatformHelper;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;

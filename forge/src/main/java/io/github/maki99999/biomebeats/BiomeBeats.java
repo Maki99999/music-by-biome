@@ -1,7 +1,5 @@
-package biomebeats;
+package io.github.maki99999.biomebeats;
 
-import io.github.maki99999.biomebeats.BiomeBeatsCommon;
-import io.github.maki99999.biomebeats.Constants;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
