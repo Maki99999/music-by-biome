@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class MusicManager implements IMusicManager, StreamPlayerListener, ConfigChangeListener {
     private ExecutorService executorService;
@@ -92,6 +93,11 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
     }
 
     @Override
+    public void stop() {
+        executorService.submit(javaStreamPlayer::stop);
+    }
+
+    @Override
     public void pause() {
         executorService.submit(javaStreamPlayer::pause);
     }
@@ -140,6 +146,11 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
         }
     }
 
+    @Override
+    public MusicTrack getCurrentMusicTrack() {
+        return currentMusicTrack;
+    }
+
     private void playNext() {
         if (currentMusicTracks == null || currentMusicTracks.isEmpty()) {
             currentMusicTrack = null;
@@ -172,8 +183,27 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
             return;
 
         Map<String, Map<MusicGroup.Type, Collection<ResourceLocation>>> musicByTypeAndNamespace = new TreeMap<>();
-        musicGroups = new HashSet<>();
+        musicGroups = new ArrayList<>();
         musicTracks = new HashSet<>();
+
+        List<FileMusicTrack> fileMusicTracks;
+        try {
+            Files.createDirectories(Services.PLATFORM.getModConfigFolder().resolve(Constants.MUSIC_FOLDER));
+            Path musicFolder = Services.PLATFORM.getModConfigFolder().resolve(Constants.MUSIC_FOLDER);
+
+            try (var paths = Files.list(musicFolder)) {
+                fileMusicTracks = paths
+                        .filter(Files::isRegularFile)
+                        .map(path -> new FileMusicTrack(path.getFileName().toString()))
+                        .toList();
+            }
+        } catch (Exception e) {
+            Constants.LOG.error(e.getMessage(), e);
+            fileMusicTracks = List.of();
+        }
+
+        musicGroups.add(new MusicGroup(fileMusicTracks));
+        musicTracks.addAll(fileMusicTracks);
 
         for (var soundEvent : BuiltInRegistries.SOUND_EVENT.keySet()) {
             if (soundEvent.getPath().contains("music.")) {
@@ -189,10 +219,29 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
             }
         }
 
-        for (var musicByTypeAndNamespaceEntry : musicByTypeAndNamespace.entrySet()) {
-            for (var musicByTypeEntry : musicByTypeAndNamespaceEntry.getValue().entrySet().stream()
-                    .sorted(Map.Entry.comparingByKey()).toList()) {
+        List<Map.Entry<String, Map<MusicGroup.Type, Collection<ResourceLocation>>>> musicByTypeAndNamespaceSorted = musicByTypeAndNamespace.entrySet().stream()
+                .sorted((e1, e2) -> {
+                    if (e1.getKey().equals("minecraft")) return -1;
+                    if (e2.getKey().equals("minecraft")) return 1;
+                    return e1.getKey().compareTo(e2.getKey());
+                })
+                .toList();
 
+        for (var musicByTypeAndNamespaceEntry : musicByTypeAndNamespaceSorted) {
+            Map<MusicGroup.Type, Collection<ResourceLocation>> musicByTypeSorted = musicByTypeAndNamespaceEntry.getValue().entrySet().stream()
+                    .sorted((entry1, entry2) -> {
+                        if (entry1.getKey() == MusicGroup.Type.BGM) return -1;
+                        if (entry2.getKey() == MusicGroup.Type.BGM) return 1;
+                        return entry1.getKey().compareTo(entry2.getKey());
+                    })
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            Map.Entry::getValue,
+                            (e1, e2) -> e1,
+                            LinkedHashMap::new
+                    ));
+
+            for (var musicByTypeEntry : musicByTypeSorted.entrySet()) {
                 Collection<ResourceLocation> resourceLocations = musicByTypeEntry.getValue().stream()
                         .map(resourceLocation -> (MixinWeighedSoundEvents) minecraft.getSoundManager().getSoundEvent(resourceLocation)).filter(Objects::nonNull)
                         .flatMap(mixinWeighedSoundEvents -> mixinWeighedSoundEvents.list().stream())
@@ -216,25 +265,6 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
                 musicTracks.addAll(groupMusicTracks);
             }
         }
-
-        List<FileMusicTrack> fileMusicTracks;
-        try {
-            Files.createDirectories(Services.PLATFORM.getModConfigFolder().resolve(Constants.MUSIC_FOLDER));
-            Path musicFolder = Services.PLATFORM.getModConfigFolder().resolve(Constants.MUSIC_FOLDER);
-
-            try (var paths = Files.list(musicFolder)) {
-                fileMusicTracks = paths
-                        .filter(Files::isRegularFile)
-                        .map(path -> new FileMusicTrack(path.getFileName().toString()))
-                        .toList();
-            }
-        } catch (Exception e) {
-            Constants.LOG.error(e.getMessage(), e);
-            fileMusicTracks = List.of();
-        }
-
-        musicGroups.add(new MusicGroup(fileMusicTracks));
-        musicTracks.addAll(fileMusicTracks);
     }
 
     @Override

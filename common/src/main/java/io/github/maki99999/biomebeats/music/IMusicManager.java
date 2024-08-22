@@ -1,7 +1,5 @@
 package io.github.maki99999.biomebeats.music;
 
-import net.minecraft.client.Minecraft;
-
 import java.util.Collection;
 
 /**
@@ -34,6 +32,11 @@ public interface IMusicManager {
     void play(MusicTrack musicTrack);
 
     /**
+     * Stops the currently playing music track.
+     */
+    void stop();
+
+    /**
      * Pauses the currently playing music track.
      */
     void pause();
@@ -63,4 +66,11 @@ public interface IMusicManager {
      * @return A collection with all music groups.
      */
     Collection<MusicGroup> getMusicGroups();
+
+    /**
+     * Returns the music track that currently is playing.
+     *
+     * @return The music track that currently is playing.
+     */
+    MusicTrack getCurrentMusicTrack();
 }

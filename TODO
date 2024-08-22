@@ -1,19 +1,12 @@
-- Tester feedback:
-  - needs a max size
-  - increase scroll sensitivity by at least 3
-  - preview pause
-  - preview stop when leaving config ui
-  - improve checkmark (pressed down beacon button)
-  - minecraft music doesn't work in built jar (javax.sound.sampled.UnsupportedAudioFileException -> missing dependency again?)
-  - music groups sort alphabetically
-
-
-- Forge support
-
 - Improvements:
   - make menu music work
     - stop music when level turns null (when going into main menu)
-  - after closing the config menu (onAfterConfigSave), reevaluate which songs to play
+  - Real "Preview Music Track" system
+  - remove delete buttons
+  - add "open music folder" button
+  - add refresh button (refreshes all music (custom music), conditions, configs etc.)
+  - after closing the config menu (onAfterConfigSave), reevaluate which songs to play, resume song if possible, else start a new one
+  - Fade in/out
 
 - New Tab: "Combined":
   - add a button or new UI element for users to add custom combined conditions
@@ -22,9 +15,6 @@
 
 - Improve condition list readability:
   - in condition list show the last 5 visited biomes/relevant biome tags (configurable)
-
-- Improve music list readability:
-  - sort groups: Custom > Minecraft (BGM) > Minecraft (Music Disc) > Mod 1 (BGM) > Mod 1 (Music Disc) > Mod 2 (BGM) > ...
 
 - default settings is how minecraft plays their songs:
   1. currentScreen == WinScreen -> CREDITS

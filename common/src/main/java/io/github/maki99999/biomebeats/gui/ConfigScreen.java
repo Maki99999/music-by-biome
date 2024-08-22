@@ -23,6 +23,8 @@ import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
 
 public class ConfigScreen extends Screen implements ConfigChangeListener {
     private static final ResourceLocation BASE_RL = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/base.png");
+    private static final int MAX_WIDTH = 400;
+    private static final int MAX_HEIGHT = 400;
     private static final int SIDES_PADDING = 60;
     private static final int BORDER_PADDING = 4;
     private static final int ELEMENT_HEIGHT = 17;
@@ -55,15 +57,18 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
 
     @Override
     protected void init() {
+        Constants.MUSIC_MANAGER.stop();
         if (initialInitCall) {
             initialInitCall = false;
             initData();
         }
 
         // Update bounds
-        bounds = new Rect(SIDES_PADDING, 0, width - 2 * SIDES_PADDING, height);
-        boundsL = new Rect(bounds.x() + BORDER_PADDING, bounds.y() + BORDER_PADDING, Mth.floor((bounds.w() - BORDER_PADDING * 2) * 0.4f), height - BORDER_PADDING * 2);
-        boundsR = new Rect(boundsL.x2() + BORDER_PADDING, bounds.y() + BORDER_PADDING, bounds.w() - BORDER_PADDING * 2 - boundsL.w() - BORDER_PADDING, height - BORDER_PADDING * 2);
+        int w = Math.min(width - 2 * SIDES_PADDING, MAX_WIDTH);
+        int h = Math.min(height, MAX_HEIGHT);
+        bounds = new Rect(SIDES_PADDING + (width - 2 * SIDES_PADDING - w) / 2, (height - h) / 2, w, h);
+        boundsL = new Rect(bounds.x() + BORDER_PADDING, bounds.y() + BORDER_PADDING, Mth.floor((bounds.w() - BORDER_PADDING * 2) * 0.4f), bounds.h() - BORDER_PADDING * 2);
+        boundsR = new Rect(boundsL.x2() + BORDER_PADDING, bounds.y() + BORDER_PADDING, bounds.w() - BORDER_PADDING * 2 - boundsL.w() - BORDER_PADDING, bounds.h() - BORDER_PADDING * 2);
 
         // Left column
         conditionSearchBox = new EditBox(font, boundsL.x(), boundsL.y(), boundsL.w(), ELEMENT_HEIGHT,
@@ -131,7 +136,9 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     private void addTab(TabType tabType, Component text, int x, int y) {
         if (minecraft == null) return;
 
-        var tab = new TwoStateImageButton(x, y, ImageButton.TAB_LEFT_ACTIVE_UV, ImageButton.TAB_LEFT_INACTIVE_UV,
+        var tab = new TwoStateImageButton(x, y,
+                new ImageButton(x, y, ImageButton.TAB_LEFT_ACTIVE_UV, null, null),
+                new ImageButton(x, y, ImageButton.TAB_LEFT_INACTIVE_UV, null, null),
                 this::onTabSelected, null, text);
         tabs.put(tab, tabType);
         tab.setState(currentTab == tabType);
@@ -190,6 +197,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         super.onClose();
         Constants.CONFIG_IO.removeListener(this);
         Constants.CONFIG_IO.saveConfig(config);
+        Constants.MUSIC_MANAGER.stop();
     }
 
     private void renderContainer(GuiGraphics guiGraphics) {

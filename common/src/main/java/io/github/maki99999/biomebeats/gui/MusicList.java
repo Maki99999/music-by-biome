@@ -104,7 +104,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
     @Override
     protected double scrollRate() {
-        return 9.0;
+        return 30.0;
     }
 
     @Override
@@ -244,9 +244,9 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
         private class Entry extends AbstractWidget {
             private final MusicTrack musicTrack;
             private final WidgetTooltipHolder tooltip = new WidgetTooltipHolder();
-            private final LayeredImageButton previewButton;
-            private final LayeredImageButton editButton;
-            private final LayeredImageButton deleteButton;
+            private final ImageButton previewButton;
+            private final ImageButton editButton;
+            private final ImageButton deleteButton;
             private final TwoStateImageButton checkbox;
 
             public Entry(MusicTrack musicTrack, Rect bounds) {
@@ -255,17 +255,26 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
                 tooltip.set(Tooltip.create(Component.literal(musicTrack.getPathName())));
                 checkbox = new TwoStateImageButton(getX() + 1, getY(),
-                        ImageButton.CHECKBOX_CHECKED_UV, ImageButton.CHECKBOX_EMPTY_UV,
+                        new LayeredImageButton(getX() + 1, getY(), ImageButton.CHECKBOX_CHECKED_UV, null, null),
+                        new LayeredImageButton(getX() + 1, getY(), ImageButton.CHECKBOX_UNCHECKED_UV, null, null),
                         (c, newValue) -> MusicList.this.onMusicTrackToggle.onMusicTrackToggle(musicTrack, newValue),
                         null, null);
 
-                previewButton = new LayeredImageButton(
-                        getX() + width - ImageButton.PREVIEW_UV.w() - 1, getY(),
-                        ImageButton.PREVIEW_UV, (click) -> {
-                    //TODO
-                    Constants.MUSIC_MANAGER.play(musicTrack);
-                    System.out.println("clicked 'preview' on " + getMessage());
-                }, Tooltip.create(Component.translatable("menu.biomebeats.preview")));
+                previewButton = new TwoStateImageButton(
+                        getX() + width - ImageButton.PLAY_UV.w() - 1, getY(),
+                        new LayeredImageButton(getX() + width - ImageButton.PLAY_UV.w() - 1, getY(), ImageButton.PAUSE_UV, null, null),
+                        new LayeredImageButton(getX() + width - ImageButton.PLAY_UV.w() - 1, getY(), ImageButton.PLAY_UV, null, null),
+                        (btn, newValue) -> {
+                            //TODO
+                            if(newValue)
+                                Constants.MUSIC_MANAGER.play(musicTrack);
+                            else
+                                Constants.MUSIC_MANAGER.stop();
+
+                            System.out.println("clicked 'preview' on " + musicTrack.getName());
+                        }, Tooltip.create(Component.translatable("menu.biomebeats.preview")),
+                        null
+                );
                 deleteButton = new LayeredImageButton(
                         getX() + width - previewButton.getWidth() - ImageButton.DELETE_UV.w() - 1, getY(),
                         ImageButton.DELETE_UV, (click) -> {

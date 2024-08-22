@@ -79,7 +79,7 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
 
     @Override
     protected double scrollRate() {
-        return 9.0;
+        return 30d;
     }
 
     @Override

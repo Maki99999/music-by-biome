@@ -12,17 +12,17 @@ import org.jetbrains.annotations.Nullable;
 import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
 
 public class TwoStateImageButton extends ImageButton {
-    private final Rect positiveStateUv;
-    private final Rect negativeStateUv;
+    private final ImageButton positiveButton;
+    private final ImageButton negativeButton;
     private final OnValueChange onValueChange;
     private final Component text;
     private boolean state = false;
 
-    public TwoStateImageButton(int x, int y, Rect positiveStateUv, Rect negativeStateUv, OnValueChange onValueChange,
+    public TwoStateImageButton(int x, int y, ImageButton positiveButton, ImageButton negativeButton, OnValueChange onValueChange,
                                @Nullable Tooltip tooltip, @Nullable Component text) {
-        super(x, y, positiveStateUv, null, tooltip);
-        this.positiveStateUv = positiveStateUv;
-        this.negativeStateUv = negativeStateUv;
+        super(x, y, positiveButton.getUv(), null, tooltip);
+        this.positiveButton = positiveButton;
+        this.negativeButton = negativeButton;
         this.onValueChange = onValueChange;
         this.text = text;
         this.setOnPress(this::onValueChange);
@@ -30,12 +30,21 @@ public class TwoStateImageButton extends ImageButton {
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int mouseYScissorOffset) {
-        setUv(state ? positiveStateUv : negativeStateUv);
-        super.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
+        if(state)
+            positiveButton.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
+        else
+            negativeButton.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
 
         if (text != null)
             drawScrollingString(guiGraphics, Minecraft.getInstance().font, text, new Rect(getX() + 8, getY(),
                     getUv().w() - 12, getUv().h()), 0, BiomeBeatsColor.WHITE.getHex());
+    }
+
+    @Override
+    public void setY(int y) {
+        super.setY(y);
+        positiveButton.setY(y);
+        negativeButton.setY(y);
     }
 
     private void onValueChange(ImageButton btn) {

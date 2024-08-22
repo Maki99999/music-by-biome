@@ -18,13 +18,14 @@ import static io.github.maki99999.biomebeats.util.DrawUtils.drawRect;
 public class ImageButton {
     public static final Rect DELETE_UV = new Rect(0, 60, 16, 16);
     public static final Rect EDIT_UV = new Rect(18, 60, 16, 16);
-    public static final Rect PREVIEW_UV = new Rect(36, 60, 16, 16);
-    public static final Rect ACCORDION_OPEN_UV = new Rect(38, 16, 51, 29);
-    public static final Rect ACCORDION_CLOSE_UV = new Rect(56, 16, 69, 29);
+    public static final Rect PLAY_UV = new Rect(36, 60, 16, 16);
+    public static final Rect PAUSE_UV = new Rect(72, 60, 16, 16);
+    public static final Rect ACCORDION_OPEN_UV = new Rect(0, 80, 16, 16);
+    public static final Rect ACCORDION_CLOSE_UV = new Rect(18, 80, 16, 16);
     public static final Rect TAB_LEFT_ACTIVE_UV = new Rect(0, 36, 60, 20);
     public static final Rect TAB_LEFT_INACTIVE_UV = new Rect(62, 36, 60, 20);
-    public static final Rect CHECKBOX_EMPTY_UV = new Rect(54, 60, 16, 16);
-    public static final Rect CHECKBOX_CHECKED_UV = new Rect(72, 60, 16, 16);
+    public static final Rect CHECKBOX_CHECKED_UV = new Rect(54, 60, 16, 16);
+    public static final Rect CHECKBOX_UNCHECKED_UV = new Rect(54, 16, 16, 16);
 
     protected static final ResourceLocation RL = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/base.png");
 
