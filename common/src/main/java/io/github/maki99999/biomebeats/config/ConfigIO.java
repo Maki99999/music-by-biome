@@ -86,4 +86,8 @@ public class ConfigIO {
 
         notifyAfterConfigChangeListeners(config);
     }
+
+    public void updateConfigListeners() {
+        notifyAfterConfigChangeListeners(config);
+    }
 }

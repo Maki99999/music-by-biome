@@ -126,7 +126,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
                 Map.entry(TabType.BY_BIOME, Constants.CONDITION_MANAGER.getBiomeConditions()),
                 Map.entry(TabType.BY_TAG, Constants.CONDITION_MANAGER.getTagConditions()),
                 Map.entry(TabType.BY_TIME, List.of()),
-                Map.entry(TabType.BY_OTHER, List.of()),
+                Map.entry(TabType.BY_OTHER, Constants.CONDITION_MANAGER.getOtherConditions()),
                 Map.entry(TabType.COMBINED, List.of())
         );
 

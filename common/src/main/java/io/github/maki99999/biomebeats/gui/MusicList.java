@@ -246,7 +246,6 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
             private final WidgetTooltipHolder tooltip = new WidgetTooltipHolder();
             private final ImageButton previewButton;
             private final ImageButton editButton;
-            private final ImageButton deleteButton;
             private final TwoStateImageButton checkbox;
 
             public Entry(MusicTrack musicTrack, Rect bounds) {
@@ -275,14 +274,8 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                         }, Tooltip.create(Component.translatable("menu.biomebeats.preview")),
                         null
                 );
-                deleteButton = new LayeredImageButton(
-                        getX() + width - previewButton.getWidth() - ImageButton.DELETE_UV.w() - 1, getY(),
-                        ImageButton.DELETE_UV, (click) -> {
-                    //TODO
-                    System.out.println("clicked 'delete' on " + getMessage());
-                }, Tooltip.create(Component.translatable("menu.biomebeats.delete")));
                 editButton = new LayeredImageButton(
-                        getX() + width - previewButton.getWidth() - deleteButton.getWidth() - ImageButton.EDIT_UV.w() - 1, getY(),
+                        getX() + width - previewButton.getWidth() - ImageButton.EDIT_UV.w() - 1, getY(),
                         ImageButton.EDIT_UV, (click) -> {
                     //TODO
                     System.out.println("clicked 'edit' on " + getMessage());
@@ -302,7 +295,6 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                         false, new ScreenRectangle(textRect.x(), textRect.y(), textRect.w(), textRect.h()));
 
                 checkbox.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
-                deleteButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
                 editButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
                 previewButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
             }
@@ -319,7 +311,6 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
             public void setY(int y) {
                 super.setY(y);
                 checkbox.setY(y);
-                deleteButton.setY(y);
                 editButton.setY(y);
                 previewButton.setY(y);
             }
@@ -330,7 +321,6 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
             @Override
             public boolean mouseClicked(double x, double y, int button) {
                 return checkbox.mouseClicked(x, y, button)
-                        || deleteButton.mouseClicked(x, y, button)
                         || editButton.mouseClicked(x, y, button)
                         || previewButton.mouseClicked(x, y, button);
             }

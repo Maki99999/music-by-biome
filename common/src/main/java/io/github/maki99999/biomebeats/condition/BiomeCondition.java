@@ -1,5 +1,6 @@
 package io.github.maki99999.biomebeats.condition;
 
+import io.github.maki99999.biomebeats.util.BiomeChangeListener;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
@@ -12,8 +13,8 @@ import static io.github.maki99999.biomebeats.util.StringUtils.formatToTitleCase;
 public class BiomeCondition extends Condition implements BiomeChangeListener {
     private final ResourceLocation biomeRL;
 
-    public BiomeCondition(ResourceLocation biomeRL, int priority) {
-        super(formatToTitleCase(biomeRL), priority);
+    public BiomeCondition(ResourceLocation biomeRL) {
+        super(formatToTitleCase(biomeRL));
         this.biomeRL = biomeRL;
     }
 
@@ -25,7 +26,7 @@ public class BiomeCondition extends Condition implements BiomeChangeListener {
     public static Collection<BiomeCondition> toConditions(Collection<ResourceLocation> biomes, ConditionChangeListener listener) {
         return biomes
                 .stream()
-                .map(b -> new BiomeCondition(b, 0))
+                .map(BiomeCondition::new)
                 .peek(c -> c.addListener(listener))
                 .sorted(Comparator.comparing(BiomeCondition::getName))
                 .toList();

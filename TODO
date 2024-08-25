@@ -1,20 +1,20 @@
-- Improvements:
-  - make menu music work
-    - stop music when level turns null (when going into main menu)
-  - Real "Preview Music Track" system
-  - remove delete buttons
-  - add "open music folder" button
-  - add refresh button (refreshes all music (custom music), conditions, configs etc.)
-  - after closing the config menu (onAfterConfigSave), reevaluate which songs to play, resume song if possible, else start a new one
-  - Fade in/out
-
+- Real "Preview Music Track" system
+- remove delete buttons
+- add "open music folder" button
+- add refresh button (refreshes all music (custom music), conditions, configs etc.)
+- after closing the config menu (onAfterConfigSave), reevaluate which songs to play, resume song if possible, else start a new one
+- fix: some tags are there multiple times
+- Fade in/out
+- music group collapse
+- search boxes
 - New Tab: "Combined":
   - add a button or new UI element for users to add custom combined conditions
   - user can choose a set of conditions from all non-custom conditions
   - all sub conditions have to be active at the same time for the custom condition to be true
-
-- Improve condition list readability:
-  - in condition list show the last 5 visited biomes/relevant biome tags (configurable)
+- in condition list show the last 5 visited biomes/relevant biome tags (configurable)
+- tab "all" with all conditions?
+- Scrolling in right column should reset after selecting something in the right column and after selecting another tab
+- Scrolling in left column should reset after selecting another tab
 
 - default settings is how minecraft plays their songs:
   1. currentScreen == WinScreen -> CREDITS

@@ -9,9 +9,8 @@ public abstract class Condition {
     private boolean met = false;
     private final Collection<ConditionChangeListener> listeners = new HashSet<>();
 
-    public Condition(String name, int priority) {
+    public Condition(String name) {
         this.name = name;
-        this.priority = priority;
     }
 
     public String getName() {

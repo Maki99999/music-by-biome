@@ -1,5 +1,6 @@
 package io.github.maki99999.biomebeats.condition;
 
+import io.github.maki99999.biomebeats.util.BiomeChangeListener;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -16,8 +17,8 @@ public class TagCondition extends Condition implements BiomeChangeListener {
     private final Collection<TagKey<Biome>> biomeTagKeys;
     private final String id;
 
-    public TagCondition(Collection<TagKey<Biome>> biomeTagKeys, int priority) {
-        super(formatToTitleCase(biomeTagKeys.stream().findAny().map(TagKey::location).orElseThrow()), priority);
+    public TagCondition(Collection<TagKey<Biome>> biomeTagKeys) {
+        super(formatToTitleCase(biomeTagKeys.stream().findAny().map(TagKey::location).orElseThrow()));
         this.biomeTagKeys = biomeTagKeys;
         this.id = "tag:" + biomeTagKeys.stream().map(TagKey::location).map(ResourceLocation::toString)
                 .sorted().collect(Collectors.joining(","));
@@ -40,7 +41,7 @@ public class TagCondition extends Condition implements BiomeChangeListener {
         return tagKeysByName
                 .values()
                 .stream()
-                .map(tagKeys -> new TagCondition(tagKeys, 0))
+                .map(TagCondition::new)
                 .peek(condition -> condition.addListener(listener))
                 .sorted(Comparator.comparing(TagCondition::getName))
                 .toList();

@@ -179,8 +179,6 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
 
     private void findMusicTracksAndGroups() {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.level == null)
-            return;
 
         Map<String, Map<MusicGroup.Type, Collection<ResourceLocation>>> musicByTypeAndNamespace = new TreeMap<>();
         musicGroups = new ArrayList<>();
@@ -241,11 +239,12 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
                             LinkedHashMap::new
                     ));
 
+            var random = RandomSource.create(); // needed to get the sounds
             for (var musicByTypeEntry : musicByTypeSorted.entrySet()) {
                 Collection<ResourceLocation> resourceLocations = musicByTypeEntry.getValue().stream()
                         .map(resourceLocation -> (MixinWeighedSoundEvents) minecraft.getSoundManager().getSoundEvent(resourceLocation)).filter(Objects::nonNull)
                         .flatMap(mixinWeighedSoundEvents -> mixinWeighedSoundEvents.list().stream())
-                        .map(weightedSound -> weightedSound.getSound(minecraft.level.getRandom()))
+                        .map(weightedSound -> weightedSound.getSound(random))
                         .map(Sound::getLocation)
                         .distinct()
                         .sorted(Comparator.comparing(ResourceLocation::toString))
