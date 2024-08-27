@@ -174,7 +174,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
         public EntryGroup(int x, int y, int w, Component message, MusicGroup musicGroup) {
             super(x, y, w, 0, message);
             this.musicGroup = musicGroup;
-            toggleButton = new ImageButton(x + w - 24, y + 1, ImageButton.ACCORDION_OPEN_UV, p -> {
+            toggleButton = new ImageButton(x + w - 24, y + 1, BaseTextureUv.ACCORDION_OPEN_UV, p -> {
                 //TODO
                 System.out.println("pressed category " + musicGroup.getName());
             }, null);
@@ -254,15 +254,15 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
                 tooltip.set(Tooltip.create(Component.literal(musicTrack.getPathName())));
                 checkbox = new TwoStateImageButton(getX() + 1, getY(),
-                        new LayeredImageButton(getX() + 1, getY(), ImageButton.CHECKBOX_CHECKED_UV, null, null),
-                        new LayeredImageButton(getX() + 1, getY(), ImageButton.CHECKBOX_UNCHECKED_UV, null, null),
+                        new LayeredImageButton(getX() + 1, getY(), BaseTextureUv.CHECKBOX_CHECKED_UV, null, null),
+                        new LayeredImageButton(getX() + 1, getY(), BaseTextureUv.BUTTON_BASE_INVERTED_UV, null, null),
                         (c, newValue) -> MusicList.this.onMusicTrackToggle.onMusicTrackToggle(musicTrack, newValue),
                         null, null);
 
                 previewButton = new TwoStateImageButton(
-                        getX() + width - ImageButton.PLAY_UV.w() - 1, getY(),
-                        new LayeredImageButton(getX() + width - ImageButton.PLAY_UV.w() - 1, getY(), ImageButton.PAUSE_UV, null, null),
-                        new LayeredImageButton(getX() + width - ImageButton.PLAY_UV.w() - 1, getY(), ImageButton.PLAY_UV, null, null),
+                        getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(),
+                        new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(), BaseTextureUv.PAUSE_UV, null, null),
+                        new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(), BaseTextureUv.PLAY_UV, null, null),
                         (btn, newValue) -> {
                             //TODO
                             if(newValue)
@@ -275,8 +275,8 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                         null
                 );
                 editButton = new LayeredImageButton(
-                        getX() + width - previewButton.getWidth() - ImageButton.EDIT_UV.w() - 1, getY(),
-                        ImageButton.EDIT_UV, (click) -> {
+                        getX() + width - previewButton.getWidth() - BaseTextureUv.EDIT_UV.w() - 1, getY(),
+                        BaseTextureUv.EDIT_UV, (click) -> {
                     //TODO
                     System.out.println("clicked 'edit' on " + getMessage());
                 }, Tooltip.create(Component.translatable("menu.biomebeats.edit")));

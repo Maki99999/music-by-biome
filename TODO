@@ -1,5 +1,4 @@
 - Real "Preview Music Track" system
-- remove delete buttons
 - add "open music folder" button
 - add refresh button (refreshes all music (custom music), conditions, configs etc.)
 - after closing the config menu (onAfterConfigSave), reevaluate which songs to play, resume song if possible, else start a new one
@@ -19,10 +18,9 @@
 - default settings is how minecraft plays their songs:
   1. currentScreen == WinScreen -> CREDITS
   2. no player (not in game) -> MENU
-  3. in end ->
-    a. gui.getBossOverlay().shouldPlayMusic() -> END_BOSS
-    b. else -> END
-  4. is under water && biome has tag PLAYS_UNDERWATER_MUSIC -> UNDER_WATER
-  5. not in nether && this.player.getAbilities().instabuild and .mayfly -> CREATIVE
-  6. getBackgroundMusic of biome the player is in
-  7. GAME
+  3. in end && gui.getBossOverlay().shouldPlayMusic() -> END_BOSS
+  4. in end -> END
+  5. is under water && biome has tag PLAYS_UNDERWATER_MUSIC -> UNDER_WATER
+  6. not in nether && this.player.getAbilities().instabuild and .mayfly -> CREATIVE
+  7. getBackgroundMusic of biome the player is in
+  8. GAME

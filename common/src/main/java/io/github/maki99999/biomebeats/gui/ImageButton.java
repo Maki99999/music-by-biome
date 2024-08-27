@@ -1,6 +1,5 @@
 package io.github.maki99999.biomebeats.gui;
 
-import io.github.maki99999.biomebeats.Constants;
 import io.github.maki99999.biomebeats.util.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -8,27 +7,14 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetTooltipHolder;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
+import static io.github.maki99999.biomebeats.gui.BaseTextureUv.RL;
 import static io.github.maki99999.biomebeats.util.DrawUtils.drawRect;
 
 public class ImageButton {
-    public static final Rect DELETE_UV = new Rect(0, 60, 16, 16);
-    public static final Rect EDIT_UV = new Rect(18, 60, 16, 16);
-    public static final Rect PLAY_UV = new Rect(36, 60, 16, 16);
-    public static final Rect PAUSE_UV = new Rect(72, 60, 16, 16);
-    public static final Rect ACCORDION_OPEN_UV = new Rect(0, 80, 16, 16);
-    public static final Rect ACCORDION_CLOSE_UV = new Rect(18, 80, 16, 16);
-    public static final Rect TAB_LEFT_ACTIVE_UV = new Rect(0, 36, 60, 20);
-    public static final Rect TAB_LEFT_INACTIVE_UV = new Rect(62, 36, 60, 20);
-    public static final Rect CHECKBOX_CHECKED_UV = new Rect(54, 60, 16, 16);
-    public static final Rect CHECKBOX_UNCHECKED_UV = new Rect(54, 16, 16, 16);
-
-    protected static final ResourceLocation RL = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/base.png");
-
     private final WidgetTooltipHolder tooltip = new WidgetTooltipHolder();
     private final int x;
 

@@ -12,7 +12,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +21,6 @@ import static io.github.maki99999.biomebeats.util.DrawUtils.drawRect;
 import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
 
 public class ConfigScreen extends Screen implements ConfigChangeListener {
-    private static final ResourceLocation BASE_RL = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/base.png");
     private static final int MAX_WIDTH = 400;
     private static final int MAX_HEIGHT = 400;
     private static final int SIDES_PADDING = 60;
@@ -137,8 +135,8 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         if (minecraft == null) return;
 
         var tab = new TwoStateImageButton(x, y,
-                new ImageButton(x, y, ImageButton.TAB_LEFT_ACTIVE_UV, null, null),
-                new ImageButton(x, y, ImageButton.TAB_LEFT_INACTIVE_UV, null, null),
+                new ImageButton(x, y, BaseTextureUv.TAB_LEFT_ACTIVE_UV, null, null),
+                new ImageButton(x, y, BaseTextureUv.TAB_LEFT_INACTIVE_UV, null, null),
                 this::onTabSelected, null, text);
         tabs.put(tab, tabType);
         tab.setState(currentTab == tabType);
@@ -202,30 +200,36 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
 
     private void renderContainer(GuiGraphics guiGraphics) {
         // Corners
-        drawRect(BASE_RL, guiGraphics, bounds.x(), bounds.x() + 4, bounds.y(), bounds.y() + 4,
-                0, 4, 0, 4);
-        drawRect(BASE_RL, guiGraphics, bounds.x2() - 4, bounds.x2(), bounds.y(), bounds.y() + 4,
-                8, 12, 0, 4);
-        drawRect(BASE_RL, guiGraphics, bounds.x(), bounds.x() + 4, bounds.y2() - 4, bounds.y2(),
-                0, 4, 8, 12);
-        drawRect(BASE_RL, guiGraphics, bounds.x2() - 4, bounds.x2(), bounds.y2() - 4, bounds.y2(),
-                8, 12, 8, 12);
+        drawRect(BaseTextureUv.RL, guiGraphics, new Rect(bounds.x(), bounds.y(), 4, 4),
+                BaseTextureUv.CONTAINER_UV_TL);
+        drawRect(BaseTextureUv.RL, guiGraphics, new Rect(bounds.x2() - 4, bounds.y(), 4, 4),
+                BaseTextureUv.CONTAINER_UV_TR);
+        drawRect(BaseTextureUv.RL, guiGraphics, new Rect(bounds.x(), bounds.y2() - 4, 4, 4),
+                BaseTextureUv.CONTAINER_UV_BL);
+        drawRect(BaseTextureUv.RL, guiGraphics, new Rect(bounds.x2() - 4, bounds.y2() - 4, 4, 4),
+                BaseTextureUv.CONTAINER_UV_BR);
 
         // Sides
-        drawRect(BASE_RL, guiGraphics, bounds.x() + 4, bounds.x2() - 4, bounds.y(), bounds.y() + 4,
-                4, 8, 0, 4);
-        drawRect(BASE_RL, guiGraphics, bounds.x() + 4, bounds.x2() - 4, bounds.y2() - 4, bounds.y2(),
-                4, 8, 8, 12);
-        drawRect(BASE_RL, guiGraphics, bounds.x(), bounds.x() + 4, bounds.y() + 4, bounds.y2() - 4,
-                0, 4, 4, 8);
-        drawRect(BASE_RL, guiGraphics, bounds.x2() - 4, bounds.x2(), bounds.y() + 4, bounds.y2() - 4,
-                8, 12, 4, 8);
+        drawRect(BaseTextureUv.RL, guiGraphics,
+                Rect.fromCoordinates(bounds.x() + 4, bounds.y(), bounds.x2() - 4, bounds.y() + 4),
+                BaseTextureUv.CONTAINER_UV_T);
+        drawRect(BaseTextureUv.RL, guiGraphics,
+                Rect.fromCoordinates(bounds.x() + 4, bounds.y2() - 4, bounds.x2() - 4, bounds.y2()),
+                BaseTextureUv.CONTAINER_UV_B);
+        drawRect(BaseTextureUv.RL, guiGraphics,
+                Rect.fromCoordinates(bounds.x(), bounds.y() + 4, bounds.x() + 4, bounds.y2() - 4),
+                BaseTextureUv.CONTAINER_UV_L);
+        drawRect(BaseTextureUv.RL, guiGraphics,
+                Rect.fromCoordinates(bounds.x2() - 4, bounds.y() + 4, bounds.x2(), bounds.y2() - 4),
+                BaseTextureUv.CONTAINER_UV_R);
 
         // Inside
-        drawRect(BASE_RL, guiGraphics, bounds.x() + 4, bounds.x2() - 4, bounds.y() + 4, bounds.y2() - 4,
-                4, 8, 4, 8);
-        drawRect(BASE_RL, guiGraphics, boundsL.x2() + 1, boundsR.x() - 1, bounds.y() + 3, bounds.y2() - 3,
-                36, 39, 0, 3);
+        drawRect(BaseTextureUv.RL, guiGraphics,
+                Rect.fromCoordinates(bounds.x() + 4, bounds.y() + 4, bounds.x2() - 4, bounds.y2() - 4),
+                BaseTextureUv.CONTAINER_UV_C);
+        drawRect(BaseTextureUv.RL, guiGraphics,
+                Rect.fromCoordinates(boundsL.x2() + 1, bounds.y() + 3, boundsR.x() - 1, bounds.y2() - 3),
+                Rect.fromCoordinates(36, 0, 39, 3));
     }
 
     private void setRightColumnVisibility(boolean visible) {

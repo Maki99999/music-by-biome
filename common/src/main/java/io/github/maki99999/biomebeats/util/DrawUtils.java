@@ -12,12 +12,6 @@ import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 
 public class DrawUtils {
-    public static void drawRect(ResourceLocation resourceLocation, GuiGraphics guiGraphics,
-                                int x1, int x2, int y1, int y2, int u1, int u2, int v1, int v2) {
-        drawRect(resourceLocation, guiGraphics, Rect.fromCoordinates(x1, y1, x2, y2),
-                Rect.fromCoordinates(u1, v1, u2, v2));
-    }
-
     public static void drawRect(ResourceLocation resourceLocation, GuiGraphics guiGraphics, Rect pos, Rect uv) {
         Matrix4f lastPose = guiGraphics.pose().last().pose();
         RenderSystem.setShaderTexture(0, resourceLocation);
