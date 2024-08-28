@@ -52,6 +52,11 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
     }
 
     @Override
+    public void reloadMusicTracksAndGroups() {
+        findMusicTracksAndGroups();
+    }
+
+    @Override
     public void close() {
         if (javaStreamPlayer != null)
             javaStreamPlayer.close();
@@ -72,8 +77,8 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
     @Override
     public void play(MusicTrack musicTrack) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (musicTrack instanceof ResourceLocationMusicTrack resourceLocationMusicTrack) {
-            var fileResourceLocation = Sound.SOUND_LISTER.idToFile(resourceLocationMusicTrack.getResourceLocation());
+        if (musicTrack instanceof ResourceLocationMusicTrack rlMusicTrack) {
+            var fileResourceLocation = Sound.SOUND_LISTER.idToFile(rlMusicTrack.getResourceLocation());
             Optional<Resource> optionalResource = minecraft.getResourceManager().getResource(fileResourceLocation);
 
             if (optionalResource.isPresent()) {
@@ -85,7 +90,7 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
                     }
                 });
             } else {
-                Constants.LOG.error("Resource not found: {}", resourceLocationMusicTrack);
+                Constants.LOG.error("Resource not found: {}", rlMusicTrack);
             }
         } else if (musicTrack instanceof FileMusicTrack fileMusicTrack) {
             executorService.submit(() -> javaStreamPlayer.stopOpenPlay(fileMusicTrack.getFile()));
@@ -138,8 +143,8 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
                          final Map<String, Object> properties) {}
 
     @Override
-    public void statusUpdated(final StreamPlayerEvent streamPlayerEvent) {
-        final Status status = streamPlayerEvent.getPlayerStatus();
+    public void statusUpdated(final StreamPlayerEvent event) {
+        final Status status = event.getPlayerStatus();
         Constants.LOG.debug("New music player status: {}", status.name());
         if (status == Status.EOM) {
             playNext();
@@ -158,18 +163,18 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
             return;
         }
 
-        Collection<MusicTrack> musicTracksWithoutRecent = currentMusicTracks
+        Collection<MusicTrack> nonRecentMusicTracks = currentMusicTracks
                 .stream()
                 .filter(recentMusicTracks::contains)
                 .toList();
 
-        if (musicTracksWithoutRecent.isEmpty()) {
-            musicTracksWithoutRecent = currentMusicTracks;
+        if (nonRecentMusicTracks.isEmpty()) {
+            nonRecentMusicTracks = currentMusicTracks;
         }
 
-        currentMusicTrack = musicTracksWithoutRecent
+        currentMusicTrack = nonRecentMusicTracks
                 .stream()
-                .skip(rdm.nextInt(0, musicTracksWithoutRecent.size()))
+                .skip(rdm.nextInt(0, nonRecentMusicTracks.size()))
                 .findAny()
                 .orElseThrow();
 
@@ -180,7 +185,7 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
     private void findMusicTracksAndGroups() {
         Minecraft minecraft = Minecraft.getInstance();
 
-        Map<String, Map<MusicGroup.Type, Collection<ResourceLocation>>> musicByTypeAndNamespace = new TreeMap<>();
+        Map<String, Map<MusicGroup.Type, Collection<ResourceLocation>>> music = new TreeMap<>();
         musicGroups = new ArrayList<>();
         musicTracks = new HashSet<>();
 
@@ -205,45 +210,45 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
 
         for (var soundEvent : BuiltInRegistries.SOUND_EVENT.keySet()) {
             if (soundEvent.getPath().contains("music.")) {
-                musicByTypeAndNamespace
-                        .computeIfAbsent(soundEvent.getNamespace(), k -> new HashMap<>())
+                music.computeIfAbsent(soundEvent.getNamespace(), k -> new HashMap<>())
                         .computeIfAbsent(MusicGroup.Type.BGM, k -> new ArrayList<>())
                         .add(soundEvent);
             } else if (soundEvent.getPath().contains("music_disc.")) {
-                musicByTypeAndNamespace
-                        .computeIfAbsent(soundEvent.getNamespace(), k -> new HashMap<>())
+                music.computeIfAbsent(soundEvent.getNamespace(), k -> new HashMap<>())
                         .computeIfAbsent(MusicGroup.Type.MUSIC_DISC, k -> new ArrayList<>())
                         .add(soundEvent);
             }
         }
 
-        List<Map.Entry<String, Map<MusicGroup.Type, Collection<ResourceLocation>>>> musicByTypeAndNamespaceSorted = musicByTypeAndNamespace.entrySet().stream()
-                .sorted((e1, e2) -> {
-                    if (e1.getKey().equals("minecraft")) return -1;
-                    if (e2.getKey().equals("minecraft")) return 1;
-                    return e1.getKey().compareTo(e2.getKey());
-                })
-                .toList();
+        List<Map.Entry<String, Map<MusicGroup.Type, Collection<ResourceLocation>>>> musicSorted =
+                music.entrySet().stream()
+                        .sorted((e1, e2) -> {
+                            if (e1.getKey().equals("minecraft")) return -1;
+                            if (e2.getKey().equals("minecraft")) return 1;
+                            return e1.getKey().compareTo(e2.getKey());
+                        })
+                        .toList();
 
-        for (var musicByTypeAndNamespaceEntry : musicByTypeAndNamespaceSorted) {
-            Map<MusicGroup.Type, Collection<ResourceLocation>> musicByTypeSorted = musicByTypeAndNamespaceEntry.getValue().entrySet().stream()
-                    .sorted((entry1, entry2) -> {
-                        if (entry1.getKey() == MusicGroup.Type.BGM) return -1;
-                        if (entry2.getKey() == MusicGroup.Type.BGM) return 1;
-                        return entry1.getKey().compareTo(entry2.getKey());
-                    })
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            Map.Entry::getValue,
-                            (e1, e2) -> e1,
-                            LinkedHashMap::new
-                    ));
+        for (var musicEntry : musicSorted) {
+            Map<MusicGroup.Type, Collection<ResourceLocation>> musicByTypeSorted =
+                    musicEntry.getValue().entrySet().stream()
+                            .sorted((entry1, entry2) -> {
+                                if (entry1.getKey() == MusicGroup.Type.BGM) return -1;
+                                if (entry2.getKey() == MusicGroup.Type.BGM) return 1;
+                                return entry1.getKey().compareTo(entry2.getKey());
+                            })
+                            .collect(Collectors.toMap(
+                                    Map.Entry::getKey,
+                                    Map.Entry::getValue,
+                                    (e1, e2) -> e1,
+                                    LinkedHashMap::new
+                            ));
 
             var random = RandomSource.create(); // needed to get the sounds
             for (var musicByTypeEntry : musicByTypeSorted.entrySet()) {
                 Collection<ResourceLocation> resourceLocations = musicByTypeEntry.getValue().stream()
                         .map(resourceLocation -> (MixinWeighedSoundEvents) minecraft.getSoundManager().getSoundEvent(resourceLocation)).filter(Objects::nonNull)
-                        .flatMap(mixinWeighedSoundEvents -> mixinWeighedSoundEvents.list().stream())
+                        .flatMap(soundEvents -> soundEvents.list().stream())
                         .map(weightedSound -> weightedSound.getSound(random))
                         .map(Sound::getLocation)
                         .distinct()
@@ -257,7 +262,7 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
                         .toList();
 
                 musicGroups.add(new MusicGroup(
-                        musicByTypeAndNamespaceEntry.getKey(),
+                        musicEntry.getKey(),
                         musicByTypeEntry.getKey(),
                         groupMusicTracks
                 ));

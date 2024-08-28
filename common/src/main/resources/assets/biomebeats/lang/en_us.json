@@ -15,5 +15,7 @@
   "menu.biomebeats.by_tag" : "By Tag",
   "menu.biomebeats.by_time" :  "By Time",
   "menu.biomebeats.by_other" : "By Other",
-  "menu.biomebeats.combined" :  "Combined"
+  "menu.biomebeats.combined" :  "Combined",
+  "menu.biomebeats.open_music_folder": "Open music folder",
+  "menu.biomebeats.reload": "Reload"
 }

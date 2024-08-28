@@ -26,7 +26,6 @@ import java.util.Set;
 public class BiomeBeatsCommon {
     private static final Logger DEBUG_LOGGER = LoggerFactory.getLogger(Constants.LOG.getName() + "Debug");
     private static boolean initAfterSetupDone = false;
-    private static boolean firstTickWithLevel = true;
     private static final Set<MenuChangeListener> menuChangeListeners = new HashSet<>();
 
     public static void init() {
@@ -65,11 +64,6 @@ public class BiomeBeatsCommon {
     }
 
     public static void tick() {
-        if (firstTickWithLevel && Minecraft.getInstance().level != null) {
-            firstTickWithLevel = false;
-            initWithLevel();
-        }
-
         Constants.CONDITION_MANAGER.tick();
 
         while (Constants.CONFIG_KEY_MAPPING.consumeClick()) {
@@ -82,11 +76,6 @@ public class BiomeBeatsCommon {
         Constants.CONDITION_MANAGER.init();
         Constants.CONDITION_MUSIC_MANAGER.init();
         Constants.CONFIG_IO.loadConfig();
-    }
-
-    public static void initWithLevel() {
-        Constants.CONDITION_MANAGER.initWithLevel();
-        Constants.CONFIG_IO.updateConfigListeners();
     }
 
     public static void close() {
@@ -113,5 +102,11 @@ public class BiomeBeatsCommon {
             BiomeBeatsCommon.initAfterSetup();
             notifyMenuChangeListeners(screen, player);
         }
+    }
+
+    public static void reload() {
+        Constants.CONFIG_IO.loadConfig();
+        Constants.MUSIC_MANAGER.reloadMusicTracksAndGroups();
+        Constants.CONDITION_MANAGER.resetConditions();
     }
 }

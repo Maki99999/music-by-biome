@@ -73,4 +73,9 @@ public interface IMusicManager {
      * @return The music track that currently is playing.
      */
     MusicTrack getCurrentMusicTrack();
+
+    /**
+     * Resets the music manager.
+     */
+    void reloadMusicTracksAndGroups();
 }

@@ -1,6 +1,5 @@
 - Real "Preview Music Track" system
-- add "open music folder" button
-- add refresh button (refreshes all music (custom music), conditions, configs etc.)
+- Custom Music: dont show files with unsupported file endings, hide file ending in nice string
 - after closing the config menu (onAfterConfigSave), reevaluate which songs to play, resume song if possible, else start a new one
 - fix: some tags are there multiple times
 - Fade in/out

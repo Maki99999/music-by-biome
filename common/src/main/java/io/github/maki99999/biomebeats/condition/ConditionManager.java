@@ -9,7 +9,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,12 +25,13 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
     private final Collection<BiomeChangeListener> biomeChangeListener = new HashSet<>();
     private final Collection<ActiveConditionsListener> activeConditionsListener = new HashSet<>();
     private final Collection<Condition> activeConditions = new HashSet<>();
+    private final Collection<Condition> conditions = new HashSet<>();
 
-    private Collection<Condition> conditions;
     private Collection<BiomeCondition> biomeConditions;
     private Collection<TagCondition> tagConditions;
     private Collection<Condition> otherConditions;
 
+    private boolean firstTickWithLevel = true;
     private Holder<Biome> lastBiome;
 
     public Collection<? extends Condition> getTagConditions() {
@@ -43,41 +46,57 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
         return otherConditions;
     }
 
-
     public void init() {
         Constants.CONFIG_IO.addListener(this);
+        initOtherConditions();
+    }
 
-        conditions = new HashSet<>();
-
+    private void initOtherConditions() {
         otherConditions = new ArrayList<>();
         otherConditions.add(new MenuCondition("MainMenu", "Main Menu", null));
         otherConditions.forEach(condition -> condition.addListener(this));
         conditions.addAll(otherConditions);
     }
 
-    public void initWithLevel() {
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.level == null) {
-            Constants.LOG.error("minecraft.level is null");
-            return;
-        }
-
-        biomeConditions = BiomeCondition.toConditions(getBiomeRLs(minecraft.level), this);
+    private void initBiomeConditions(@NotNull Level level) {
+        biomeConditions = BiomeCondition.toConditions(getBiomeRLs(level), this);
         biomeChangeListener.addAll(biomeConditions);
         conditions.addAll(biomeConditions);
 
-        tagConditions = TagCondition.toFilteredConditions(getBiomeTagKeys(minecraft.level), this);
+        tagConditions = TagCondition.toFilteredConditions(getBiomeTagKeys(level), this);
         biomeChangeListener.addAll(tagConditions);
         conditions.addAll(tagConditions);
     }
 
-    public void tick() {
-        Minecraft minecraft = Minecraft.getInstance();
+    public void resetConditions() {
+        biomeConditions = null;
+        tagConditions = null;
 
-        checkBiomeChange(minecraft.level, minecraft.player);
+        biomeChangeListener.clear();
+        conditions.clear();
+        activeConditions.clear();
+
+        initOtherConditions();
+        firstTickWithLevel = true;
+        tick();
+
+        for (ActiveConditionsListener listener : activeConditionsListener) {
+            listener.onActiveConditionsChanged(activeConditions);
+        }
     }
 
-    private void checkBiomeChange(ClientLevel level, LocalPlayer player) {
+    public void tick() {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (firstTickWithLevel && minecraft.level != null) {
+            firstTickWithLevel = false;
+            initBiomeConditions(minecraft.level);
+            Constants.CONFIG_IO.updateConfigListeners();
+        }
+
+        detectBiomeChange(minecraft.level, minecraft.player);
+    }
+
+    private void detectBiomeChange(ClientLevel level, LocalPlayer player) {
         if (level != null && player != null) {
             var currentBiome = level.getBiome(player.blockPosition());
             if (lastBiome != currentBiome) {
@@ -127,11 +146,6 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
 
     @Override
     public void afterConfigChange(MainConfig config) {
-        if (conditions == null) {
-            Constants.LOG.error("Config loaded before conditions initialized!");
-            return;
-        }
-
         Map<String, ConditionConfig> conditionConfigById = config.getConditionConfigById();
         for (Condition condition : conditions) {
             if (conditionConfigById.containsKey(condition.getId())) {
