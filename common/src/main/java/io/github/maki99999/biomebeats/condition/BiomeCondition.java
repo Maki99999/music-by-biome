@@ -1,6 +1,6 @@
 package io.github.maki99999.biomebeats.condition;
 
-import io.github.maki99999.biomebeats.util.BiomeChangeListener;
+import io.github.maki99999.biomebeats.biome.BiomeChangeListener;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
@@ -16,6 +16,10 @@ public class BiomeCondition extends Condition implements BiomeChangeListener {
     public BiomeCondition(ResourceLocation biomeRL) {
         super(formatToTitleCase(biomeRL));
         this.biomeRL = biomeRL;
+    }
+
+    public ResourceLocation getBiomeRL() {
+        return biomeRL;
     }
 
     @Override

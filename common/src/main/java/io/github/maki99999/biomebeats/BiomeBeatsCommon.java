@@ -65,6 +65,7 @@ public class BiomeBeatsCommon {
 
     public static void tick() {
         Constants.CONDITION_MANAGER.tick();
+        Constants.BIOME_MANAGER.tick();
 
         while (Constants.CONFIG_KEY_MAPPING.consumeClick()) {
             Minecraft.getInstance().setScreen(new ConfigScreen());
@@ -106,6 +107,7 @@ public class BiomeBeatsCommon {
 
     public static void reload() {
         Constants.CONFIG_IO.loadConfig();
+        Constants.BIOME_MANAGER.clearBiomeChangeListeners();
         Constants.MUSIC_MANAGER.reloadMusicTracksAndGroups();
         Constants.CONDITION_MANAGER.resetConditions();
     }

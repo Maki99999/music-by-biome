@@ -4,13 +4,8 @@ import io.github.maki99999.biomebeats.Constants;
 import io.github.maki99999.biomebeats.config.ConditionConfig;
 import io.github.maki99999.biomebeats.config.ConfigChangeListener;
 import io.github.maki99999.biomebeats.config.MainConfig;
-import io.github.maki99999.biomebeats.util.BiomeChangeListener;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.Holder;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -22,7 +17,6 @@ import static io.github.maki99999.biomebeats.util.BiomeUtils.getBiomeRLs;
 import static io.github.maki99999.biomebeats.util.BiomeUtils.getBiomeTagKeys;
 
 public class ConditionManager implements ConditionChangeListener, ConfigChangeListener {
-    private final Collection<BiomeChangeListener> biomeChangeListener = new HashSet<>();
     private final Collection<ActiveConditionsListener> activeConditionsListener = new HashSet<>();
     private final Collection<Condition> activeConditions = new HashSet<>();
     private final Collection<Condition> conditions = new HashSet<>();
@@ -32,7 +26,6 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
     private Collection<Condition> otherConditions;
 
     private boolean firstTickWithLevel = true;
-    private Holder<Biome> lastBiome;
 
     public Collection<? extends Condition> getTagConditions() {
         return tagConditions;
@@ -60,11 +53,11 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
 
     private void initBiomeConditions(@NotNull Level level) {
         biomeConditions = BiomeCondition.toConditions(getBiomeRLs(level), this);
-        biomeChangeListener.addAll(biomeConditions);
+        Constants.BIOME_MANAGER.addBiomeChangeListeners(biomeConditions);
         conditions.addAll(biomeConditions);
 
         tagConditions = TagCondition.toFilteredConditions(getBiomeTagKeys(level), this);
-        biomeChangeListener.addAll(tagConditions);
+        Constants.BIOME_MANAGER.addBiomeChangeListeners(tagConditions);
         conditions.addAll(tagConditions);
     }
 
@@ -72,7 +65,6 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
         biomeConditions = null;
         tagConditions = null;
 
-        biomeChangeListener.clear();
         conditions.clear();
         activeConditions.clear();
 
@@ -91,25 +83,6 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
             firstTickWithLevel = false;
             initBiomeConditions(minecraft.level);
             Constants.CONFIG_IO.updateConfigListeners();
-        }
-
-        detectBiomeChange(minecraft.level, minecraft.player);
-    }
-
-    private void detectBiomeChange(ClientLevel level, LocalPlayer player) {
-        if (level != null && player != null) {
-            var currentBiome = level.getBiome(player.blockPosition());
-            if (lastBiome != currentBiome) {
-                for (BiomeChangeListener listener : biomeChangeListener) {
-                    listener.onBiomeChanged(currentBiome);
-                }
-                lastBiome = currentBiome;
-            }
-        } else {
-            for (BiomeChangeListener listener : biomeChangeListener) {
-                listener.onBiomeChanged(null);
-            }
-            lastBiome = null;
         }
     }
 

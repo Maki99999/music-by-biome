@@ -9,12 +9,11 @@
   - add a button or new UI element for users to add custom combined conditions
   - user can choose a set of conditions from all non-custom conditions
   - all sub conditions have to be active at the same time for the custom condition to be true
-- in condition list show the last 5 visited biomes/relevant biome tags (configurable)
 - tab "all" with all conditions?
 - Scrolling in right column should reset after selecting something in the right column and after selecting another tab
 - Scrolling in left column should reset after selecting another tab
 
-- default settings is how minecraft plays their songs:
+- default settings is how minecraft plays their songs (requires tab "Combined"):
   1. currentScreen == WinScreen -> CREDITS
   2. no player (not in game) -> MENU
   3. in end && gui.getBossOverlay().shouldPlayMusic() -> END_BOSS

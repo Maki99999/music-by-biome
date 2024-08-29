@@ -1,6 +1,7 @@
 package io.github.maki99999.biomebeats;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import io.github.maki99999.biomebeats.biome.BiomeManager;
 import io.github.maki99999.biomebeats.condition.ConditionManager;
 import io.github.maki99999.biomebeats.conditionmusic.ConditionMusicManager;
 import io.github.maki99999.biomebeats.config.ConfigIO;
@@ -28,4 +29,5 @@ public class Constants {
     public static final ConditionManager CONDITION_MANAGER = new ConditionManager();
     public static final ConditionMusicManager CONDITION_MUSIC_MANAGER = new ConditionMusicManager();
     public static final ConfigIO CONFIG_IO = new ConfigIO();
+    public static final BiomeManager BIOME_MANAGER = new BiomeManager();
 }

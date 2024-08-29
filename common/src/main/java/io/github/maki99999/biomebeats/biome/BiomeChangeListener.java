@@ -1,4 +1,4 @@
-package io.github.maki99999.biomebeats.util;
+package io.github.maki99999.biomebeats.biome;
 
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;

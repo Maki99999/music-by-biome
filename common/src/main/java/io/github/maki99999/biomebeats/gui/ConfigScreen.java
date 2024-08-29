@@ -2,6 +2,7 @@ package io.github.maki99999.biomebeats.gui;
 
 import io.github.maki99999.biomebeats.BiomeBeatsCommon;
 import io.github.maki99999.biomebeats.Constants;
+import io.github.maki99999.biomebeats.condition.BiomeCondition;
 import io.github.maki99999.biomebeats.condition.Condition;
 import io.github.maki99999.biomebeats.config.ConfigChangeListener;
 import io.github.maki99999.biomebeats.config.MainConfig;
@@ -17,10 +18,13 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static io.github.maki99999.biomebeats.util.DrawUtils.drawRect;
 import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
@@ -68,6 +72,8 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
             initialInitCall = false;
             initData();
         }
+
+        sortBiomeConditions();
 
         // Update bounds
         int w = Math.min(width - 2 * SIDES_PADDING, MAX_WIDTH);
@@ -133,6 +139,21 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         }
     }
 
+    private void sortBiomeConditions() {
+        Set<ResourceLocation> recentBiomesRLs = Constants.BIOME_MANAGER.getMostRecentBiomes().stream()
+                .map(holder -> holder.unwrapKey().map(ResourceKey::location).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        Collection<? extends Condition> sortedConditions = conditions.get(TabType.BY_BIOME).stream()
+                .sorted(Comparator
+                        .comparing((Condition c) -> c instanceof BiomeCondition bc && recentBiomesRLs.contains(bc.getBiomeRL()) ? 0 : 1)
+                        .thenComparing(Condition::getName))
+                .toList();
+
+        conditions.put(TabType.BY_BIOME, sortedConditions);
+    }
+
     private void onReloadPress(ImageButton imageButton) {
         BiomeBeatsCommon.reload();
         Minecraft.getInstance().setScreen(new ConfigScreen());
@@ -145,13 +166,12 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     private void initData() {
         musicGroups = Constants.MUSIC_MANAGER.getMusicGroups();
 
-        conditions = Map.ofEntries(
-                Map.entry(TabType.BY_BIOME, Constants.CONDITION_MANAGER.getBiomeConditions()),
-                Map.entry(TabType.BY_TAG, Constants.CONDITION_MANAGER.getTagConditions()),
-                Map.entry(TabType.BY_TIME, List.of()),
-                Map.entry(TabType.BY_OTHER, Constants.CONDITION_MANAGER.getOtherConditions()),
-                Map.entry(TabType.COMBINED, List.of())
-        );
+        conditions = new HashMap<>();
+        conditions.put(TabType.BY_BIOME, Constants.CONDITION_MANAGER.getBiomeConditions());
+        conditions.put(TabType.BY_TAG, Constants.CONDITION_MANAGER.getTagConditions());
+        conditions.put(TabType.BY_TIME, List.of());
+        conditions.put(TabType.BY_OTHER, Constants.CONDITION_MANAGER.getOtherConditions());
+        conditions.put(TabType.COMBINED, List.of());
 
         musicTracksByCondition = Constants.CONDITION_MUSIC_MANAGER.getMusicTracksByCondition();
     }

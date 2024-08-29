@@ -1,6 +1,6 @@
 package io.github.maki99999.biomebeats.condition;
 
-import io.github.maki99999.biomebeats.util.BiomeChangeListener;
+import io.github.maki99999.biomebeats.biome.BiomeChangeListener;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import static io.github.maki99999.biomebeats.util.StringUtils.formatToTitleCase;
 
 public class TagCondition extends Condition implements BiomeChangeListener {
-    public static String TAG_PREFIX = "is_";
+    public static final String TAG_PREFIX = "is_";
 
     private final Collection<TagKey<Biome>> biomeTagKeys;
     private final String id;
