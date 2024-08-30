@@ -16,9 +16,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
 
@@ -30,6 +28,8 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
     private final Minecraft minecraft;
     private final List<EntryGroup> children = new ArrayList<>();
     private final OnMusicTrackToggle onMusicTrackToggle;
+    private final Collection<MusicGroup> musicGroups;
+    private final Rect bounds;
 
     @Nullable
     private GuiEventListener focusedChild = null;
@@ -41,16 +41,10 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
         this.minecraft = minecraft;
         this.onMusicTrackToggle = onMusicTrackToggle;
+        this.musicGroups = musicGroups;
+        this.bounds = bounds;
 
-        for (MusicGroup musicGroup : musicGroups) {
-            children.add(new EntryGroup(bounds.x(), 0, width, Component.literal("idk"), musicGroup));
-        }
-
-        width = scrollbarVisible() ? bounds.w() - SCROLL_BAR_WIDTH : bounds.w();
-        for (AbstractWidget entry : children) {
-            entry.setWidth(width);
-        }
-        UpdateY();
+        sortAndFilterMusicTracks("", List.of());
         setVisibility(false);
     }
 
@@ -166,6 +160,45 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
         }
     }
 
+    public void sortAndFilterMusicTracks(String filter, Collection<? extends MusicTrack> checkedMusicTracks) {
+        var sortedMusicGroups = musicGroups.stream()
+                .sorted((m1, m2) -> {
+                    if (m1.getName().contains("Custom")) return -1;
+                    if (m2.getName().contains("Custom")) return 1;
+
+                    if (m1.getName().contains("Minecraft")) return -1;
+                    if (m2.getName().contains("Minecraft")) return 1;
+
+                    return m1.getName().compareTo(m2.getName());
+                })
+                .toList();
+
+        List<MusicGroup> sortedMusic = new ArrayList<>();
+
+        for (MusicGroup musicGroup : sortedMusicGroups) {
+            sortedMusic.add(new MusicGroup(musicGroup.getName(), musicGroup.getMusicTracks().stream()
+                    .filter(m -> m.getName().toLowerCase().contains(filter))
+                    .sorted(Comparator.comparing(MusicTrack::getName))
+                    .toList()));
+        }
+
+        updateVisibleMusicTracks(sortedMusic);
+        setCheckedMusicTracks(checkedMusicTracks);
+    }
+
+    private void updateVisibleMusicTracks(Collection<MusicGroup> musicGroups) {
+        children.clear();
+        for (MusicGroup musicGroup : musicGroups) {
+            children.add(new EntryGroup(bounds.x(), 0, width, Component.literal(musicGroup.getName()), musicGroup));
+        }
+
+        width = scrollbarVisible() ? bounds.w() - SCROLL_BAR_WIDTH : bounds.w();
+        for (AbstractWidget entry : children) {
+            entry.setWidth(width);
+        }
+        UpdateY();
+    }
+
     private class EntryGroup extends AbstractWidget {
         private final List<Entry> children = new ArrayList<>();
         private final MusicGroup musicGroup;
@@ -211,6 +244,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
         @Override
         public void setWidth(int width) {
             super.setWidth(width);
+            toggleButton.setX(getX() + width - 24);
 
             for (AbstractWidget entry : children) {
                 entry.setWidth(width);
@@ -261,11 +295,13 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
                 previewButton = new TwoStateImageButton(
                         getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(),
-                        new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(), BaseTextureUv.PAUSE_UV, null, null),
-                        new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(), BaseTextureUv.PLAY_UV, null, null),
+                        new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(),
+                                BaseTextureUv.PAUSE_UV, null, null),
+                        new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(),
+                                BaseTextureUv.PLAY_UV, null, null),
                         (btn, newValue) -> {
                             //TODO
-                            if(newValue)
+                            if (newValue)
                                 Constants.MUSIC_MANAGER.play(musicTrack);
                             else
                                 Constants.MUSIC_MANAGER.stop();
@@ -299,7 +335,8 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                 previewButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
             }
 
-            private boolean isHoveringText(Rect textRect, @NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int mouseYScissorOffset) {
+            private boolean isHoveringText(Rect textRect, @NotNull GuiGraphics guiGraphics, int mouseX, int mouseY,
+                                           int mouseYScissorOffset) {
                 return guiGraphics.containsPointInScissor(mouseX, mouseY + mouseYScissorOffset)
                         && mouseX >= textRect.x1()
                         && mouseY >= textRect.y1()
@@ -313,6 +350,14 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                 checkbox.setY(y);
                 editButton.setY(y);
                 previewButton.setY(y);
+            }
+
+            @Override
+            public void setWidth(int width) {
+                super.setWidth(width);
+
+                previewButton.setX(getX() + width - BaseTextureUv.PLAY_UV.w() - 1);
+                editButton.setX(getX() + width - previewButton.getWidth() - BaseTextureUv.EDIT_UV.w() - 1);
             }
 
             @Override

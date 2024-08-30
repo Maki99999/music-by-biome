@@ -25,7 +25,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 public class MusicManager implements IMusicManager, StreamPlayerListener, ConfigChangeListener {
     private ExecutorService executorService;
@@ -220,45 +219,21 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
             }
         }
 
-        List<Map.Entry<String, Map<MusicGroup.Type, Collection<ResourceLocation>>>> musicSorted =
-                music.entrySet().stream()
-                        .sorted((e1, e2) -> {
-                            if (e1.getKey().equals("minecraft")) return -1;
-                            if (e2.getKey().equals("minecraft")) return 1;
-                            return e1.getKey().compareTo(e2.getKey());
-                        })
-                        .toList();
+        var random = RandomSource.create();
 
-        for (var musicEntry : musicSorted) {
-            Map<MusicGroup.Type, Collection<ResourceLocation>> musicByTypeSorted =
-                    musicEntry.getValue().entrySet().stream()
-                            .sorted((entry1, entry2) -> {
-                                if (entry1.getKey() == MusicGroup.Type.BGM) return -1;
-                                if (entry2.getKey() == MusicGroup.Type.BGM) return 1;
-                                return entry1.getKey().compareTo(entry2.getKey());
-                            })
-                            .collect(Collectors.toMap(
-                                    Map.Entry::getKey,
-                                    Map.Entry::getValue,
-                                    (e1, e2) -> e1,
-                                    LinkedHashMap::new
-                            ));
-
-            var random = RandomSource.create(); // needed to get the sounds
-            for (var musicByTypeEntry : musicByTypeSorted.entrySet()) {
+        for (var musicEntry : music.entrySet()) {
+            for (var musicByTypeEntry : musicEntry.getValue().entrySet()) {
                 Collection<ResourceLocation> resourceLocations = musicByTypeEntry.getValue().stream()
                         .map(resourceLocation -> (MixinWeighedSoundEvents) minecraft.getSoundManager().getSoundEvent(resourceLocation)).filter(Objects::nonNull)
                         .flatMap(soundEvents -> soundEvents.list().stream())
                         .map(weightedSound -> weightedSound.getSound(random))
                         .map(Sound::getLocation)
                         .distinct()
-                        .sorted(Comparator.comparing(ResourceLocation::toString))
                         .toList();
 
                 Collection<ResourceLocationMusicTrack> groupMusicTracks = resourceLocations
                         .stream()
                         .map(ResourceLocationMusicTrack::new)
-                        .sorted(Comparator.comparing(MusicTrack::getName))
                         .toList();
 
                 musicGroups.add(new MusicGroup(

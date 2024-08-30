@@ -16,11 +16,11 @@ import static io.github.maki99999.biomebeats.util.DrawUtils.drawRect;
 
 public class ImageButton {
     private final WidgetTooltipHolder tooltip = new WidgetTooltipHolder();
-    private final int x;
 
     private OnPress onPress;
+    private int x;
     private int y;
-    private Rect uv;
+    private final Rect uv;
 
     public ImageButton(int x, int y, Rect uv, OnPress onPress, Tooltip tooltip) {
         this.x = x;
@@ -73,16 +73,16 @@ public class ImageButton {
         return x;
     }
 
+    public void setX(int x) {
+        this.x = x;
+    }
+
     public int getY() {
         return y;
     }
 
     public Rect getUv() {
         return uv;
-    }
-
-    protected void setUv(Rect uv) {
-        this.uv = uv;
     }
 
     public int getWidth() {

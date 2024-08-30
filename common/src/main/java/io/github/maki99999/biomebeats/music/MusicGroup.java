@@ -19,6 +19,11 @@ public final class MusicGroup {
         this.musicTracks = musicTracks;
     }
 
+    public MusicGroup(String name, Collection<? extends MusicTrack> musicTracks) {
+        this.name = name;
+        this.musicTracks = musicTracks;
+    }
+
     public String getName() {
         return name;
     }

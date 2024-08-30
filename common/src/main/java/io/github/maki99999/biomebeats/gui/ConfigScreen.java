@@ -337,9 +337,9 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         updateCurrentConditions(text);
     }
 
-    private void onMusicSearchUpdate(String x) {
-        //TODO
-        System.out.println("Typed something in the music search box");
+    private void onMusicSearchUpdate(String text) {
+        musicList.sortAndFilterMusicTracks(text.trim().toLowerCase(),
+                musicTracksByCondition.getOrDefault(currentCondition, NO_MUSIC_TRACKS));
     }
 
     private void onPriorityUpdate(String priorityText) {
