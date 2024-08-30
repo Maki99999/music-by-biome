@@ -43,7 +43,6 @@ public class TagCondition extends Condition implements BiomeChangeListener {
                 .stream()
                 .map(TagCondition::new)
                 .peek(condition -> condition.addListener(listener))
-                .sorted(Comparator.comparing(TagCondition::getName))
                 .toList();
     }
 

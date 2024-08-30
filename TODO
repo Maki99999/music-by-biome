@@ -1,17 +1,17 @@
 - Real "Preview Music Track" system
-- Custom Music: dont show files with unsupported file endings, hide file ending in nice string
 - after closing the config menu (onAfterConfigSave), reevaluate which songs to play, resume song if possible, else start a new one
+- Custom Music: dont show files with unsupported file endings, hide file ending in nice string
 - fix: some tags are there multiple times
 - Fade in/out
 - music group collapse
-- search boxes
+- tab "all" with all conditions?
+- Scrolling in right column should reset after selecting something in the right column and after selecting another tab
+- Scrolling in left column should reset after selecting another tab
+
 - New Tab: "Combined":
   - add a button or new UI element for users to add custom combined conditions
   - user can choose a set of conditions from all non-custom conditions
   - all sub conditions have to be active at the same time for the custom condition to be true
-- tab "all" with all conditions?
-- Scrolling in right column should reset after selecting something in the right column and after selecting another tab
-- Scrolling in left column should reset after selecting another tab
 
 - default settings is how minecraft plays their songs (requires tab "Combined"):
   1. currentScreen == WinScreen -> CREDITS

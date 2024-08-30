@@ -6,7 +6,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.Collection;
-import java.util.Comparator;
 
 import static io.github.maki99999.biomebeats.util.StringUtils.formatToTitleCase;
 
@@ -32,7 +31,6 @@ public class BiomeCondition extends Condition implements BiomeChangeListener {
                 .stream()
                 .map(BiomeCondition::new)
                 .peek(c -> c.addListener(listener))
-                .sorted(Comparator.comparing(BiomeCondition::getName))
                 .toList();
     }
 

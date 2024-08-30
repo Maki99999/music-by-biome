@@ -56,6 +56,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     private Collection<MusicGroup> musicGroups;
     private Map<Condition, Collection<MusicTrack>> musicTracksByCondition;
     private Map<TabType, Collection<? extends Condition>> conditions;
+    private final Map<TabType, Collection<? extends Condition>> sortedConditions = new HashMap<>();
     private boolean initialInitCall = true;
     private TabType currentTab = TabType.BY_BIOME;
     private Condition currentCondition = null;
@@ -72,8 +73,6 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
             initialInitCall = false;
             initData();
         }
-
-        sortBiomeConditions();
 
         // Update bounds
         int w = Math.min(width - 2 * SIDES_PADDING, MAX_WIDTH);
@@ -94,8 +93,8 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
 
         conditionList = addWidget(new ConditionList(minecraft, new Rect(boundsL.x(), boundsL.y() + ELEMENT_HEIGHT,
                 boundsL.w(), boundsL.h() - ELEMENT_HEIGHT),
-                Component.translatable("menu.biomebeats.search.condition"), conditions.get(currentTab),
-                this::onConditionSelected));
+                Component.translatable("menu.biomebeats.search.condition"), this::onConditionSelected));
+        updateCurrentConditions("");
 
         // Right column
         priorityField = new EditBox(font, boundsR.x2() - 60, boundsR.y(), 60, ELEMENT_HEIGHT,
@@ -133,25 +132,34 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         if (currentCondition == null) {
             setRightColumnVisibility(false);
         } else {
-            conditionList.UpdateSelection(currentCondition);
             setRightColumnVisibility(true);
             updateCheckedMusicTracks();
         }
     }
 
-    private void sortBiomeConditions() {
-        Set<ResourceLocation> recentBiomesRLs = Constants.BIOME_MANAGER.getMostRecentBiomes().stream()
-                .map(holder -> holder.unwrapKey().map(ResourceKey::location).orElse(null))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+    private void updateCurrentConditions(String filter) {
+        String cleanFilter = filter.trim().toLowerCase();
 
-        Collection<? extends Condition> sortedConditions = conditions.get(TabType.BY_BIOME).stream()
-                .sorted(Comparator
-                        .comparing((Condition c) -> c instanceof BiomeCondition bc && recentBiomesRLs.contains(bc.getBiomeRL()) ? 0 : 1)
-                        .thenComparing(Condition::getName))
-                .toList();
+        if (currentTab == TabType.BY_BIOME) {
+            Set<ResourceLocation> recentBiomesRLs = Constants.BIOME_MANAGER.getMostRecentBiomes().stream()
+                    .map(holder -> holder.unwrapKey().map(ResourceKey::location).orElse(null))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
 
-        conditions.put(TabType.BY_BIOME, sortedConditions);
+            sortedConditions.put(TabType.BY_BIOME, conditions.get(TabType.BY_BIOME).stream()
+                    .filter(condition -> condition.getName().toLowerCase().contains(cleanFilter))
+                    .sorted(Comparator
+                            .comparing((Condition c) -> c instanceof BiomeCondition bc && recentBiomesRLs.contains(bc.getBiomeRL()) ? 0 : 1)
+                            .thenComparing(Condition::getName))
+                    .toList());
+
+        } else {
+            sortedConditions.put(currentTab, conditions.get(currentTab).stream()
+                    .filter(condition -> condition.getName().toLowerCase().contains(cleanFilter))
+                    .sorted(Comparator.comparing(Condition::getName))
+                    .toList());
+        }
+        conditionList.setConditions(sortedConditions.get(currentTab), currentCondition);
     }
 
     private void onReloadPress(ImageButton imageButton) {
@@ -166,12 +174,13 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     private void initData() {
         musicGroups = Constants.MUSIC_MANAGER.getMusicGroups();
 
-        conditions = new HashMap<>();
-        conditions.put(TabType.BY_BIOME, Constants.CONDITION_MANAGER.getBiomeConditions());
-        conditions.put(TabType.BY_TAG, Constants.CONDITION_MANAGER.getTagConditions());
-        conditions.put(TabType.BY_TIME, List.of());
-        conditions.put(TabType.BY_OTHER, Constants.CONDITION_MANAGER.getOtherConditions());
-        conditions.put(TabType.COMBINED, List.of());
+        conditions = Map.ofEntries(
+                Map.entry(TabType.BY_BIOME, Constants.CONDITION_MANAGER.getBiomeConditions()),
+                Map.entry(TabType.BY_TAG, Constants.CONDITION_MANAGER.getTagConditions()),
+                Map.entry(TabType.BY_TIME, List.of()),
+                Map.entry(TabType.BY_OTHER, Constants.CONDITION_MANAGER.getOtherConditions()),
+                Map.entry(TabType.COMBINED, List.of())
+        );
 
         musicTracksByCondition = Constants.CONDITION_MUSIC_MANAGER.getMusicTracksByCondition();
     }
@@ -198,8 +207,9 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         }
 
         currentTab = tabs.get(tab);
-        conditionList.setConditions(conditions.get(currentTab));
+        updateCurrentConditions("");
         currentCondition = null;
+        conditionSearchBox.setValue("");
         setRightColumnVisibility(false);
     }
 
@@ -323,9 +333,8 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         updateCheckedMusicTracks();
     }
 
-    private void onConditionSearchUpdate(String x) {
-        //TODO
-        System.out.println("Typed something in the condition search box");
+    private void onConditionSearchUpdate(String text) {
+        updateCurrentConditions(text);
     }
 
     private void onMusicSearchUpdate(String x) {

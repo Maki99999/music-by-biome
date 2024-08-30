@@ -35,14 +35,12 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
     private GuiEventListener focusedChild = null;
     private boolean isDragging;
 
-    public ConditionList(Minecraft minecraft, Rect bounds, Component message, Collection<? extends Condition> conditions,
-                         OnSelected onSelected) {
+    public ConditionList(Minecraft minecraft, Rect bounds, Component message, OnSelected onSelected) {
         super(bounds.x(), bounds.y(), bounds.w() - SCROLL_BAR_WIDTH, bounds.h(), message);
         this.onSelected = onSelected;
         this.minecraft = minecraft;
 
         widthExclScrollBar = bounds.w();
-        setConditions(conditions);
     }
 
     @Override
@@ -126,23 +124,22 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
         this.focusedChild = guiEventListener;
     }
 
-    private boolean scrollbarVisible(int childrenCount) {
+    private boolean isScrollbarVisible(int childrenCount) {
         return (childrenCount * (CHILDREN_HEIGHT + CHILDREN_SPACING) - 4) > this.getHeight();
     }
 
-    public void setConditions(Collection<? extends Condition> conditions) {
-        width = scrollbarVisible(conditions.size()) ? widthExclScrollBar - SCROLL_BAR_WIDTH : widthExclScrollBar;
+    public void setConditions(Collection<? extends Condition> conditions, Condition currentCondition) {
+        width = isScrollbarVisible(conditions.size()) ? widthExclScrollBar - SCROLL_BAR_WIDTH : widthExclScrollBar;
 
         children = new ArrayList<>();
         for (Condition condition : conditions) {
             var entry = new Entry(minecraft, getX(), 0, width, CHILDREN_HEIGHT, condition);
             children.add(entry);
         }
+        selectedChild = currentCondition == null
+                ? null
+                : children.stream().filter(c -> c.condition == currentCondition).findAny().orElse(null);
         setScrollAmount(0);
-    }
-
-    public void UpdateSelection(Condition condition) {
-        selectedChild = children.stream().filter(c -> c.condition == condition).findAny().orElse(null);
     }
 
     public interface OnSelected {
