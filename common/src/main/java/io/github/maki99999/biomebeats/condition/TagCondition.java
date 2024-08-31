@@ -18,7 +18,7 @@ public class TagCondition extends Condition implements BiomeChangeListener {
     private final String id;
 
     public TagCondition(Collection<TagKey<Biome>> biomeTagKeys) {
-        super(formatToTitleCase(biomeTagKeys.stream().findAny().map(TagKey::location).orElseThrow()));
+        super(formatToTitleCase(biomeTagKeys.stream().findAny().orElseThrow().location().getPath()));
         this.biomeTagKeys = biomeTagKeys;
         this.id = "tag:" + biomeTagKeys.stream().map(TagKey::location).map(ResourceLocation::toString)
                 .sorted().collect(Collectors.joining(","));
@@ -29,13 +29,27 @@ public class TagCondition extends Condition implements BiomeChangeListener {
         return id;
     }
 
-    public static Collection<TagCondition> toFilteredConditions(Collection<TagKey<Biome>> biomeTagKeys, ConditionChangeListener listener) {
+    public static Collection<TagCondition> toFilteredConditions(Collection<TagKey<Biome>> biomeTagKeys,
+                                                                ConditionChangeListener listener) {
         Map<String, Collection<TagKey<Biome>>> tagKeysByName = new HashMap<>();
 
         for (TagKey<Biome> tagKey : biomeTagKeys) {
             String path = tagKey.location().getPath();
             if (path.startsWith(TAG_PREFIX))
                 tagKeysByName.computeIfAbsent(path, k -> new ArrayList<>()).add(tagKey);
+        }
+
+        var keys = new HashSet<>(tagKeysByName.keySet());
+
+        for (String key : keys) {
+            if (key.contains("/")) {
+                String baseKey = key.substring(0, key.indexOf('/'));
+
+                if (tagKeysByName.containsKey(baseKey)) {
+                    tagKeysByName.get(baseKey).addAll(tagKeysByName.get(key));
+                    tagKeysByName.remove(key);
+                }
+            }
         }
 
         return tagKeysByName

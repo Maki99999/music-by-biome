@@ -11,7 +11,7 @@ public class FileMusicTrack extends MusicTrack {
     private final String filePath;
 
     public FileMusicTrack(String filePath) {
-        super(formatToTitleCase(filePath), filePath, filePath);
+        super(formatToTitleCase(filePath.substring(0, filePath.lastIndexOf('.'))), filePath, filePath);
         this.filePath = filePath;
     }
 

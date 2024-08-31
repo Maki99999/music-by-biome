@@ -158,6 +158,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
         for (var child : children) {
             child.setCheckedMusicTracks(musicTracks);
         }
+        setScrollAmount(0);
     }
 
     public void sortAndFilterMusicTracks(String filter, Collection<? extends MusicTrack> checkedMusicTracks) {
