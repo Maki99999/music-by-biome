@@ -27,6 +27,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MusicManager implements IMusicManager, StreamPlayerListener, ConfigChangeListener {
+    private static final Collection<String> SUPPORTED_FILE_EXTENSIONS = List.of("wav", "au", "aiff", "aif", "aifc",
+            "mp3", "ogg", "flac", "ape", "spx");
+
     private ExecutorService executorService;
     private JavaStreamPlayer javaStreamPlayer;
     private final RandomSource rdm = RandomSource.create();
@@ -196,6 +199,10 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
             try (var paths = Files.list(musicFolder)) {
                 fileMusicTracks = paths
                         .filter(Files::isRegularFile)
+                        .filter(path -> {
+                            String fileName = path.getFileName().toString().toLowerCase();
+                            return SUPPORTED_FILE_EXTENSIONS.stream().anyMatch(fileName::endsWith);
+                        })
                         .map(path -> new FileMusicTrack(path.getFileName().toString()))
                         .toList();
             }
