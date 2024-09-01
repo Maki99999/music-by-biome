@@ -126,5 +126,9 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
                 condition.setPriority(conditionConfig.getPriority());
             }
         }
+
+        for (ActiveConditionsListener listener : activeConditionsListener) {
+            listener.onActiveConditionsChanged(activeConditions);
+        }
     }
 }

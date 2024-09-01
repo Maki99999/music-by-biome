@@ -68,7 +68,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
 
     @Override
     protected void init() {
-        Constants.MUSIC_MANAGER.stop();
+        Constants.MUSIC_MANAGER.pause();
         if (initialInitCall) {
             initialInitCall = false;
             initData();
@@ -163,6 +163,8 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     }
 
     private void onReloadPress(ImageButton imageButton) {
+        Constants.CONFIG_IO.removeListener(this);
+        Constants.CONFIG_IO.saveConfig(config);
         BiomeBeatsCommon.reload();
         Minecraft.getInstance().setScreen(new ConfigScreen());
     }
@@ -254,9 +256,10 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     @Override
     public void onClose() {
         super.onClose();
+        musicList.onClose();
+        Constants.MUSIC_MANAGER.stopPreviewTrack();
         Constants.CONFIG_IO.removeListener(this);
         Constants.CONFIG_IO.saveConfig(config);
-        Constants.MUSIC_MANAGER.stop();
     }
 
     private void renderContainer(GuiGraphics guiGraphics) {

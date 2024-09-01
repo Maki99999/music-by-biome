@@ -3,6 +3,7 @@ package io.github.maki99999.biomebeats.gui;
 import io.github.maki99999.biomebeats.Constants;
 import io.github.maki99999.biomebeats.music.MusicGroup;
 import io.github.maki99999.biomebeats.music.MusicTrack;
+import io.github.maki99999.biomebeats.music.PreviewListener;
 import io.github.maki99999.biomebeats.util.BiomeBeatsColor;
 import io.github.maki99999.biomebeats.util.Rect;
 import net.minecraft.client.Minecraft;
@@ -150,6 +151,12 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
         this.focusedChild = guiEventListener;
     }
 
+    public void onClose() {
+        for (var child : children) {
+            child.onClose();
+        }
+    }
+
     public void setVisibility(boolean visible) {
         this.visible = visible;
     }
@@ -167,8 +174,10 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                     if (m1.getName().contains("Custom")) return -1;
                     if (m2.getName().contains("Custom")) return 1;
 
-                    if (m1.getName().contains("Minecraft")) return -1;
-                    if (m2.getName().contains("Minecraft")) return 1;
+                    if (m1.getName().contains("Minecraft") != m2.getName().contains("Minecraft")) {
+                        if (m1.getName().contains("Minecraft")) return -1;
+                        if (m2.getName().contains("Minecraft")) return 1;
+                    }
 
                     return m1.getName().compareTo(m2.getName());
                 })
@@ -218,6 +227,12 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
             }
 
             setHeight((children.size() + 1) * CHILDREN_HEIGHT + (children.size() - 1) * CHILDREN_SPACING + 8);
+        }
+
+        public void onClose() {
+            for (var child : children) {
+                child.onClose();
+            }
         }
 
         @Override
@@ -276,10 +291,10 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
             }
         }
 
-        private class Entry extends AbstractWidget {
+        private class Entry extends AbstractWidget implements PreviewListener {
             private final MusicTrack musicTrack;
             private final WidgetTooltipHolder tooltip = new WidgetTooltipHolder();
-            private final ImageButton previewButton;
+            private final TwoStateImageButton previewButton;
             private final ImageButton editButton;
             private final TwoStateImageButton checkbox;
 
@@ -301,11 +316,10 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                         new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(),
                                 BaseTextureUv.PLAY_UV, null, null),
                         (btn, newValue) -> {
-                            //TODO
                             if (newValue)
-                                Constants.MUSIC_MANAGER.play(musicTrack);
+                                Constants.MUSIC_MANAGER.playPreviewTrack(musicTrack);
                             else
-                                Constants.MUSIC_MANAGER.stop();
+                                Constants.MUSIC_MANAGER.stopPreviewTrack();
 
                             System.out.println("clicked 'preview' on " + musicTrack.getName());
                         }, Tooltip.create(Component.translatable("menu.biomebeats.preview")),
@@ -317,6 +331,12 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                     //TODO
                     System.out.println("clicked 'edit' on " + getMessage());
                 }, Tooltip.create(Component.translatable("menu.biomebeats.edit")));
+
+                Constants.MUSIC_MANAGER.addPreviewListener(this);
+            }
+
+            public void onClose() {
+                Constants.MUSIC_MANAGER.removePreviewListener(this);
             }
 
             @Override
@@ -377,6 +397,11 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
             public void setCheckedState(boolean newValue) {
                 checkbox.setState(newValue);
+            }
+
+            @Override
+            public void onPreviewChanged(MusicTrack previewTrack) {
+                previewButton.setState(previewTrack == musicTrack);
             }
         }
     }

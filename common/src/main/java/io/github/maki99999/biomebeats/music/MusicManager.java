@@ -41,11 +41,16 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
     private Collection<MusicTrack> currentMusicTracks = new HashSet<>();
     private final EvictingQueue<MusicTrack> recentMusicTracks = EvictingQueue.create(5);
 
+    private JavaStreamPlayer previewJavaStreamPlayer;
+    private MusicTrack currentPreviewTrack;
+    private final Collection<PreviewListener> previewListeners = new ArrayList<>();
+
     @Override
     public void init() {
         executorService = Executors.newSingleThreadExecutor();
         javaStreamPlayer = new JavaStreamPlayer();
         javaStreamPlayer.addStreamPlayerListener(this);
+        initPreviewPlayer();
         Minecraft minecraft = Minecraft.getInstance();
         setVolume(minecraft.options.getSoundSourceVolume(SoundSource.MASTER)
                 * minecraft.options.getSoundSourceVolume(SoundSource.MUSIC));
@@ -53,9 +58,56 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
         Constants.CONFIG_IO.addListener(this);
     }
 
+    private void initPreviewPlayer() {
+        previewJavaStreamPlayer = new JavaStreamPlayer();
+        previewJavaStreamPlayer.addStreamPlayerListener(new StreamPlayerListener() {
+            @Override
+            public void opened(Object dataSource, Map<String, Object> properties) {
+                Constants.LOG.debug(String.format("Opened preview stream player %s", dataSource));
+            }
+
+            @Override
+            public void progress(int nEncodedBytes, long microsecondPosition, byte[] pcmData,
+                                 Map<String, Object> properties) {}
+
+            @Override
+            public void statusUpdated(StreamPlayerEvent event) {
+                final Status status = event.getPlayerStatus();
+                Constants.LOG.debug("New preview music player status: {}", status.name());
+                if (status == Status.EOM) {
+                    currentPreviewTrack = null;
+                    previewListeners.forEach(listener -> listener.onPreviewChanged(null));
+                }
+            }
+        });
+    }
+
     @Override
     public void reloadMusicTracksAndGroups() {
         findMusicTracksAndGroups();
+    }
+
+    @Override
+    public void playPreviewTrack(MusicTrack musicTrack) {
+        play(previewJavaStreamPlayer, musicTrack);
+        currentPreviewTrack = musicTrack;
+        previewListeners.forEach(listener -> listener.onPreviewChanged(musicTrack));
+    }
+
+    @Override
+    public void stopPreviewTrack() {
+        executorService.submit(previewJavaStreamPlayer::stop);
+    }
+
+    @Override
+    public void addPreviewListener(PreviewListener listener) {
+        previewListeners.add(listener);
+        listener.onPreviewChanged(currentPreviewTrack);
+    }
+
+    @Override
+    public void removePreviewListener(PreviewListener listener) {
+        previewListeners.remove(listener);
     }
 
     @Override
@@ -73,11 +125,17 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
 
         if (!musicTracks.contains(currentMusicTrack)) {
             playNext();
+        } else if (javaStreamPlayer.getStatus() == Status.PAUSED) {
+            executorService.submit(javaStreamPlayer::resume);
         }
     }
 
     @Override
     public void play(MusicTrack musicTrack) {
+        play(javaStreamPlayer, musicTrack);
+    }
+
+    private void play(JavaStreamPlayer javaStreamPlayer, MusicTrack musicTrack) {
         Minecraft minecraft = Minecraft.getInstance();
         if (musicTrack instanceof ResourceLocationMusicTrack rlMusicTrack) {
             var fileResourceLocation = Sound.SOUND_LISTER.idToFile(rlMusicTrack.getResourceLocation());
@@ -117,6 +175,7 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
     @Override
     public void setVolume(float volume) {
         executorService.submit(() -> javaStreamPlayer.setGain(volume * 0.5f));
+        executorService.submit(() -> previewJavaStreamPlayer.setGain(volume * 0.5f));
     }
 
     @Override
@@ -226,14 +285,12 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
             }
         }
 
-        var random = RandomSource.create();
-
         for (var musicEntry : music.entrySet()) {
             for (var musicByTypeEntry : musicEntry.getValue().entrySet()) {
                 Collection<ResourceLocation> resourceLocations = musicByTypeEntry.getValue().stream()
                         .map(resourceLocation -> (MixinWeighedSoundEvents) minecraft.getSoundManager().getSoundEvent(resourceLocation)).filter(Objects::nonNull)
                         .flatMap(soundEvents -> soundEvents.list().stream())
-                        .map(weightedSound -> weightedSound.getSound(random))
+                        .map(weightedSound -> weightedSound.getSound(rdm))
                         .map(Sound::getLocation)
                         .distinct()
                         .toList();

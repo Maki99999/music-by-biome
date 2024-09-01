@@ -78,4 +78,12 @@ public interface IMusicManager {
      * Resets the music manager.
      */
     void reloadMusicTracksAndGroups();
+
+    void playPreviewTrack(MusicTrack musicTrack);
+
+    void stopPreviewTrack();
+
+    void addPreviewListener(PreviewListener listener);
+
+    void removePreviewListener(PreviewListener listener);
 }

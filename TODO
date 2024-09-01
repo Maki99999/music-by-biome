@@ -1,7 +1,9 @@
-- Real "Preview Music Track" system
-- after closing the config menu (onAfterConfigSave), reevaluate which songs to play, resume song if possible, else start a new one
 - Fade in/out
 - music group collapse
+- hide edit button until it has a use
+
+- adjust volume of each individual track
+  (edit button? or is there a better option that doesn't require a whole new screen)
 
 - New Tab: "Combined":
   - add a button or new UI element for users to add custom combined conditions

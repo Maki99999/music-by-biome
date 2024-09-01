@@ -18,7 +18,8 @@ public class TwoStateImageButton extends ImageButton {
     private final Component text;
     private boolean state = false;
 
-    public TwoStateImageButton(int x, int y, ImageButton positiveButton, ImageButton negativeButton, OnValueChange onValueChange,
+    public TwoStateImageButton(int x, int y, ImageButton positiveButton, ImageButton negativeButton,
+                               OnValueChange onValueChange,
                                @Nullable Tooltip tooltip, @Nullable Component text) {
         super(x, y, positiveButton.getUv(), null, tooltip);
         this.positiveButton = positiveButton;
@@ -30,7 +31,7 @@ public class TwoStateImageButton extends ImageButton {
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int mouseYScissorOffset) {
-        if(state)
+        if (state)
             positiveButton.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
         else
             negativeButton.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
