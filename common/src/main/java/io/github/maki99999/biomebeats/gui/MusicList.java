@@ -29,6 +29,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
     private final Minecraft minecraft;
     private final List<EntryGroup> children = new ArrayList<>();
     private final OnMusicTrackToggle onMusicTrackToggle;
+    private final OnGroupToggle onGroupToggle;
     private final Collection<MusicGroup> musicGroups;
     private final Rect bounds;
 
@@ -37,15 +38,16 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
     private boolean isDragging;
 
     public MusicList(Minecraft minecraft, Rect bounds, Component message, Collection<MusicGroup> musicGroups,
-                     OnMusicTrackToggle onMusicTrackToggle) {
+                     OnMusicTrackToggle onMusicTrackToggle, OnGroupToggle onGroupToggle) {
         super(bounds.x(), bounds.y(), bounds.w() - SCROLL_BAR_WIDTH, bounds.h(), message);
 
         this.minecraft = minecraft;
         this.onMusicTrackToggle = onMusicTrackToggle;
         this.musicGroups = musicGroups;
         this.bounds = bounds;
+        this.onGroupToggle = onGroupToggle;
 
-        sortAndFilterMusicTracks("", List.of());
+        sortAndFilterMusicTracks("", List.of(), List.of());
         setVisibility(false);
     }
 
@@ -68,7 +70,9 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
         boolean clickedInArea = super.mouseClicked(x, y, button);
         boolean clickedChild = false;
 
-        for (EntryGroup child : children) {
+        var childrenCopy = new ArrayList<>(children);
+
+        for (EntryGroup child : childrenCopy) {
             if (child.mouseClicked(x, y + scrollAmount(), button)) {
                 clickedChild = true;
             }
@@ -165,10 +169,10 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
         for (var child : children) {
             child.setCheckedMusicTracks(musicTracks);
         }
-        setScrollAmount(0);
     }
 
-    public void sortAndFilterMusicTracks(String filter, Collection<? extends MusicTrack> checkedMusicTracks) {
+    public void sortAndFilterMusicTracks(String filter, Collection<? extends MusicTrack> checkedMusicTracks,
+                                         Collection<String> collapsedMusicGroups) {
         var sortedMusicGroups = musicGroups.stream()
                 .sorted((m1, m2) -> {
                     if (m1.getName().contains("Custom")) return -1;
@@ -187,19 +191,22 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
         for (MusicGroup musicGroup : sortedMusicGroups) {
             sortedMusic.add(new MusicGroup(musicGroup.getName(), musicGroup.getMusicTracks().stream()
-                    .filter(m -> m.getName().toLowerCase().contains(filter))
+                    .filter(m -> !collapsedMusicGroups.contains(musicGroup.getName()) && m.getName().toLowerCase().contains(filter))
                     .sorted(Comparator.comparing(MusicTrack::getName))
                     .toList()));
         }
 
-        updateVisibleMusicTracks(sortedMusic);
+        updateVisibleMusicTracks(sortedMusic, collapsedMusicGroups);
         setCheckedMusicTracks(checkedMusicTracks);
+        mouseScrolled(0, 0, 0, 0);
     }
 
-    private void updateVisibleMusicTracks(Collection<MusicGroup> musicGroups) {
+    private void updateVisibleMusicTracks(Collection<MusicGroup> musicGroups,
+                                          Collection<String> collapsedMusicGroups) {
         children.clear();
         for (MusicGroup musicGroup : musicGroups) {
-            children.add(new EntryGroup(bounds.x(), 0, width, Component.literal(musicGroup.getName()), musicGroup));
+            children.add(new EntryGroup(bounds.x(), 0, width, Component.literal(musicGroup.getName()), musicGroup,
+                    collapsedMusicGroups.contains(musicGroup.getName())));
         }
 
         width = scrollbarVisible() ? bounds.w() - SCROLL_BAR_WIDTH : bounds.w();
@@ -212,15 +219,18 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
     private class EntryGroup extends AbstractWidget {
         private final List<Entry> children = new ArrayList<>();
         private final MusicGroup musicGroup;
-        private final ImageButton toggleButton;
+        private final TwoStateImageButton collapseButton;
 
-        public EntryGroup(int x, int y, int w, Component message, MusicGroup musicGroup) {
+        public EntryGroup(int x, int y, int w, Component message, MusicGroup musicGroup, boolean isCollapsed) {
             super(x, y, w, 0, message);
             this.musicGroup = musicGroup;
-            toggleButton = new ImageButton(x + w - 24, y + 1, BaseTextureUv.ACCORDION_OPEN_UV, p -> {
-                //TODO
-                System.out.println("pressed category " + musicGroup.getName());
-            }, null);
+            collapseButton = new TwoStateImageButton(x + w - 24, y + 1,
+                    new ImageButton(x + w - 24, y + 1, BaseTextureUv.ACCORDION_OPEN_UV, null, null),
+                    new ImageButton(x + w - 24, y + 1, BaseTextureUv.ACCORDION_CLOSE_UV, null, null),
+                    (btn, newValue) -> onGroupToggle.onGroupToggle(musicGroup.getName(), newValue),
+                    Tooltip.create(Component.translatable("menu.biomebeats.expand_collapse")), null
+            );
+            collapseButton.setState(isCollapsed);
 
             for (MusicTrack musicTrack : musicGroup.getMusicTracks()) {
                 children.add(new Entry(musicTrack, new Rect(x, 0, width, CHILDREN_HEIGHT)));
@@ -240,7 +250,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
             drawScrollingString(guiGraphics, MusicList.this.minecraft.font, Component.literal(musicGroup.getName()),
                     new Rect(getX() + 16, getY() + 4, getWidth() - 48, 8),
                     (int) -MusicList.this.scrollAmount(), BiomeBeatsColor.WHITE.getHex());
-            toggleButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
+            collapseButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
 
             for (Entry c : children) {
                 c.render(guiGraphics, mouseX, mouseY, partialTicks);
@@ -250,7 +260,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
         @Override
         public void setY(int y) {
             super.setY(y);
-            toggleButton.setY(y);
+            collapseButton.setY(y);
 
             for (int i = 0; i < children.size(); i++) {
                 children.get(i).setY(y + (i + 1) * (CHILDREN_HEIGHT + CHILDREN_SPACING));
@@ -260,7 +270,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
         @Override
         public void setWidth(int width) {
             super.setWidth(width);
-            toggleButton.setX(getX() + width - 24);
+            collapseButton.setX(getX() + width - 24);
 
             for (AbstractWidget entry : children) {
                 entry.setWidth(width);
@@ -269,7 +279,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
         @Override
         public boolean mouseClicked(double x, double y, int button) {
-            if (toggleButton.mouseClicked(x, y, button)) {
+            if (collapseButton.mouseClicked(x, y, button)) {
                 return true;
             }
 
@@ -352,7 +362,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                         false, new ScreenRectangle(textRect.x(), textRect.y(), textRect.w(), textRect.h()));
 
                 checkbox.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
-                editButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
+                //editButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
                 previewButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
             }
 
@@ -387,7 +397,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
             @Override
             public boolean mouseClicked(double x, double y, int button) {
                 return checkbox.mouseClicked(x, y, button)
-                        || editButton.mouseClicked(x, y, button)
+                        //|| editButton.mouseClicked(x, y, button)
                         || previewButton.mouseClicked(x, y, button);
             }
 
@@ -408,5 +418,9 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
     public interface OnMusicTrackToggle {
         void onMusicTrackToggle(MusicTrack musicTrack, boolean newValue);
+    }
+
+    public interface OnGroupToggle {
+        void onGroupToggle(String group, boolean newValue);
     }
 }

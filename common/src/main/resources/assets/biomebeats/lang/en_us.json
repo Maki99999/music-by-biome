@@ -1,6 +1,6 @@
 {
   "key.biomebeats.open_config": "Open Config",
-  "key.biomebeats.categories.main":  "BiomeBeats",
+  "key.biomebeats.categories.main": "BiomeBeats",
   "menu.biomebeats.search.condition": "Search condition...",
   "menu.biomebeats.search.music": "Search music...",
   "menu.biomebeats.priority": "Priority",
@@ -11,11 +11,12 @@
   "menu.biomebeats.categories.music_disc": "Music Disc",
   "menu.biomebeats.categories.custom": "Custom",
   "menu.biomebeats.categories.others": "Others",
-  "menu.biomebeats.by_biome" : "By Biome",
-  "menu.biomebeats.by_tag" : "By Tag",
-  "menu.biomebeats.by_time" :  "By Time",
-  "menu.biomebeats.by_other" : "By Other",
-  "menu.biomebeats.combined" :  "Combined",
+  "menu.biomebeats.by_biome": "By Biome",
+  "menu.biomebeats.by_tag": "By Tag",
+  "menu.biomebeats.by_time": "By Time",
+  "menu.biomebeats.by_other": "By Other",
+  "menu.biomebeats.combined": "Combined",
   "menu.biomebeats.open_music_folder": "Open music folder",
-  "menu.biomebeats.reload": "Reload"
+  "menu.biomebeats.reload": "Reload",
+  "menu.biomebeats.expand_collapse": "Expand/Collapse"
 }
