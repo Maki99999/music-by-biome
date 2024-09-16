@@ -40,4 +40,9 @@ public abstract class MusicTrack {
     public void setVolumeMultiplier(double volumeMultiplier) {
         this.volumeMultiplier = volumeMultiplier;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof MusicTrack mt && mt.getId().equals(id);
+    }
 }

@@ -69,9 +69,9 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
 
     @Override
     protected void init() {
-        Constants.MUSIC_MANAGER.pause();
         if (initialInitCall) {
             initialInitCall = false;
+            Constants.MUSIC_MANAGER.startPreviewMode();
             initData();
         }
 
@@ -258,7 +258,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     public void onClose() {
         super.onClose();
         musicList.onClose();
-        Constants.MUSIC_MANAGER.stopPreviewTrack();
+        Constants.MUSIC_MANAGER.stopPreviewMode();
         Constants.CONFIG_IO.removeListener(this);
         Constants.CONFIG_IO.saveConfig(config);
     }

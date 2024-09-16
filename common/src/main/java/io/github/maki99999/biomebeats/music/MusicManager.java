@@ -14,12 +14,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -44,6 +41,8 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
     private JavaStreamPlayer previewJavaStreamPlayer;
     private MusicTrack currentPreviewTrack;
     private final Collection<PreviewListener> previewListeners = new ArrayList<>();
+
+    private boolean inPreviewMode = false;
 
     @Override
     public void init() {
@@ -89,14 +88,30 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
 
     @Override
     public void playPreviewTrack(MusicTrack musicTrack) {
-        play(previewJavaStreamPlayer, musicTrack);
-        currentPreviewTrack = musicTrack;
-        previewListeners.forEach(listener -> listener.onPreviewChanged(musicTrack));
+        if (currentPreviewTrack == musicTrack && previewJavaStreamPlayer.isPausedOrPausing()) {
+            executorService.execute(previewJavaStreamPlayer::resume);
+        } else {
+            executorService.execute(() -> previewJavaStreamPlayer.play(musicTrack));
+            currentPreviewTrack = musicTrack;
+            previewListeners.forEach(listener -> listener.onPreviewChanged(musicTrack));
+        }
     }
 
     @Override
     public void stopPreviewTrack() {
         executorService.submit(previewJavaStreamPlayer::stop);
+    }
+
+    @Override
+    public void startPreviewMode() {
+        pause();
+        inPreviewMode = true;
+    }
+
+    @Override
+    public void stopPreviewMode() {
+        stopPreviewTrack();
+        inPreviewMode = false;
     }
 
     @Override
@@ -125,35 +140,15 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
 
         if (!musicTracks.contains(currentMusicTrack)) {
             playNext();
-        } else if (javaStreamPlayer.getStatus() == Status.PAUSED) {
+        } else if (javaStreamPlayer.isPausedOrPausing()) {
             executorService.submit(javaStreamPlayer::resume);
         }
     }
 
     @Override
     public void play(MusicTrack musicTrack) {
-        play(javaStreamPlayer, musicTrack);
-    }
-
-    private void play(JavaStreamPlayer javaStreamPlayer, MusicTrack musicTrack) {
-        Minecraft minecraft = Minecraft.getInstance();
-        if (musicTrack instanceof ResourceLocationMusicTrack rlMusicTrack) {
-            var fileResourceLocation = Sound.SOUND_LISTER.idToFile(rlMusicTrack.getResourceLocation());
-            Optional<Resource> optionalResource = minecraft.getResourceManager().getResource(fileResourceLocation);
-
-            if (optionalResource.isPresent()) {
-                executorService.submit(() -> {
-                    try {
-                        javaStreamPlayer.stopOpenPlay(new BufferedInputStream(optionalResource.get().open()));
-                    } catch (IOException e) {
-                        Constants.LOG.error(e.getMessage(), e);
-                    }
-                });
-            } else {
-                Constants.LOG.error("Resource not found: {}", rlMusicTrack);
-            }
-        } else if (musicTrack instanceof FileMusicTrack fileMusicTrack) {
-            executorService.submit(() -> javaStreamPlayer.stopOpenPlay(fileMusicTrack.getFile()));
+        if (!inPreviewMode) {
+            executorService.submit(() -> javaStreamPlayer.play(musicTrack));
         }
     }
 
@@ -174,8 +169,8 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
 
     @Override
     public void setVolume(float volume) {
-        executorService.submit(() -> javaStreamPlayer.setGain(volume * 0.5f));
-        executorService.submit(() -> previewJavaStreamPlayer.setGain(volume * 0.5f));
+        executorService.submit(() -> javaStreamPlayer.setTargetGain(volume * 0.5f));
+        executorService.submit(() -> previewJavaStreamPlayer.setTargetGain(volume * 0.5f));
     }
 
     @Override

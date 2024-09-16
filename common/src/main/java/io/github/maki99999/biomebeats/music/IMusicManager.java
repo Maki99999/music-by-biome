@@ -86,4 +86,8 @@ public interface IMusicManager {
     void addPreviewListener(PreviewListener listener);
 
     void removePreviewListener(PreviewListener listener);
+
+    void startPreviewMode();
+
+    void stopPreviewMode();
 }
