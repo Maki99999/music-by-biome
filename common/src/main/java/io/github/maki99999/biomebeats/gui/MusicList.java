@@ -322,9 +322,11 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                 previewButton = new TwoStateImageButton(
                         getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(),
                         new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(),
-                                BaseTextureUv.PAUSE_UV, null, null),
+                                BaseTextureUv.STOP_UV, null,
+                                Tooltip.create(Component.translatable("menu.biomebeats.stop"))),
                         new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(),
-                                BaseTextureUv.PLAY_UV, null, null),
+                                BaseTextureUv.PLAY_UV, null,
+                                Tooltip.create(Component.translatable("menu.biomebeats.play"))),
                         (btn, newValue) -> {
                             if (newValue)
                                 Constants.MUSIC_MANAGER.playPreviewTrack(musicTrack);
@@ -332,9 +334,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                                 Constants.MUSIC_MANAGER.stopPreviewTrack();
 
                             System.out.println("clicked 'preview' on " + musicTrack.getName());
-                        }, Tooltip.create(Component.translatable("menu.biomebeats.preview")),
-                        null
-                );
+                        }, null, null);
                 editButton = new LayeredImageButton(
                         getX() + width - previewButton.getWidth() - BaseTextureUv.EDIT_UV.w() - 1, getY(),
                         BaseTextureUv.EDIT_UV, (click) -> {

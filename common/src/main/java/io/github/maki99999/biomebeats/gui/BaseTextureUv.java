@@ -29,7 +29,7 @@ public class BaseTextureUv {
     public static final Rect EDIT_UV = new Rect(18, 60, 16, 16);
     public static final Rect PLAY_UV = new Rect(36, 60, 16, 16);
     public static final Rect CHECKBOX_CHECKED_UV = new Rect(54, 60, 16, 16);
-    public static final Rect PAUSE_UV = new Rect(72, 60, 16, 16);
+    public static final Rect STOP_UV = new Rect(72, 60, 16, 16);
     public static final Rect FOLDER_UV = new Rect(90, 60, 16, 16);
     public static final Rect RELOAD_UV = new Rect(108, 60, 16, 16);
     public static final Rect ACCORDION_OPEN_UV = new Rect(126, 60, 16, 16);
