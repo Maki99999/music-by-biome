@@ -13,11 +13,13 @@ import java.util.List;
 
 public class BiomeManager {
     private static final int MOST_RECENT_BIOMES_COUNT = 5;
+    private static final int TICKS_BEFORE_NOTIFYING = 60;
 
     private final Collection<BiomeChangeListener> biomeChangeListener = new HashSet<>();
     private final List<Holder<Biome>> mostRecentBiomes = new ArrayList<>();
 
     private Holder<Biome> lastBiome;
+    private long ticksNotInCurrentBiome = Integer.MAX_VALUE;
 
     public void tick() {
         Minecraft minecraft = Minecraft.getInstance();
@@ -28,7 +30,7 @@ public class BiomeManager {
         mostRecentBiomes.remove(currentBiome);
         mostRecentBiomes.add(currentBiome);
 
-        if(mostRecentBiomes.size() > MOST_RECENT_BIOMES_COUNT) {
+        if (mostRecentBiomes.size() > MOST_RECENT_BIOMES_COUNT) {
             mostRecentBiomes.removeLast();
         }
     }
@@ -42,12 +44,18 @@ public class BiomeManager {
             var currentBiome = level.getBiome(player.blockPosition());
             updateMostRecentBiomes(currentBiome);
             if (lastBiome != currentBiome) {
-                for (BiomeChangeListener listener : biomeChangeListener) {
-                    listener.onBiomeChanged(currentBiome);
+                ticksNotInCurrentBiome++;
+                if (ticksNotInCurrentBiome > TICKS_BEFORE_NOTIFYING) {
+                    for (BiomeChangeListener listener : biomeChangeListener) {
+                        listener.onBiomeChanged(currentBiome);
+                    }
+                    lastBiome = currentBiome;
                 }
-                lastBiome = currentBiome;
+            } else {
+                ticksNotInCurrentBiome = 0;
             }
         } else {
+            ticksNotInCurrentBiome = Integer.MAX_VALUE;
             for (BiomeChangeListener listener : biomeChangeListener) {
                 listener.onBiomeChanged(null);
             }
