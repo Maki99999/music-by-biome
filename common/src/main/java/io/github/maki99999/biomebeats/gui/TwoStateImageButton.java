@@ -55,7 +55,7 @@ public class TwoStateImageButton extends ImageButton {
         negativeButton.setX(x);
     }
 
-    private void onValueChange(ImageButton btn) {
+    private void onValueChange(Button btn) {
         state = !state;
         onValueChange.onValueChange((TwoStateImageButton) btn, state);
     }

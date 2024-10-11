@@ -1,7 +1,10 @@
 package io.github.maki99999.biomebeats.condition;
 
+import net.minecraft.network.chat.Component;
+
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 public abstract class Condition {
     private final String name;
@@ -40,6 +43,10 @@ public abstract class Condition {
         listeners.add(listener);
     }
 
+    public void removeListener(ConditionChangeListener listener) {
+        listeners.remove(listener);
+    }
+
     private void notifyListeners() {
         for (ConditionChangeListener listener : listeners) {
             listener.onConditionChanged(this);
@@ -47,4 +54,18 @@ public abstract class Condition {
     }
 
     public abstract String getId();
+
+    public abstract Component getTypeName();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return Objects.equals(getId(), ((Condition) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
 }

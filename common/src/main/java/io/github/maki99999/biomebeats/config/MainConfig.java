@@ -3,6 +3,7 @@ package io.github.maki99999.biomebeats.config;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class MainConfig {
     private Map<String, Collection<String>> musicTrackIdsByConditionId = new HashMap<>();
     private Map<String, MusicTrackConfig> musicTrackConfigById = new HashMap<>();
     private Map<String, ConditionConfig> conditionConfigById = new HashMap<>();
+    private Collection<CombinedConditionConfig> combinedConditionConfigs = new ArrayList<>();
 
     public @NotNull String getVersion() {
         return version;
@@ -47,5 +49,13 @@ public class MainConfig {
 
     public void setConditionConfigById(Map<String, ConditionConfig> conditionConfigById) {
         this.conditionConfigById = conditionConfigById;
+    }
+
+    public Collection<CombinedConditionConfig> getCombinedConditionConfigs() {
+        return combinedConditionConfigs;
+    }
+
+    public void setCombinedConditionConfigs(Collection<CombinedConditionConfig> combinedConditionConfigs) {
+        this.combinedConditionConfigs = combinedConditionConfigs;
     }
 }

@@ -3,6 +3,7 @@ package io.github.maki99999.biomebeats.condition;
 import io.github.maki99999.biomebeats.BiomeBeatsCommon;
 import io.github.maki99999.biomebeats.util.MenuChangeListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 public class MenuCondition extends Condition implements MenuChangeListener {
@@ -19,6 +20,11 @@ public class MenuCondition extends Condition implements MenuChangeListener {
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public Component getTypeName() {
+        return Component.translatable("menu.biomebeats.by_other");
     }
 
     @Override

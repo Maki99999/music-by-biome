@@ -12,4 +12,8 @@ public record Rect(int x, int y, int w, int h) {
     public static Rect fromCoordinates(int x1, int y1, int x2, int y2) {
         return new Rect(x1, y1, x2 - x1, y2 - y1);
     }
+
+    public boolean contains(int x, int y) {
+        return x >= x1() && y >= y1() && x < x2() && y < y2();
+    }
 }

@@ -1,12 +1,7 @@
-- Dont immediately notify biome listeners, wait 3 seconds
+- "is day" and "is night" conditions
 
 - adjust volume of each individual track
-  (edit button? or is there a better option that doesn't require a whole new screen)
-
-- New Tab: "Combined":
-  - add a button or new UI element for users to add custom combined conditions
-  - user can choose a set of conditions from all non-custom conditions
-  - all sub conditions have to be active at the same time for the custom condition to be true
+  - edit button that makes a volume slide appear underneath
 
 - default settings is how minecraft plays their songs (requires tab "Combined"):
   1. currentScreen == WinScreen -> CREDITS

@@ -1,6 +1,7 @@
 package io.github.maki99999.biomebeats.condition;
 
 import io.github.maki99999.biomebeats.Constants;
+import io.github.maki99999.biomebeats.config.CombinedConditionConfig;
 import io.github.maki99999.biomebeats.config.ConditionConfig;
 import io.github.maki99999.biomebeats.config.ConfigChangeListener;
 import io.github.maki99999.biomebeats.config.MainConfig;
@@ -8,10 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 import static io.github.maki99999.biomebeats.util.BiomeUtils.getBiomeRLs;
 import static io.github.maki99999.biomebeats.util.BiomeUtils.getBiomeTagKeys;
@@ -24,6 +22,8 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
     private Collection<BiomeCondition> biomeConditions;
     private Collection<TagCondition> tagConditions;
     private Collection<Condition> otherConditions;
+    private Collection<CombinedCondition> combinedConditions = List.of();
+    private Map<String, Collection<CombinedCondition>> combinedConditionMappings;
 
     private boolean firstTickWithLevel = true;
 
@@ -39,6 +39,10 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
         return otherConditions;
     }
 
+    public Collection<CombinedCondition> getCombinedConditions() {
+        return combinedConditions;
+    }
+
     public void init() {
         Constants.CONFIG_IO.addListener(this);
         initOtherConditions();
@@ -48,17 +52,32 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
         otherConditions = new ArrayList<>();
         otherConditions.add(new MenuCondition("MainMenu", "Main Menu", null));
         otherConditions.forEach(condition -> condition.addListener(this));
-        conditions.addAll(otherConditions);
+        addConditions(otherConditions);
+    }
+
+    private void addConditions(Collection<? extends Condition> conditions) {
+        this.conditions.addAll(conditions);
+        mapToCombinedCondition(conditions);
+    }
+
+    private void mapToCombinedCondition(Collection<? extends Condition> conditions) {
+        for (Condition condition : conditions) {
+            String conditionId = condition.getId();
+            if (combinedConditionMappings != null && combinedConditionMappings.containsKey(conditionId)) {
+                combinedConditionMappings.get(conditionId).forEach(c -> c.addCondition(condition));
+                combinedConditionMappings.remove(conditionId);
+            }
+        }
     }
 
     private void initBiomeConditions(@NotNull Level level) {
         biomeConditions = BiomeCondition.toConditions(getBiomeRLs(level), this);
         Constants.BIOME_MANAGER.addBiomeChangeListeners(biomeConditions);
-        conditions.addAll(biomeConditions);
+        addConditions(biomeConditions);
 
         tagConditions = TagCondition.toFilteredConditions(getBiomeTagKeys(level), this);
         Constants.BIOME_MANAGER.addBiomeChangeListeners(tagConditions);
-        conditions.addAll(tagConditions);
+        addConditions(tagConditions);
     }
 
     public void resetConditions() {
@@ -109,6 +128,13 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
 
     @Override
     public void beforeConfigChange(MainConfig config) {
+        Collection<CombinedConditionConfig> combinedConditionConfigs = new ArrayList<>();
+        for (CombinedCondition condition : combinedConditions) {
+            combinedConditionConfigs.add(new CombinedConditionConfig(condition.getUuid(), condition.getName(),
+                    condition.getDescription(), condition.getConditions().stream().map(Condition::getId).toList()));
+        }
+        config.setCombinedConditionConfigs(combinedConditionConfigs);
+
         Map<String, ConditionConfig> conditionConfigById = config.getConditionConfigById();
         for (Condition condition : conditions) {
             ConditionConfig conditionConfig = conditionConfigById.computeIfAbsent(condition.getId(),
@@ -119,6 +145,22 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
 
     @Override
     public void afterConfigChange(MainConfig config) {
+        conditions.removeAll(combinedConditions);
+        combinedConditions = new ArrayList<>();
+        combinedConditionMappings = new HashMap<>();
+        for (CombinedConditionConfig conditionConfig : config.getCombinedConditionConfigs()) {
+            CombinedCondition combinedCondition = new CombinedCondition(conditionConfig.getUuid(),
+                    conditionConfig.getName(), conditionConfig.getDescription());
+            combinedCondition.addListener(this);
+            combinedConditions.add(combinedCondition);
+            conditions.add(combinedCondition);
+
+            for (String conditionId : conditionConfig.getConditionIds()) {
+                combinedConditionMappings.computeIfAbsent(conditionId, id -> new ArrayList<>()).add(combinedCondition);
+            }
+            mapToCombinedCondition(conditions);
+        }
+
         Map<String, ConditionConfig> conditionConfigById = config.getConditionConfigById();
         for (Condition condition : conditions) {
             if (conditionConfigById.containsKey(condition.getId())) {
@@ -130,5 +172,24 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
         for (ActiveConditionsListener listener : activeConditionsListener) {
             listener.onActiveConditionsChanged(activeConditions);
         }
+    }
+
+    public void addCombinedCondition(CombinedCondition combinedCondition) {
+        conditions.add(combinedCondition);
+        combinedConditions.add(combinedCondition);
+        combinedCondition.addListener(this);
+    }
+
+    public void updateCombinedCondition(CombinedCondition oldCombinedCondition, CombinedCondition combinedCondition) {
+        conditions.remove(oldCombinedCondition);
+        combinedConditions.remove(oldCombinedCondition);
+        conditions.add(combinedCondition);
+        combinedConditions.add(combinedCondition);
+    }
+
+    public void removeCombinedCondition(CombinedCondition combinedCondition) {
+        conditions.remove(combinedCondition);
+        combinedConditions.remove(combinedCondition);
+        combinedCondition.removeListener(this);
     }
 }
