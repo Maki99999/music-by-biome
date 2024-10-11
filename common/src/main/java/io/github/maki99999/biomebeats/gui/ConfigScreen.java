@@ -377,7 +377,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     }
 
     public void updateCombinedCondition(CombinedCondition oldCondition, CombinedCondition condition) {
-        if (oldCondition == null && condition != null) {
+        if (oldCondition == null && condition != null && !condition.isEmpty()) {
             Constants.CONDITION_MANAGER.addCombinedCondition(condition);
         } else if (oldCondition != null && condition != null) {
             Constants.CONDITION_MANAGER.updateCombinedCondition(oldCondition, condition);

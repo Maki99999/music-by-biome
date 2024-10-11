@@ -102,4 +102,10 @@ public class CombinedCondition extends Condition implements ConditionChangeListe
     public boolean isConditionMet() {
         return super.isConditionMet();
     }
+
+    public boolean isEmpty() {
+        return conditions.isEmpty()
+                && (name == null || name.isEmpty())
+                && (description == null || description.isEmpty());
+    }
 }
