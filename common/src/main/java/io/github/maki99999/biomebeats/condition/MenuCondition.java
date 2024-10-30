@@ -29,6 +29,7 @@ public class MenuCondition extends Condition implements MenuChangeListener {
 
     @Override
     public void onMenuChanged(Screen screen, Player player) {
-        setConditionMet(this.screen == null ? player == null : this.screen.equals(screen.getClass()));
+        setConditionMet(this.screen == null ? player == null :
+                (screen != null && this.screen.equals(screen.getClass())));
     }
 }

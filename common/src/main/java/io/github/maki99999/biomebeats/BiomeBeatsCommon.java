@@ -3,6 +3,7 @@ package io.github.maki99999.biomebeats;
 import io.github.maki99999.biomebeats.util.MenuChangeListener;
 import io.github.maki99999.biomebeats.gui.ConfigScreen;
 import io.github.maki99999.biomebeats.service.Services;
+import io.github.maki99999.biomebeats.util.TickListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -25,8 +26,9 @@ import java.util.Set;
 
 public class BiomeBeatsCommon {
     private static final Logger DEBUG_LOGGER = LoggerFactory.getLogger(Constants.LOG.getName() + "Debug");
+    private static final Set<MenuChangeListener> MENU_CHANGE_LISTENERS = new HashSet<>();
+    private static final Set<TickListener> TICK_LISTENERS = new HashSet<>();
     private static boolean initAfterSetupDone = false;
-    private static final Set<MenuChangeListener> menuChangeListeners = new HashSet<>();
 
     public static void init() {
         // sadly the sound library uses System.out, so I'm disabling it here.
@@ -70,6 +72,10 @@ public class BiomeBeatsCommon {
         while (Constants.CONFIG_KEY_MAPPING.consumeClick()) {
             Minecraft.getInstance().setScreen(new ConfigScreen());
         }
+
+        for (TickListener tickListener : TICK_LISTENERS) {
+            tickListener.onTick();
+        }
     }
 
     public static void initAfterSetup() {
@@ -88,13 +94,17 @@ public class BiomeBeatsCommon {
     }
 
     public static void addMenuChangeListener(MenuChangeListener listener) {
-        menuChangeListeners.add(listener);
+        MENU_CHANGE_LISTENERS.add(listener);
     }
 
     public static void notifyMenuChangeListeners(Screen screen, Player player) {
-        for (MenuChangeListener listener : menuChangeListeners) {
+        for (MenuChangeListener listener : MENU_CHANGE_LISTENERS) {
             listener.onMenuChanged(screen, player);
         }
+    }
+
+    public static void addTickListener(TickListener listener) {
+        TICK_LISTENERS.add(listener);
     }
 
     public static void onMenuChanged(Screen screen, Player player) {

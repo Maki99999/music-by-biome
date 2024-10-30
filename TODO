@@ -1,7 +1,10 @@
-- "is day" and "is night" conditions
+- BUG: after song ends the next one doesnt start?
 
 - adjust volume of each individual track
-  - edit button that makes a volume slide appear underneath
+  -> edit button that makes a volume slide appear underneath
+
+- a way to invert a condition in a CombinedCondition
+  - fix default config: *Not* in nether && this.player.getAbilities().instabuild and .mayfly -> CREATIVE
 
 - default settings is how minecraft plays their songs (requires tab "Combined"):
   1. currentScreen == WinScreen -> CREDITS

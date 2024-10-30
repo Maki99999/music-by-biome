@@ -125,9 +125,8 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         tabs = new HashMap<>();
         addTab(TabType.BY_BIOME, Component.translatable("menu.biomebeats.by_biome"), bounds.x() - 57, bounds.y() + 4);
         addTab(TabType.BY_TAG, Component.translatable("menu.biomebeats.by_tag"), bounds.x() - 57, bounds.y() + 26);
-        addTab(TabType.BY_TIME, Component.translatable("menu.biomebeats.by_time"), bounds.x() - 57, bounds.y() + 48);
-        addTab(TabType.BY_OTHER, Component.translatable("menu.biomebeats.by_other"), bounds.x() - 57, bounds.y() + 70);
-        addTab(TabType.COMBINED, Component.translatable("menu.biomebeats.combined"), bounds.x() - 57, bounds.y() + 92);
+        addTab(TabType.BY_OTHER, Component.translatable("menu.biomebeats.by_other"), bounds.x() - 57, bounds.y() + 48);
+        addTab(TabType.COMBINED, Component.translatable("menu.biomebeats.combined"), bounds.x() - 57, bounds.y() + 70);
 
         // Combined Condition
         addCombinedConditionBtn = new LayeredImageButton(boundsL.x2() - BaseTextureUv.PLUS_UV.w() - 2,
@@ -195,7 +194,6 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         conditions = Map.ofEntries(
                 Map.entry(TabType.BY_BIOME, Constants.CONDITION_MANAGER.getBiomeConditions()),
                 Map.entry(TabType.BY_TAG, Constants.CONDITION_MANAGER.getTagConditions()),
-                Map.entry(TabType.BY_TIME, List.of()),
                 Map.entry(TabType.BY_OTHER, Constants.CONDITION_MANAGER.getOtherConditions()),
                 Map.entry(TabType.COMBINED, Constants.CONDITION_MANAGER.getCombinedConditions())
         );
@@ -391,7 +389,6 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     private enum TabType {
         BY_BIOME,
         BY_TAG,
-        BY_TIME,
         BY_OTHER,
         COMBINED
     }

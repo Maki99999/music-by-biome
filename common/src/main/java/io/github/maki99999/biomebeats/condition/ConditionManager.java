@@ -6,6 +6,8 @@ import io.github.maki99999.biomebeats.config.ConditionConfig;
 import io.github.maki99999.biomebeats.config.ConfigChangeListener;
 import io.github.maki99999.biomebeats.config.MainConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.WinScreen;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +52,16 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
 
     private void initOtherConditions() {
         otherConditions = new ArrayList<>();
-        otherConditions.add(new MenuCondition("MainMenu", "Main Menu", null));
+
+        otherConditions.add(new MenuCondition("MainMenu", "In Main Menu", null));
+        otherConditions.add(new MenuCondition("WinScreen", "In Win Screen", WinScreen.class));
+        otherConditions.add(new DayTimeCondition(true));
+        otherConditions.add(new DayTimeCondition(false));
+        otherConditions.add(new BossOverlayWithMusicCondition());
+        otherConditions.add(new IsUnderwaterCondition());
+        otherConditions.add(new InGameModeCondition(GameType.CREATIVE));
+        otherConditions.add(new InGameModeCondition(GameType.SPECTATOR));
+
         otherConditions.forEach(condition -> condition.addListener(this));
         addConditions(otherConditions);
     }
