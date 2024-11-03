@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 import static io.github.maki99999.biomebeats.util.BiomeUtils.getBiomeRLs;
 import static io.github.maki99999.biomebeats.util.BiomeUtils.getBiomeTagKeys;
@@ -53,14 +54,15 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
     private void initOtherConditions() {
         otherConditions = new ArrayList<>();
 
-        otherConditions.add(new MenuCondition("MainMenu", "In Main Menu", null));
-        otherConditions.add(new MenuCondition("WinScreen", "In Win Screen", WinScreen.class));
+        otherConditions.add(new ScreenCondition("MainMenu", "In Main Menu", null));
+        otherConditions.add(new ScreenCondition("WinScreen", "In Win Screen", WinScreen.class));
         otherConditions.add(new DayTimeCondition(true));
         otherConditions.add(new DayTimeCondition(false));
         otherConditions.add(new BossOverlayWithMusicCondition());
-        otherConditions.add(new IsUnderwaterCondition());
+        otherConditions.add(new IsUnderWaterCondition());
         otherConditions.add(new InGameModeCondition(GameType.CREATIVE));
         otherConditions.add(new InGameModeCondition(GameType.SPECTATOR));
+        otherConditions.add(new NoOtherMusicCondition());
 
         otherConditions.forEach(condition -> condition.addListener(this));
         addConditions(otherConditions);
@@ -69,6 +71,7 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
     private void addConditions(Collection<? extends Condition> conditions) {
         this.conditions.addAll(conditions);
         mapToCombinedCondition(conditions);
+        conditions.stream().filter(Condition::isConditionMet).forEach(activeConditions::add);
     }
 
     private void mapToCombinedCondition(Collection<? extends Condition> conditions) {
@@ -183,6 +186,49 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
         for (ActiveConditionsListener listener : activeConditionsListener) {
             listener.onActiveConditionsChanged(activeConditions);
         }
+
+        if (config.isNewConfig()) {
+            addDefaultConfig();
+        }
+    }
+
+    private void addDefaultConfig() {
+        Condition isEnd = findCondition(c -> c instanceof TagCondition tagCondition
+                && tagCondition.getName().equals("Is End"));
+        Condition boss = findCondition(c -> c instanceof BossOverlayWithMusicCondition);
+
+        CombinedCondition endBoss = new CombinedCondition();
+        endBoss.setName("End Boss");
+        endBoss.setDescription("Default Configuration");
+        endBoss.addCondition(isEnd);
+        endBoss.addCondition(boss);
+        endBoss.setPriority(4);
+        addCombinedCondition(endBoss);
+
+        if (isEnd != null) isEnd.setPriority(3);
+
+        Condition underwater = findCondition(c -> c instanceof IsUnderWaterCondition);
+        Condition playsUnderWaterMusic = findCondition(c -> c instanceof TagCondition tagCondition
+                && tagCondition.getName().equals("Plays Underwater Music"));
+
+        CombinedCondition underwaterMusicCondition = new CombinedCondition();
+        underwaterMusicCondition.setName("Is Under Water in Underwater Biome");
+        underwaterMusicCondition.setDescription("Default Configuration");
+        underwaterMusicCondition.addCondition(underwater);
+        underwaterMusicCondition.addCondition(playsUnderWaterMusic);
+        underwaterMusicCondition.setPriority(2);
+        addCombinedCondition(underwaterMusicCondition);
+
+        findCondition(c -> c instanceof ScreenCondition screenCondition
+                && Objects.equals(screenCondition.getScreen(), WinScreen.class)).setPriority(6);
+        findCondition(c -> c instanceof ScreenCondition screenCondition
+                && screenCondition.getScreen() == null).setPriority(5);
+        findCondition(c -> c instanceof InGameModeCondition inGameModeCondition
+                && inGameModeCondition.getName().contains("Creative")).setPriority(1);
+    }
+
+    public Condition findCondition(Predicate<? super Condition> predicate) {
+        return conditions.stream().filter(predicate).findAny().orElse(null);
     }
 
     public void addCombinedCondition(CombinedCondition combinedCondition) {

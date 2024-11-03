@@ -1,5 +1,6 @@
 package io.github.maki99999.biomebeats.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,6 +14,8 @@ public class MainConfig {
 
     @NotNull
     private String version = CURRENT_VERSION;
+    @JsonIgnore
+    private boolean newConfig = false;
     @JsonDeserialize(using = MusicTrackIdsByConditionIdDeserializer.class)
     private Map<String, Collection<String>> musicTrackIdsByConditionId = new HashMap<>();
     private Map<String, MusicTrackConfig> musicTrackConfigById = new HashMap<>();
@@ -57,5 +60,19 @@ public class MainConfig {
 
     public void setCombinedConditionConfigs(Collection<CombinedConditionConfig> combinedConditionConfigs) {
         this.combinedConditionConfigs = combinedConditionConfigs;
+    }
+
+    public boolean isNewConfig() {
+        return newConfig;
+    }
+
+    void setNewConfig(boolean newConfig) {
+        this.newConfig = newConfig;
+    }
+
+    public static MainConfig fromScratch() {
+        MainConfig mainConfig = new MainConfig();
+        mainConfig.setNewConfig(true);
+        return mainConfig;
     }
 }

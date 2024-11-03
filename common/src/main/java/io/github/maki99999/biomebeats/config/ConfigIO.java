@@ -35,9 +35,12 @@ public class ConfigIO {
     }
 
     public void saveConfig(MainConfig config) {
+        config.setNewConfig(false);
         notifyBeforeConfigChangeListeners(config);
 
-        //TODO: optimize what to save: remove everything that only has default values/that has no values (condition with priority 0 etc, musicTrackIdsByConditionId with empty music list, minecraft music with all config fields default)
+        //TODO: optimize what to save: remove everything that only has default values/that has no values (condition
+        // with priority 0 etc, musicTrackIdsByConditionId with empty music list, minecraft music with all config
+        // fields default)
 
         Path configFilePath = getConfigFilePath();
 
@@ -82,7 +85,9 @@ public class ConfigIO {
             Constants.LOG.warn("Configuration file {} does not exist", configFilePath);
         }
 
-        if (config == null) config = new MainConfig();
+        if (config == null) {
+            config = MainConfig.fromScratch();
+        }
 
         notifyAfterConfigChangeListeners(config);
     }

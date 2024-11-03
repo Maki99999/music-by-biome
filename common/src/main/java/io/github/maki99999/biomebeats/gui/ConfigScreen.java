@@ -5,6 +5,7 @@ import io.github.maki99999.biomebeats.Constants;
 import io.github.maki99999.biomebeats.condition.BiomeCondition;
 import io.github.maki99999.biomebeats.condition.CombinedCondition;
 import io.github.maki99999.biomebeats.condition.Condition;
+import io.github.maki99999.biomebeats.condition.NoOtherMusicCondition;
 import io.github.maki99999.biomebeats.config.ConfigChangeListener;
 import io.github.maki99999.biomebeats.config.MainConfig;
 import io.github.maki99999.biomebeats.music.MusicGroup;
@@ -305,7 +306,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
 
     private void setRightColumnVisibility(boolean visible) {
         musicList.setVisibility(visible);
-        priorityField.setVisible(visible);
+        priorityField.setVisible(visible && !(currentCondition instanceof NoOtherMusicCondition));
         musicSearchBox.setVisible(visible);
     }
 
@@ -336,6 +337,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
 
     private void onConditionSelected(Condition condition) {
         currentCondition = condition;
+        priorityField.setVisible(!(condition instanceof NoOtherMusicCondition));
         priorityField.setValue("" + condition.getPriority());
         setRightColumnVisibility(true);
         updateCheckedMusicTracks();

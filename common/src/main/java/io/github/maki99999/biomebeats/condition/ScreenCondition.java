@@ -6,11 +6,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-public class MenuCondition extends Condition implements MenuChangeListener {
+public class ScreenCondition extends Condition implements MenuChangeListener {
     private final String id;
     private final Class<? extends Screen> screen;
 
-    public MenuCondition(String id, String name, Class<? extends Screen> screen) {
+    public ScreenCondition(String id, String name, Class<? extends Screen> screen) {
         super(name);
         this.id = id;
         this.screen = screen;
@@ -25,6 +25,10 @@ public class MenuCondition extends Condition implements MenuChangeListener {
     @Override
     public Component getTypeName() {
         return Component.translatable("menu.biomebeats.by_other");
+    }
+
+    public Class<? extends Screen> getScreen() {
+        return screen;
     }
 
     @Override

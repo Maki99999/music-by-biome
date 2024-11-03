@@ -6,15 +6,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-public class IsUnderwaterCondition extends Condition implements TickListener {
-    public IsUnderwaterCondition() {
-        super("Is Underwater");
+public class IsUnderWaterCondition extends Condition implements TickListener {
+    public IsUnderWaterCondition() {
+        super("Is Under Water");
         BiomeBeatsCommon.addTickListener(this);
     }
 
     @Override
     public String getId() {
-        return "IsUnderwater";
+        return "IsUnderWater";
     }
 
     @Override

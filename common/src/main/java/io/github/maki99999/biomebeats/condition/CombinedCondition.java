@@ -68,9 +68,14 @@ public class CombinedCondition extends Condition implements ConditionChangeListe
     }
 
     public void addCondition(Condition condition) {
+        if (condition == null) {
+            return;
+        }
+
         if (condition instanceof CombinedCondition) {
             throw new NestedException("CombinedCondition cannot hold another CombinedCondition.");
         }
+
         conditions.add(condition);
         condition.addListener(this);
         onConditionChanged(condition);

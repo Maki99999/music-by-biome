@@ -45,4 +45,9 @@ public abstract class MusicTrack {
     public boolean equals(Object obj) {
         return obj instanceof MusicTrack mt && mt.getId().equals(id);
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
