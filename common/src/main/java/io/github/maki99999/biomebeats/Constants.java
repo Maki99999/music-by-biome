@@ -5,7 +5,6 @@ import io.github.maki99999.biomebeats.biome.BiomeManager;
 import io.github.maki99999.biomebeats.condition.ConditionManager;
 import io.github.maki99999.biomebeats.conditionmusic.ConditionMusicManager;
 import io.github.maki99999.biomebeats.config.ConfigIO;
-import io.github.maki99999.biomebeats.music.IMusicManager;
 import io.github.maki99999.biomebeats.music.MusicManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.core.Holder;
@@ -25,7 +24,7 @@ public class Constants {
     public static final String MUSIC_FOLDER = "music";
     public static final Music EMPTY_MUSIC = new Music(new Holder.Direct<>(SoundEvents.EMPTY), Integer.MAX_VALUE,
             Integer.MAX_VALUE, true);
-    public static final IMusicManager MUSIC_MANAGER = new MusicManager();
+    public static final MusicManager MUSIC_MANAGER = new MusicManager();
     public static final ConditionManager CONDITION_MANAGER = new ConditionManager();
     public static final ConditionMusicManager CONDITION_MUSIC_MANAGER = new ConditionMusicManager();
     public static final ConfigIO CONFIG_IO = new ConfigIO();

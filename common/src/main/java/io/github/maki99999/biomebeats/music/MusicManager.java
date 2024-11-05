@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MusicManager implements IMusicManager, StreamPlayerListener, ConfigChangeListener {
+public class MusicManager implements StreamPlayerListener, ConfigChangeListener {
     private static final Collection<String> SUPPORTED_FILE_EXTENSIONS = List.of("wav", "au", "aiff", "aif", "aifc",
             "mp3", "ogg", "flac", "ape", "spx");
 
@@ -44,7 +44,6 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
 
     private boolean inPreviewMode = false;
 
-    @Override
     public void init() {
         executorService = Executors.newSingleThreadExecutor();
         javaStreamPlayer = new JavaStreamPlayer();
@@ -81,12 +80,10 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
         });
     }
 
-    @Override
     public void reloadMusicTracksAndGroups() {
         findMusicTracksAndGroups();
     }
 
-    @Override
     public void playPreviewTrack(MusicTrack musicTrack) {
         if (currentPreviewTrack == musicTrack && previewJavaStreamPlayer.isPausedOrPausing()) {
             executorService.execute(previewJavaStreamPlayer::resume);
@@ -97,35 +94,29 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
         }
     }
 
-    @Override
     public void stopPreviewTrack() {
         executorService.submit(previewJavaStreamPlayer::stop);
     }
 
-    @Override
     public void startPreviewMode() {
         pause();
         inPreviewMode = true;
     }
 
-    @Override
     public void stopPreviewMode() {
         stopPreviewTrack();
         inPreviewMode = false;
     }
 
-    @Override
     public void addPreviewListener(PreviewListener listener) {
         previewListeners.add(listener);
         listener.onPreviewChanged(currentPreviewTrack);
     }
 
-    @Override
     public void removePreviewListener(PreviewListener listener) {
         previewListeners.remove(listener);
     }
 
-    @Override
     public void close() {
         if (javaStreamPlayer != null)
             javaStreamPlayer.close();
@@ -133,7 +124,6 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
             executorService.close();
     }
 
-    @Override
     public void setCurrentMusicTracks(Collection<MusicTrack> musicTracks) {
         currentMusicTracks = musicTracks;
         Constants.LOG.debug("Songs: {}", String.join(", ", musicTracks.stream().map(MusicTrack::getName).toList()));
@@ -145,35 +135,29 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
         }
     }
 
-    @Override
     public void play(MusicTrack musicTrack) {
         if (!inPreviewMode) {
             executorService.submit(() -> javaStreamPlayer.play(musicTrack));
         }
     }
 
-    @Override
     public void stop() {
         executorService.submit(javaStreamPlayer::stop);
     }
 
-    @Override
     public void pause() {
         executorService.submit(javaStreamPlayer::pause);
     }
 
-    @Override
     public void resume() {
         executorService.submit(javaStreamPlayer::resume);
     }
 
-    @Override
     public void setVolume(float volume) {
         executorService.submit(() -> javaStreamPlayer.setTargetGain(volume * 0.5f));
         executorService.submit(() -> previewJavaStreamPlayer.setTargetGain(volume * 0.5f));
     }
 
-    @Override
     public Collection<? extends MusicTrack> getMusicTracks() {
         if (musicTracks == null) {
             Constants.LOG.error("Music tracks are not initialized yet!");
@@ -181,7 +165,6 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
         return musicTracks;
     }
 
-    @Override
     public Collection<MusicGroup> getMusicGroups() {
         if (musicGroups == null) {
             Constants.LOG.error("Music groups are not initialized yet!");
@@ -203,11 +186,11 @@ public class MusicManager implements IMusicManager, StreamPlayerListener, Config
         final Status status = event.getPlayerStatus();
         Constants.LOG.debug("New music player status: {}", status.name());
         if (status == Status.EOM) {
+            javaStreamPlayer.musicEnded();
             playNext();
         }
     }
 
-    @Override
     public MusicTrack getCurrentMusicTrack() {
         return currentMusicTrack;
     }

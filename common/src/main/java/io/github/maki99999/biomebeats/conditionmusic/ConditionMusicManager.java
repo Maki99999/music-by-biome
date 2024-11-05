@@ -34,17 +34,17 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
 
     @Override
     public void onActiveConditionsChanged(Collection<? extends Condition> activeConditions) {
-        int highestPriority = activeConditions.stream().mapToInt(Condition::getPriority).max().orElse(0);
-        Collection<? extends Condition> highestPriorityConditions = activeConditions
-                .stream()
-                .filter(c -> c.getPriority() == highestPriority)
-                .toList();
+        int highestPriority = activeConditions.stream()
+                .filter(c -> musicTracksByCondition.containsKey(c))
+                .mapToInt(Condition::getPriority)
+                .max()
+                .orElse(Integer.MIN_VALUE);
 
         Constants.MUSIC_MANAGER.setCurrentMusicTracks(
                 musicTracksByCondition
                         .entrySet()
                         .stream()
-                        .filter(e -> highestPriorityConditions.contains(e.getKey()))
+                        .filter(e -> e.getKey().getPriority() == highestPriority)
                         .flatMap(e -> e.getValue().stream())
                         .toList()
         );

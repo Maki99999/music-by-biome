@@ -1,5 +1,12 @@
-- BUG: after song ends the next one doesnt start?
+- BUG: after opening the config screen for the first time, the music resumes
+- improve recentMusicTracks by only adding a music track if it isn't already at the top of the list
 - maybe a BUG: when saving, what happens to deleted CombinedConditions? also are they still in the config file afterwards?
+
+- in the config screen: a indicator on each condition that tells you if the condition has songs
+  - small dot or a vertical bar on the far right
+  - also on the tabs?
+  - normally white, but when the condition is met, color it green
+  - maybe sort it so that the conditions with the indicator are displayed first
 
 - adjust volume of each individual track
   -> edit button that makes a volume slide appear underneath

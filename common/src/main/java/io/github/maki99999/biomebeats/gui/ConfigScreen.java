@@ -155,15 +155,21 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         String cleanFilter = filter.trim().toLowerCase();
 
         if (currentTab == TabType.BY_BIOME) {
-            Set<ResourceLocation> recentBiomesRLs = Constants.BIOME_MANAGER.getMostRecentBiomes().stream()
+            List<ResourceLocation> recentBiomesRLs = Constants.BIOME_MANAGER.getMostRecentBiomes().stream()
                     .map(holder -> holder.unwrapKey().map(ResourceKey::location).orElse(null))
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
+                    .toList();
 
             sortedFilteredConditions.put(TabType.BY_BIOME, conditions.get(TabType.BY_BIOME).stream()
                     .filter(condition -> condition.getName().toLowerCase().contains(cleanFilter))
                     .sorted(Comparator
-                            .comparing((Condition c) -> c instanceof BiomeCondition bc && recentBiomesRLs.contains(bc.getBiomeRL()) ? 0 : 1)
+                            .comparingInt((Condition c) -> {
+                                if (c instanceof BiomeCondition bc) {
+                                    int index = recentBiomesRLs.indexOf(bc.getBiomeRL());
+                                    return index >= 0 ? index : Integer.MAX_VALUE;
+                                }
+                                return Integer.MAX_VALUE;
+                            })
                             .thenComparing(Condition::getName))
                     .toList());
 

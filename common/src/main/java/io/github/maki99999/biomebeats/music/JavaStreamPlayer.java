@@ -40,14 +40,18 @@ public class JavaStreamPlayer {
         this.fadeExecutor = Executors.newSingleThreadExecutor();
     }
 
-    JavaStreamPlayer(StreamPlayer player, ExecutorService fadeExecutor, StateLogger debugLogger) {
-        this.player = player;
-        this.fadeExecutor = fadeExecutor;
+    JavaStreamPlayer(StateLogger debugLogger) {
+        this.player = new StreamPlayer();
+        this.fadeExecutor = Executors.newSingleThreadExecutor();
         this.debugLogger = debugLogger;
     }
 
     public void setTargetGain(double targetGain) {
         this.targetGain = targetGain;
+        if(currentState != State.FadeIn && currentState != State.FadeOut) {
+            currentGain = targetGain;
+            player.setGain(currentGain);
+        }
     }
 
     private synchronized void setCurrentState(State currentState) {
@@ -65,6 +69,7 @@ public class JavaStreamPlayer {
                 try {
                     player.open(new BufferedInputStream(optionalResource.get().open()));
                     player.play();
+                    player.setGain(this.currentGain);
                 } catch (IOException | StreamPlayerException e) {
                     Constants.LOG.error(e.getMessage(), e);
                 }
@@ -75,6 +80,7 @@ public class JavaStreamPlayer {
             try {
                 player.open(fileMusicTrack.getFile());
                 player.play();
+                player.setGain(this.currentGain);
             } catch (StreamPlayerException e) {
                 Constants.LOG.error(e.getMessage(), e);
             }
@@ -90,7 +96,7 @@ public class JavaStreamPlayer {
                 } else if (currentSong == null) {
                     openPlay(song);
                 } else {
-                    player.stop();
+                    stopBeforeOpenPlay();
                     openPlay(song);
                 }
                 startFadeIn();
@@ -114,6 +120,12 @@ public class JavaStreamPlayer {
         }
     }
 
+    private void stopBeforeOpenPlay() {
+        player.stop();
+        currentGain = 0;
+        player.setGain(currentGain);
+    }
+
     public synchronized void pause() {
         if (debugLogger != null) debugLogger.log("New signal: pause");
         switch (currentState) {
@@ -133,7 +145,7 @@ public class JavaStreamPlayer {
         if (debugLogger != null) debugLogger.log("New signal: stop");
         switch (currentState) {
             case NoMusic:
-                player.stop();
+                stopBeforeOpenPlay();
                 break;
             case FadeIn, Music:
                 startFadeOut();
@@ -178,7 +190,7 @@ public class JavaStreamPlayer {
                     setCurrentState(State.NoMusic);
                     currentSong = null;
                     queue = null;
-                    player.stop();
+                    stopBeforeOpenPlay();
                 } else if (queue.equals(PAUSE)) {
                     setCurrentState(State.NoMusic);
                     queue = null;
@@ -188,7 +200,7 @@ public class JavaStreamPlayer {
                     queue = null;
                 } else if(queue instanceof MusicTrack queuedMusic) {
                     startFadeIn();
-                    player.stop();
+                    stopBeforeOpenPlay();
                     openPlay(queuedMusic);
                     currentSong = queuedMusic;
                     queue = null;
@@ -243,7 +255,7 @@ public class JavaStreamPlayer {
         if (fadeTask != null && !fadeTask.isDone()) {
             fadeTask.cancel(true);
         }
-        player.stop();
+        stopBeforeOpenPlay();
         player.reset();
         fadeExecutor.close();
     }
@@ -255,6 +267,12 @@ public class JavaStreamPlayer {
     public boolean isPausedOrPausing() {
         return (currentState == State.NoMusic && currentSong != null)
                 || (currentState == State.FadeOut && queue != null && queue.equals(PAUSE));
+    }
+
+    public void musicEnded() {
+        currentSong = null;
+        queue = null;
+        setCurrentState(State.NoMusic);
     }
 
     enum State {
