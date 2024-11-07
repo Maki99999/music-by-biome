@@ -130,15 +130,18 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
 
         if (!musicTracks.contains(currentMusicTrack)) {
             playNext();
-        } else if (javaStreamPlayer.isPausedOrPausing()) {
+        } else if (!inPreviewMode && javaStreamPlayer.isPausedOrPausing()) {
             executorService.submit(javaStreamPlayer::resume);
         }
     }
 
     public void play(MusicTrack musicTrack) {
-        if (!inPreviewMode) {
-            executorService.submit(() -> javaStreamPlayer.play(musicTrack));
-        }
+        executorService.submit(() -> {
+            javaStreamPlayer.play(musicTrack);
+            if (inPreviewMode) {
+                javaStreamPlayer.pause();
+            }
+        });
     }
 
     public void stop() {

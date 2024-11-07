@@ -1,4 +1,4 @@
-- BUG: after opening the config screen for the first time, the music resumes
+- BUG: Pausing and resuming a few times -> gain isn't correct/fade doesn't work correctly (is cut off etc.)
 - improve recentMusicTracks by only adding a music track if it isn't already at the top of the list
 - maybe a BUG: when saving, what happens to deleted CombinedConditions? also are they still in the config file afterwards?
 

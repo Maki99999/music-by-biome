@@ -48,7 +48,7 @@ public class JavaStreamPlayer {
 
     public void setTargetGain(double targetGain) {
         this.targetGain = targetGain;
-        if(currentState != State.FadeIn && currentState != State.FadeOut) {
+        if (currentState != State.FadeIn && currentState != State.FadeOut) {
             currentGain = targetGain;
             player.setGain(currentGain);
         }
@@ -96,7 +96,7 @@ public class JavaStreamPlayer {
                 } else if (currentSong == null) {
                     openPlay(song);
                 } else {
-                    stopBeforeOpenPlay();
+                    stopAndResetGain();
                     openPlay(song);
                 }
                 startFadeIn();
@@ -120,7 +120,7 @@ public class JavaStreamPlayer {
         }
     }
 
-    private void stopBeforeOpenPlay() {
+    private void stopAndResetGain() {
         player.stop();
         currentGain = 0;
         player.setGain(currentGain);
@@ -133,10 +133,18 @@ public class JavaStreamPlayer {
                 break;
             case FadeIn, Music:
                 startFadeOut();
-                queue = PAUSE;
+                if (queue != null && queue instanceof MusicTrack queuedMusic && queuedMusic != currentSong) {
+                    queue = new PauseWithSong(queuedMusic);
+                } else {
+                    queue = PAUSE;
+                }
                 break;
             case FadeOut:
-                queue = PAUSE;
+                if (queue != null && queue instanceof MusicTrack queuedMusic && queuedMusic != currentSong) {
+                    queue = new PauseWithSong(queuedMusic);
+                } else {
+                    queue = PAUSE;
+                }
                 break;
         }
     }
@@ -145,7 +153,7 @@ public class JavaStreamPlayer {
         if (debugLogger != null) debugLogger.log("New signal: stop");
         switch (currentState) {
             case NoMusic:
-                stopBeforeOpenPlay();
+                stopAndResetGain();
                 break;
             case FadeIn, Music:
                 startFadeOut();
@@ -184,28 +192,41 @@ public class JavaStreamPlayer {
                 queue = null;
                 break;
             case FadeOut:
-                if (queue == null) {
-                    break;
-                } else if (queue == STOP) {
-                    setCurrentState(State.NoMusic);
-                    currentSong = null;
-                    queue = null;
-                    stopBeforeOpenPlay();
-                } else if (queue.equals(PAUSE)) {
-                    setCurrentState(State.NoMusic);
-                    queue = null;
-                    player.pause();
-                } else if (queue.equals(currentSong)) {
-                    startFadeIn();
-                    queue = null;
-                } else if(queue instanceof MusicTrack queuedMusic) {
-                    startFadeIn();
-                    stopBeforeOpenPlay();
-                    openPlay(queuedMusic);
-                    currentSong = queuedMusic;
-                    queue = null;
-                }
+                processQueue();
                 break;
+        }
+    }
+
+    private void processQueue() {
+        if (queue == null) {
+            return;
+        }
+
+        if (queue == STOP) {
+            setCurrentState(State.NoMusic);
+            currentSong = null;
+            queue = null;
+            stopAndResetGain();
+        } else if (queue.equals(PAUSE)) {
+            setCurrentState(State.NoMusic);
+            queue = null;
+            player.pause();
+        } else if (queue instanceof PauseWithSong pauseWithSong) {
+            stopAndResetGain();
+            openPlay(pauseWithSong.song);
+            currentSong = pauseWithSong.song;
+            setCurrentState(State.NoMusic);
+            queue = null;
+            player.pause();
+        } else if (queue.equals(currentSong)) {
+            startFadeIn();
+            queue = null;
+        } else if (queue instanceof MusicTrack queuedMusic) {
+            startFadeIn();
+            stopAndResetGain();
+            openPlay(queuedMusic);
+            currentSong = queuedMusic;
+            queue = null;
         }
     }
 
@@ -255,7 +276,7 @@ public class JavaStreamPlayer {
         if (fadeTask != null && !fadeTask.isDone()) {
             fadeTask.cancel(true);
         }
-        stopBeforeOpenPlay();
+        stopAndResetGain();
         player.reset();
         fadeExecutor.close();
     }
@@ -285,4 +306,6 @@ public class JavaStreamPlayer {
     interface StateLogger {
         void log(String message);
     }
+
+    private record PauseWithSong(MusicTrack song) {}
 }
