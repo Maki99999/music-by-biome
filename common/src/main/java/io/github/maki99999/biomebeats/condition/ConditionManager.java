@@ -29,6 +29,7 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
     private Map<String, Collection<CombinedCondition>> combinedConditionMappings;
 
     private boolean firstTickWithLevel = true;
+    private boolean needsToNotifyListeners = true;
 
     public Collection<? extends Condition> getTagConditions() {
         return tagConditions;
@@ -117,6 +118,14 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
             initBiomeConditions(minecraft.level);
             Constants.CONFIG_IO.updateConfigListeners();
         }
+
+        if (needsToNotifyListeners) {
+            needsToNotifyListeners = false;
+
+            for (ActiveConditionsListener listener : activeConditionsListener) {
+                listener.onActiveConditionsChanged(activeConditions);
+            }
+        }
     }
 
     @Override
@@ -127,9 +136,7 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
             activeConditions.remove(condition);
         }
 
-        for (ActiveConditionsListener listener : activeConditionsListener) {
-            listener.onActiveConditionsChanged(activeConditions);
-        }
+        needsToNotifyListeners = true;
     }
 
     public void addListener(ActiveConditionsListener listener) {

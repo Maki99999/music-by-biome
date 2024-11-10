@@ -1,7 +1,3 @@
-- BUG: Pausing and resuming a few times -> gain isn't correct/fade doesn't work correctly (is cut off etc.)
-- improve recentMusicTracks by only adding a music track if it isn't already at the top of the list
-- maybe a BUG: when saving, what happens to deleted CombinedConditions? also are they still in the config file afterwards?
-
 - in the config screen: a indicator on each condition that tells you if the condition has songs
   - small dot or a vertical bar on the far right
   - also on the tabs?

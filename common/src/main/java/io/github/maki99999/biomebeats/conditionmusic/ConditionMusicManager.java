@@ -44,7 +44,7 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
                 musicTracksByCondition
                         .entrySet()
                         .stream()
-                        .filter(e -> e.getKey().getPriority() == highestPriority)
+                        .filter(e -> activeConditions.contains(e.getKey()) && e.getKey().getPriority() == highestPriority)
                         .flatMap(e -> e.getValue().stream())
                         .toList()
         );

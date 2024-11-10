@@ -66,7 +66,6 @@ public class BiomeBeatsCommon {
     }
 
     public static void tick() {
-        Constants.CONDITION_MANAGER.tick();
         Constants.BIOME_MANAGER.tick();
 
         while (Constants.CONFIG_KEY_MAPPING.consumeClick()) {
@@ -76,6 +75,8 @@ public class BiomeBeatsCommon {
         for (TickListener tickListener : TICK_LISTENERS) {
             tickListener.onTick();
         }
+
+        Constants.CONDITION_MANAGER.tick();
     }
 
     public static void initAfterSetup() {

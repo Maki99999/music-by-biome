@@ -1,6 +1,5 @@
 package io.github.maki99999.biomebeats.music;
 
-import com.google.common.collect.EvictingQueue;
 import com.goxr3plus.streamplayer.enums.Status;
 import com.goxr3plus.streamplayer.stream.StreamPlayerEvent;
 import com.goxr3plus.streamplayer.stream.StreamPlayerListener;
@@ -36,7 +35,7 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
 
     private MusicTrack currentMusicTrack = null;
     private Collection<MusicTrack> currentMusicTracks = new HashSet<>();
-    private final EvictingQueue<MusicTrack> recentMusicTracks = EvictingQueue.create(5);
+    private final List<MusicTrack> recentMusicTracks = new ArrayList<>();
 
     private JavaStreamPlayer previewJavaStreamPlayer;
     private MusicTrack currentPreviewTrack;
@@ -207,7 +206,7 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
 
         Collection<MusicTrack> nonRecentMusicTracks = currentMusicTracks
                 .stream()
-                .filter(recentMusicTracks::contains)
+                .filter(o -> !recentMusicTracks.contains(o))
                 .toList();
 
         if (nonRecentMusicTracks.isEmpty()) {
@@ -220,8 +219,17 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
                 .findAny()
                 .orElseThrow();
 
-        recentMusicTracks.add(currentMusicTrack);
+        addRecentMusicTrack(currentMusicTrack);
         play(currentMusicTrack);
+    }
+
+    private void addRecentMusicTrack(MusicTrack musicTrack) {
+        recentMusicTracks.remove(musicTrack);
+        recentMusicTracks.addFirst(musicTrack);
+
+        if (recentMusicTracks.size() > 5) {
+            recentMusicTracks.removeLast();
+        }
     }
 
     private void findMusicTracksAndGroups() {
