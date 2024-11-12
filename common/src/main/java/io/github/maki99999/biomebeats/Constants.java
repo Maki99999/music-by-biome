@@ -20,7 +20,7 @@ public class Constants {
     public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
     public static final String CONFIG_FILENAME = "biomebeats.json";
     public static final KeyMapping CONFIG_KEY_MAPPING = new KeyMapping("key.biomebeats.open_config",
-            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.biomebeats.categories.main");
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.biomebeats.categories.main");
     public static final String MUSIC_FOLDER = "music";
     public static final Music EMPTY_MUSIC = new Music(new Holder.Direct<>(SoundEvents.EMPTY), Integer.MAX_VALUE,
             Integer.MAX_VALUE, true);
