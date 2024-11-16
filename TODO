@@ -1,3 +1,5 @@
+- change "FirstTick" in all the classes to "FirstTickInWorld" and change it so that it is always true foe the first tick in a world
+
 - in the config screen: a indicator on each condition that tells you if the condition has songs
   - small dot or a vertical bar on the far right
   - also on the tabs?

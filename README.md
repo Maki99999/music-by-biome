@@ -1,75 +1,110 @@
 ![BiomeBeats logo](images/logo.png)
 
-**BiomeBeats** is a Minecraft mod designed to enhance your gameplay experience by seamlessly integrating custom music tracks into the game. This mod adds support for custom music tracks that play randomly based on the type of biome the player is currently exploring, making your adventures more immersive and enjoyable.
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W7166XAE)
+
+This mod has the goal of improving Minecraft's music system.
 
 ## Features
 
-- **Custom Music:** Add your own music tracks.
-- **Biome-Driven Soundscapes:** BiomeBeats introduces a dynamic music system that tailors the in-game music to your surroundings. Each biome within the Minecraft universe is paired with its own distinct selection of music tracks.
-- **Customizable Configuration:** The mod comes with a configuration file that allows you to customize the music experience to your liking. You can easily enable or disable specific biomes for music playback and seamlessly integrate your personal custom music library.
-- **Ideal for Modpack Creators:** This mod primarily caters to modpack creators, empowering you to effortlessly incorporate your own music selections that perfectly match your modpack.
+The mod lets you add custom tracks, removes the silences between the songs, and gives you control over when each track plays.
+
+### Custom Music
+
+Adding a new song is as easy as dropping it into the mod’s music folder.
+
+### Continuous Background Music
+
+Normally, Minecraft has over 70 tracks, but because of the long pauses Minecraft has between the tracks, you'll only hear a few each hour. This mod cuts out those pauses, so you get a steady flow of background music.
+
+### Control When a Track Should Play
+
+You get to decide when specific songs play. For example, you could set underwater music to play outside of ocean biomes, or bring in spooky tracks at night. This lets you customize the game’s atmosphere to fit whatever vibe you’re going for.
+
+The mod uses conditions to decide when specific music tracks should play. A condition could be something like "the player is in the plains biome", "the player is in a 'cold' biome", "the player is underwater" or "a boss health bar is visible." For each condition, you can pick which tracks will play when it’s met.
+
+You can also create combined conditions by selecting multiple individual ones. A combined condition only counts as "fulfilled" when all its parts are met, giving you more control over when certain tracks play and letting you fine-tune the music to match specific situations. For example, you could set up a combined condition that triggers when the player is in a cold forest at night.
 
 ## Compatibility
 
-- **Client-Sided:** The mod is completely client-sided and is compatible with all servers.
-- **Other Mods:** The mod is designed to work smoothly with the majority of other Minecraft mods.
-- **Non-Vanilla Biomes:** BiomeBeats uses Minecraft's biome tags to determine which track to play. This means the mod is fully compatible with non-vanilla biomes as long as they incorporate biome tags.
+- Forge, Neoforge, Fabric: There is a version for each of the three major mod loaders.
+- Client-Sided: Fully compatible with all servers.
+- Other mods:  Automatically detects music tracks, biomes, and biome tags from other mods.
+- Minecraft Version: Currently supports Minecraft 1.21 only.
 
 ## Configuration
 
-For the mod to work you need a resource pack that holds all your music files.
+Configuration is managed in-game through the config menu. When in a world, press the "Open Config" key (default is "B") to access the configuration screen. The configuration is automatically saved after exiting the screen.
 
-### Creating a New Resource Pack
+![Main Config Screen](images/main1.jpg)
 
-1. **Open the Resource Pack Folder:** Start by opening your Minecraft resource pack folder. If you don't know where it's located, you can find it in the game's settings.
-2. **Create a New Folder:** Within the resource pack folder, create a new folder. This will be the root folder for your resource pack.
-3. **Configure `pack.mcmeta`:** Inside the newly created folder, create a text file and rename it to `pack.mcmeta`. Paste the following JSON code into it:
+The main screen is split into two parts. On the left, you can browse and select conditions by category using the tabs. When you select a condition, the right side displays its settings, where you can assign music tracks and more.
 
-    ```json
-    {
-        "pack": {
-            "pack_format": 15,
-            "description": "Music for the BiomeBeats mod"
-        }
-    }
-    ```
+At the bottom left, there are two buttons:
+- The "Reload" button reloads the config file and re-detects biomes and biome tags.
+- The "Open Music Folder" button opens the folder where you can add music files. Once added, press reload to make the new files appear in the config screen.
 
-### Organizing Your Sound Files
+### Categories of Conditions
 
-1. **Create Nested Folders:** Now, organize your sound files with the following folder structure:
+There are four categories of conditions, each accessible via a tab on the left side of the screen. A search field also lets you quickly find specific conditions within each category.
 
-    ```
-    ├── assets
-    │   └── biomebeats
-    │       └── sounds
-    │           └── ... (your .ogg music files)
-    └── pack.mcmeta
-    ```
+- **Biome Conditions**: There is a condition for each biome, triggered when the player stays in that biome for at least three seconds. This includes modded biomes.
+- **Biome Tag Conditions**: (Sub-)Biomes have tags that describe their attributes, like "cold," "dry," "snowy," or "overworld." These tags are helpful for setting up tracks to play in similar biomes or entire dimensions. Biome tags from mods are also included.
+- **Other Conditions**:
+  ![Config Screen with Other Conditions](images/main2.jpg)
+  Most conditions in this category exist because Minecraft utilizes something similar to them. I also added a few other ones that I think are useful. The “No Other Music Is Playing” condition is a special fallback that’s always met (with the lowest priority) and can be used to still have background music when no other conditions are active.
+- **Combined Conditions**: Useful for more specific situations, these conditions only activate when all their sub-conditions are met. For example, you could set music to play when the player is on a cold hill at night (using conditions "Is Cold", "Is Hill", "Is Night").
 
-2. **Copy Your Music Files:** Copy your music files into the `sounds` folder. It's important to note that Minecraft only supports `.ogg` sound files. You may need to use a file converter if your music is in a different format. Also, make sure to rename your music files as `custom0.ogg`, `custom1.ogg`, `custom2.ogg`, and so on. These names are essential for the mod to recognize them.
+### Configuring a Condition: Priorities and Music Tracks
 
-### Configuring Biome-Based Music
+![Config Screen with a condition selected](images/main3.jpg)
 
-1. **Edit the Configuration File:** In your Minecraft installation folder, you'll find a `biomebeats-client.toml` config file. This file is generated after running Minecraft at least once with the mod installed. Open it using a text editor.
-2. **Assign Music to Biome Tags:** The mod uses biome tags to determine which music to play. In the config file, you'll find entries for various tags, including menu, rain, and night music. To assign music to these tags, refer to the table on the [Minecraft Wiki](https://minecraft.fandom.com/wiki/Tag#Biomes) to identify the tags associated with different biomes. Also included are a few tags added by Forge ([Forge biome tags](https://github.com/MinecraftForge/MinecraftForge/tree/1.20.x/src/generated/resources/data/forge/tags/worldgen/biome)).
-   For example, configure the file like this:
+When you select a condition, you can set its priority level and choose music tracks to play when the condition is met.
 
-    ```
-    #menu music
-    menu_songs = ["custom0", "custom2", "custom3"]
-    #night music (high priority)
-    night_songs = ["custom11", "custom99"]
-    #music for the tag 'is_desert'
-    songs_is_desert = ["custom4", "custom33"]
-    #music for the tag 'is_plains'
-    songs_is_plains = ["custom4"]
-    ```
+The priority comes into play when the mod selects a music track. The higher the priority number, the greater the priority. Conditions with a lower priority are ignored if higher-priority conditions are also met. For more details, see [this section](#how-the-mod-chooses-a-music-track).
 
-   Customize this section to specify which songs you want to hear for each tag according to your preferences. If a biome has multiple songs assigned to it, it will randomly choose one of them.
+You can select any number of music tracks, one of which will be chosen at random when the condition is met.  Tracks are organized with custom songs at the top, followed by Minecraft’s background music, then music discs, and finally tracks from other mods. The search field helps you quickly locate specific songs. To preview a track, simply click the button next to it.
+
+### Adding and Editing a Combined Condition
+
+![Config Screen with Combined Conditions](images/combined1.jpg)
+
+The combined conditions tab has a slightly different layout. Here, you’ll find a button to add new combined conditions, and each existing combined condition has an edit button next to it. Aside from this, configuring priority levels and selecting music tracks works the same way as with other conditions.
+
+![Config Screen with](images/combined2.jpg)
+
+When you create or edit a combined condition, a new screen opens where you can configure its details. Here, you can set the condition's name, add a description, and choose the sub-conditions that must be met for the combined condition to activate.
+
+## How the Mod Chooses a Music Track
+
+The mod continuously checks which conditions are currently met. Each condition has a priority level and a list of assigned music tracks, both of which can be set in the config screen.
+The mod will identify the highest priority among the met conditions and filters out any conditions that don’t match that priority. It then gathers all music tracks assigned to the remaining conditions and randomly selects one to play. Recently played tracks are tracked, so the same songs won’t repeat back-to-back.
+
+## Current Limitations
+
+- Custom music tracks can be added in the following formats: .wav, .mp3, .ogg (Vorbis), .flac, .aiff/.aif/.aifc, .au, .ape, .spx.
+- The mod overrides Minecraft's default music system, so other mods that rely on it might encounter compatibility issues.
+
+## Upcoming Features
+
+I still have some ideas I want to implement in the future.
+
+- Individual Track Volume Control: This would allow you to adjust the volume of each track separately, which is helpful if your custom tracks have different audio levels.
+- UI Improvements: Small tweaks, like an indicator to show which conditions have music assigned and which ones are currently active.
+- Backports for Earlier Minecraft Versions: Backporting the mod to older versions is a bit tricky with the multiloader setup I have, but doing it modloader by modloader and version by version should be manageable, just time-consuming.
+- Additional Settings:
+  - Bringing back random silences between songs, for those who like the pauses in vanilla Minecraft.
+  - Adjusting fade-in and fade-out times between the tracks.
+- "Winamp": A mini-player you can have in a corner of the screen (or somewhere else) where you can see the current song, its duration etc. It could also have controls to e.g. pause or skip songs.
+- Condition Grouping: A way to group conditions, so you can assign music to all of them at once, rather than setting each condition manually.
+- Support for More Audio Formats: I’m looking into a Java library that could make it possible to play nearly any audio format, though switching to it would require some extra work.
+
+## Modpack creators
+
+Feel free to use this mod in any modpack.
 
 ## Support
 
-If you find a bug, please [create an issue ticket](https://github.com/Maki99999/music-by-biome/issues).
+If you find a bug or if you have any suggestions, please [create a ticket](https://github.com/Maki99999/music-by-biome/issues).
 
 ## License
 
