@@ -1,0 +1,10 @@
+  Minecraft checks the following in order to determine which song to play next:
+  1. if currentScreen is WinScreen -> play Musics.CREDITS
+  2. if player is null (not in game) -> play Musics.MENU
+  3. if player is in the end and gui.getBossOverlay().shouldPlayMusic() -> play Musics.END_BOSS
+  4. if player is in the end -> play Musics.END
+  5. if player is under water && the player's biome has the tag PLAYS_UNDERWATER_MUSIC -> play Musics.UNDER_WATER
+  6. if player is not in the nether && player has creative mode abilities
+     (player.getAbilities().instabuild and player.getAbilities().mayfly) -> play Musics.CREATIVE
+  7. if getBackgroundMusic of the player's biome returns something -> play that
+  8. play Musics.GAME
