@@ -2,38 +2,47 @@
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W7166XAE)
 
-This mod has the goal of improving Minecraft's music system.
+This mod aims to improve Minecraft's music system.
 
 ## Features
 
-The mod lets you add custom tracks, removes the silences between the songs, and gives you control over when each track plays.
+The mod lets you add custom tracks, removes the silence between songs, and gives you control over when each track plays.
 
 ### Custom Music
 
-Adding a new song is as easy as dropping it into the mod’s music folder.
+Add new songs simply by placing them into the mod’s music folder.
 
 ### Continuous Background Music
 
-Normally, Minecraft has over 70 tracks, but because of the long pauses Minecraft has between the tracks, you'll only hear a few each hour. This mod cuts out those pauses, so you get a steady flow of background music.
+Normally, Minecraft has over 70 tracks, but due to the long pauses Minecraft puts between tracks, you'll only hear a few each hour. This mod cuts out those pauses, giving you a steady flow of background music.
 
 ### Control When a Track Should Play
 
-You get to decide when specific songs play. For example, you could set underwater music to play outside of ocean biomes, or bring in spooky tracks at night. This lets you customize the game’s atmosphere to fit whatever vibe you’re going for.
+You decide when specific songs play. For example, you could set underwater music to play outside ocean biomes or bring in spooky tracks at night. This lets you fine-tune the game’s atmosphere to match your desired vibe.
 
-The mod uses conditions to decide when specific music tracks should play. A condition could be something like "the player is in the plains biome", "the player is in a 'cold' biome", "the player is underwater" or "a boss health bar is visible." For each condition, you can pick which tracks will play when it’s met.
+The mod uses conditions to determine when specific music tracks should play. A condition could be something like:
+- "The player is in the plains biome."
+- "The player is in a 'cold' biome."
+- "The player is underwater."
+- "A boss health bar is visible."
 
-You can also create combined conditions by selecting multiple individual ones. A combined condition only counts as "fulfilled" when all its parts are met, giving you more control over when certain tracks play and letting you fine-tune the music to match specific situations. For example, you could set up a combined condition that triggers when the player is in a cold forest at night.
+For each condition, you can select the tracks that will play whenever the condition is met.
+
+You can combine conditions by selecting multiple individual ones. A combined condition is fulfilled only when all its parts are met, giving you more control over when certain tracks play and letting you fine-tune the music to match specific situations. For example, you could set up a combined condition that triggers when the player is in a cold forest at night.
 
 ## Compatibility
 
 - Forge, Neoforge, Fabric: There is a version for each of the three major mod loaders.
 - Client-Sided: Fully compatible with all servers.
-- Other mods:  Automatically detects music tracks, biomes, and biome tags from other mods.
+- Other Mods:  Automatically detects music tracks, biomes, and biome tags from other mods.
 - Minecraft Version: Currently supports Minecraft 1.21 only.
+
+### Note for the 1.20 Version:
+The 1.20 version of this mod is the original 1.0 version, which works completely differently from the current release. It is a bit tricky to use and configure compared to the current version. If you still want to use the 1.0 version, please look [here](https://github.com/Maki99999/music-by-biome/blob/1.0/README.md#configuration) for instructions on setup and configuration.
 
 ## Configuration
 
-Configuration is managed in-game through the config menu. When in a world, press the "Open Config" key (default is "B") to access the configuration screen. The configuration is automatically saved after exiting the screen.
+Configuration is managed in-game through the config menu. When in a world, press the "Open Config" key (default is "B") to access the configuration screen. The configuration auto-saves after exiting the screen.
 
 ![Main Config Screen](images/main1.jpg)
 
@@ -41,48 +50,76 @@ The main screen is split into two parts. On the left, you can browse and select 
 
 At the bottom left, there are two buttons:
 - The "Reload" button reloads the config file and re-detects biomes and biome tags.
-- The "Open Music Folder" button opens the folder where you can add music files. Once added, press reload to make the new files appear in the config screen.
+- The "Open Music Folder" button opens the folder where you can add music files. After adding files, press reload to make them appear in the config screen.
 
 ### Categories of Conditions
 
-There are four categories of conditions, each accessible via a tab on the left side of the screen. A search field also lets you quickly find specific conditions within each category.
+Conditions are grouped into four categories, accessible via the tabs on the left. Use the search field to locate specific conditions within each category.
 
-- **Biome Conditions**: There is a condition for each biome, triggered when the player stays in that biome for at least three seconds. This includes modded biomes.
-- **Biome Tag Conditions**: (Sub-)Biomes have tags that describe their attributes, like "cold," "dry," "snowy," or "overworld." These tags are helpful for setting up tracks to play in similar biomes or entire dimensions. Biome tags from mods are also included.
-- **Other Conditions**:
-  ![Config Screen with Other Conditions](images/main2.jpg)
-  Most conditions in this category exist because Minecraft utilizes something similar to them. I also added a few other ones that I think are useful. The “No Other Music Is Playing” condition is a special fallback that’s always met (with the lowest priority) and can be used to still have background music when no other conditions are active.
-- **Combined Conditions**: Useful for more specific situations, these conditions only activate when all their sub-conditions are met. For example, you could set music to play when the player is on a cold hill at night (using conditions "Is Cold", "Is Hill", "Is Night").
+#### Biome Conditions
+
+There is a biome condition for each biome, triggered when the player stays in that biome for at least three seconds. This includes modded biomes.
+
+#### Biome Tag Conditions
+
+(Sub-)Biomes have tags that describe attributes like "cold," "dry," "snowy," or "overworld." These are useful for setting up tracks across dimensions or similar biomes. Biome tags from other mods are included.
+
+#### Other Conditions
+
+![Config Screen with Other Conditions](images/main2.jpg)
+
+Most conditions in this category reflect Minecraft’s internal mechanics, plus a few additional ones for convenience. The “No Other Music Is Playing” condition is a fallback that’s always met (with the lowest priority) and can be used to have background music when no other condition is active.
+
+#### Combined Conditions
+
+Useful for specific situations, these conditions activate only when all their sub-conditions are met. For example:
+- The player is on a cold hill at night (conditions "Is Cold," "Is Hill," "Is Night").
+- The player is in the nether and in creative mode (conditions "Is Nether," "In Creative Mode").
+- The player is under water in a cave (conditions "Is Cave", "Is Under Water").
 
 ### Configuring a Condition: Priorities and Music Tracks
 
 ![Config Screen with a condition selected](images/main3.jpg)
 
-When you select a condition, you can set its priority level and choose music tracks to play when the condition is met.
+When you select a condition, you can configure its priority level and assign music tracks to play whenever the condition is met.
 
-The priority comes into play when the mod selects a music track. The higher the priority number, the greater the priority. Conditions with a lower priority are ignored if higher-priority conditions are also met. For more details, see [this section](#how-the-mod-chooses-a-music-track).
+#### Priority
 
-You can select any number of music tracks, one of which will be chosen at random when the condition is met.  Tracks are organized with custom songs at the top, followed by Minecraft’s background music, then music discs, and finally tracks from other mods. The search field helps you quickly locate specific songs. To preview a track, simply click the button next to it.
+The priority determines which conditions take precedence when multiple are active. Higher priority numbers mean greater importance. If a condition with a higher priority is met, conditions with lower priorities are ignored. For more details, refer to [this section](#how-the-mod-chooses-a-music-track).
+
+#### Music Tracks
+
+You can assign any number of music tracks to a condition. When the condition is met, one of these tracks is chosen randomly. Tracks are organized with custom songs at the top, followed by Minecraft’s background music and music discs, and finally tracks from other mods.
+
+Use the search field to locate specific songs. Click the button next to a track to preview it.
 
 ### Adding and Editing a Combined Condition
 
 ![Config Screen with Combined Conditions](images/combined1.jpg)
 
-The combined conditions tab has a slightly different layout. Here, you’ll find a button to add new combined conditions, and each existing combined condition has an edit button next to it. Aside from this, configuring priority levels and selecting music tracks works the same way as with other conditions.
+The combined conditions tab includes an additional button to add a new condition, and each existing combined condition has an edit button beside it. Beyond this, configuring priorities and assigning music tracks works the same as it does for standard conditions.
 
-![Config Screen with](images/combined2.jpg)
+![Creating a Combined Condition](images/combined2.jpg)
 
-When you create or edit a combined condition, a new screen opens where you can configure its details. Here, you can set the condition's name, add a description, and choose the sub-conditions that must be met for the combined condition to activate.
+When creating or editing a combined condition, a new screen will appear where you can customize its details. You can:
+- Set a name for the condition.
+- Add a short description.
+- Select the sub-conditions that must all be met for the combined condition to activate.
 
 ## How the Mod Chooses a Music Track
 
-The mod continuously checks which conditions are currently met. Each condition has a priority level and a list of assigned music tracks, both of which can be set in the config screen.
-The mod will identify the highest priority among the met conditions and filters out any conditions that don’t match that priority. It then gathers all music tracks assigned to the remaining conditions and randomly selects one to play. Recently played tracks are tracked, so the same songs won’t repeat back-to-back.
+The mod continuously monitors active conditions and determines which music to play by following these steps:
+1. Identifies the highest priority among the met conditions.
+2. Filters out any conditions that don’t match this priority.
+3. Gathers all music tracks associated with the remaining conditions.
+4. If the currently playing track isn’t in this list, it selects a new track randomly from the list.
+
+Recently played tracks are tracked to avoid back-to-back repeats if possible.
 
 ## Current Limitations
 
 - Custom music tracks can be added in the following formats: .wav, .mp3, .ogg (Vorbis), .flac, .aiff/.aif/.aifc, .au, .ape, .spx.
-- The mod overrides Minecraft's default music system, so other mods that rely on it might encounter compatibility issues.
+- The mod overrides Minecraft's default music system, so other mods relying on it may have compatibility issues.
 
 ## Upcoming Features
 
@@ -98,13 +135,13 @@ I still have some ideas I want to implement in the future.
 - Condition Grouping: A way to group conditions, so you can assign music to all of them at once, rather than setting each condition manually.
 - Support for More Audio Formats: I’m looking into a Java library that could make it possible to play nearly any audio format, though switching to it would require some extra work.
 
-## Modpack creators
+## Modpack Creators
 
 Feel free to use this mod in any modpack.
 
 ## Support
 
-If you find a bug or if you have any suggestions, please [create a ticket](https://github.com/Maki99999/music-by-biome/issues).
+If you find a bug or have suggestions, please [create a ticket](https://github.com/Maki99999/music-by-biome/issues).
 
 ## License
 
