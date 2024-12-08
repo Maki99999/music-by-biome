@@ -1,7 +1,10 @@
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom'
-    id 'com.gradleup.shadow'
+}
+
+repositories {
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -15,8 +18,23 @@ dependencies {
 
     implementation 'com.google.auto.service:auto-service-annotations:1.1.1'
     annotationProcessor 'com.google.auto.service:auto-service:1.1.1'
-    shadow(implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2')
-    shadow(implementation 'com.github.goxr3plus:java-stream-player:9.0.4')
+    include(implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2')
+    include(implementation('com.github.goxr3plus:java-stream-player:9.0.4') {
+        exclude group: 'junit', module: 'junit'
+    })
+    include('com.fasterxml.jackson.core:jackson-databind:2.17.2')
+    include('com.fasterxml.jackson.core:jackson-annotations:2.17.2')
+    include('com.fasterxml.jackson:jackson-bom:2.17.2')
+    include('com.fasterxml.jackson.core:jackson-core:2.17.2')
+    include('com.github.goxr3plus:java-stream-player:9.0.4')
+    include('com.googlecode.soundlibs:mp3spi:1.9.5.4')
+    include('com.googlecode.soundlibs:jlayer:1.0.1.4')
+    include('org.jflac:jflac-codec:1.5.2')
+    include('com.github.trilarion:vorbis-support:1.1.0')
+    include('com.googlecode.soundlibs:tritonus-all:0.3.7.2')
+    include('com.googlecode.soundlibs:jorbis:0.0.17-2')
+    include('com.github.goxr3plus:jaudiotagger:2.2.7')
+    include('commons-io:commons-io:2.6')
 }
 
 loom {
@@ -34,25 +52,5 @@ loom {
             ideConfigGenerated(true)
             runDir('runs/client')
         }
-        server {
-            server()
-            setConfigName('Fabric Server')
-            ideConfigGenerated(true)
-            runDir('runs/server')
-        }
     }
-}
-
-shadowJar {
-    configurations = [project.configurations.shadow]
-    mergeServiceFiles()
-    relocate("com", "${project.property('group')}.com")
-    relocate("javazoom", "${project.property('group')}.javazoom")
-    relocate("junit", "${project.property('group')}.junit")
-    relocate("org", "${project.property('group')}.org")
-}
-
-remapJar {
-    dependsOn shadowJar
-    inputFile = tasks.shadowJar.archiveFile
 }

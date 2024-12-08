@@ -15,7 +15,6 @@ java {
 
 repositories {
     mavenCentral()
-    // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
     exclusiveContent {
         forRepository {
             maven {
@@ -36,7 +35,19 @@ repositories {
                     url = 'https://maven.neoforged.net/releases'
                 }
         )
-        filter { includeGroup('org.parchmentmc.data') }
+        filter {
+            includeGroup('org.parchmentmc.data')
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                url "https://cursemaven.com"
+            }
+        }
+        filter {
+            includeGroup "curse.maven"
+        }
     }
     maven {
         name = 'BlameJared'
@@ -44,8 +55,6 @@ repositories {
     }
 }
 
-// Declare capabilities on the outgoing configurations.
-// Read more about capabilities here: https://docs.gradle.org/current/userguide/component_capabilities.html#sec:declaring-additional-capabilities-for-a-local-component
 ['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
     configurations."$variant".outgoing {
         capability("$group:${base.archivesName.get()}:$version")
@@ -76,29 +85,30 @@ jar {
                 'Implementation-Title'  : project.name,
                 'Implementation-Version': project.jar.archiveVersion,
                 'Implementation-Vendor' : mod_author,
-                'Built-On-Minecraft'    : minecraft_version
+                'Built-On-Minecraft'    : minecraft_version,
+                'CurseForge'            : curse_page,
+                'Modrinth'              : modrinth_page
         ])
     }
 }
 
 processResources {
     var expandProps = [
-            'version'                      : version,
-            'group'                        : project.group, //Else we target the task's group.
+            'version'                      : project.version,
+            'group'                        : project.group,
             'minecraft_version'            : minecraft_version,
             'minecraft_version_range'      : minecraft_version_range,
-            'fabric_version'               : fabric_version,
-            'fabric_loader_version'        : fabric_loader_version,
             'mod_name'                     : mod_name,
             'mod_author'                   : mod_author,
             'mod_id'                       : mod_id,
-            'license'                      : license,
-            'description'                  : project.description,
+            'mod_license'                  : mod_license,
+            'mod_description'              : mod_description,
             'neoforge_version'             : neoforge_version,
             'neoforge_loader_version_range': neoforge_loader_version_range,
-            "forge_version": forge_version,
-            "forge_loader_version_range": forge_loader_version_range,
-            'credits'                      : credits,
+            'fabric_version'               : fabric_version,
+            'fabric_loader_version'        : fabric_loader_version,
+            "forge_version"                : forge_version,
+            "forge_loader_version_range"   : forge_loader_version_range,
             'java_version'                 : java_version
     ]
 

@@ -18,17 +18,10 @@ neoForge {
     runs {
         configureEach {
             systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
-            ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
-            additionalRuntimeClasspathConfiguration.extendsFrom configurations.shadow
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})"
         }
         client {
             client()
-        }
-        data {
-            data()
-        }
-        server {
-            server()
         }
     }
     mods {
@@ -38,25 +31,34 @@ neoForge {
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+repositories {
+    maven { url "https://jitpack.io" }
+}
 
 dependencies {
     implementation 'com.google.auto.service:auto-service-annotations:1.1.1'
     annotationProcessor 'com.google.auto.service:auto-service:1.1.1'
-    shadow(implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2')
-    shadow(implementation 'com.github.goxr3plus:java-stream-player:9.0.4')
+    shadow(implementation('com.fasterxml.jackson.core:jackson-databind:2.17.2'))
+    shadow(implementation('com.github.goxr3plus:java-stream-player:9.0.4') {
+        exclude group: 'junit', module: 'junit'
+    })
 }
 
 shadowJar {
     configurations = [project.configurations.shadow]
     mergeServiceFiles()
-    relocate("com", "${project.property('group')}.com")
+    relocate("com.fasterxml.jackson", "${project.property('group')}.com.fasterxml.jackson")
+    relocate("com.github.trilarion.sound", "${project.property('group')}.com.github.trilarion.sound")
+    relocate("com.goxr3plus.streamplayer", "${project.property('group')}.com.goxr3plus.streamplayer")
+    relocate("com.jcraft", "${project.property('group')}.com.jcraft")
     relocate("javazoom", "${project.property('group')}.javazoom")
-    relocate("junit", "${project.property('group')}.junit")
-    relocate("org", "${project.property('group')}.org")
-}
+    relocate("org.apache.commons.io", "${project.property('group')}.org.apache.commons.io")
+    relocate("org.jaudiotagger", "${project.property('group')}.org.jaudiotagger")
+    relocate("org.jflac", "${project.property('group')}.org.jflac")
+    relocate("org.tritonus", "${project.property('group')}.org.tritonus")
 
-jar {
-    dependsOn shadowJar
-    enabled = false
+    from project.file('build/tmp/compileJava/refmap.biomebeats.mixins.json')
+
+    from(sourceSets.main.output)
+    archiveFileName = "${mod_id}-neoforge-${minecraft_version}-${version}.jar"
 }
