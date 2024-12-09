@@ -12,3 +12,57 @@ allprojects {
         maven { url "https://jitpack.io" }
     }
 }
+
+// Root build.gradle
+tasks.register('generateJars') {
+    group = 'build'
+    description = 'Generates jar files for all subprojects and collects them into a single folder.'
+
+    // Define the output directory for collected JARs
+    def outputDir = file("$buildDir/generatedJars")
+
+    // Ensure the output directory exists
+    doFirst {
+        outputDir.mkdirs()
+    }
+
+    // Iterate through each subproject and execute their specific jar tasks
+    dependsOn(subprojects.collect { subproject ->
+        def jarTaskName = getJarTaskName(subproject)
+        if (jarTaskName) {
+            subproject.tasks.named(jarTaskName).get()
+        } else {
+            null
+        }
+    }.findAll { it != null })
+
+    // Copy generated JARs to the output directory
+    doLast {
+        subprojects.each { subproject ->
+            def jarTaskName = getJarTaskName(subproject)
+            if (jarTaskName) {
+                def jarTask = subproject.tasks.findByName(jarTaskName)
+                if (jarTask?.archiveFile?.get()?.asFile?.exists()) {
+                    copy {
+                        from jarTask.archiveFile.get().asFile
+                        into outputDir
+                    }
+                }
+            }
+        }
+        println "JAR files have been generated and placed in: ${outputDir}"
+    }
+}
+
+// Helper function to get the JAR task name based on subproject
+def getJarTaskName(Project subproject) {
+    switch (subproject.name) {
+        case 'fabric':
+            return 'remapJar'
+        case 'forge':
+        case 'neoforge':
+            return 'shadowJar'
+        default:
+            return null
+    }
+}
