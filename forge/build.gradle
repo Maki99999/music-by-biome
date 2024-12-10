@@ -43,7 +43,7 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    minecraft "net.minecraftforge:forge:1.21.1-52.0.28"
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.0"))
@@ -53,7 +53,7 @@ dependencies {
 
     implementation 'com.google.auto.service:auto-service-annotations:1.1.1'
     annotationProcessor 'com.google.auto.service:auto-service:1.1.1'
-    shadow(minecraftLibrary('com.fasterxml.jackson.core:jackson-databind:2.17.2'))
+    shadow(minecraftLibrary('com.fasterxml.jackson.core:jackson-databind:2.13.4.2'))
     shadow(minecraftLibrary('com.github.goxr3plus:java-stream-player:9.0.4') {
         exclude group: 'junit', module: 'junit'
     })

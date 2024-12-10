@@ -26,7 +26,7 @@
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
         "fabric-key-binding-api-v1": "*",
-        "minecraft": "${minecraft_version}",
+        "minecraft": "${minecraft_version_range_alt}",
         "java": ">=${java_version}"
     },
     "suggests": {
