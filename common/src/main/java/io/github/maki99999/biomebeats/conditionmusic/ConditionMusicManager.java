@@ -169,10 +169,10 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
         if (player == null) return;
 
         try (Level level = player.level()) {
-            Registry<Biome> biomeRegistry = level.registryAccess().registryOrThrow(Registries.BIOME);
+            Registry<Biome> biomeRegistry = level.registryAccess().lookupOrThrow(Registries.BIOME);
             for (Condition condition : biomeConditions) {
                 ResourceLocation biomeRL = ((BiomeCondition) condition).getBiomeRL();
-                Biome biome = biomeRegistry.get(biomeRL);
+                Biome biome = biomeRegistry.getValue(biomeRL);
                 if (biome == null) continue;
 
                 Optional<Music> biomeBgm = biome.getBackgroundMusic();
@@ -191,7 +191,7 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
         if (music == null) return;
 
         MixinWeighedSoundEvents musicSoundEvents = (MixinWeighedSoundEvents) Minecraft.getInstance().getSoundManager()
-                .getSoundEvent(music.getEvent().value().getLocation());
+                .getSoundEvent(music.getEvent().value().location());
         if (musicSoundEvents == null) return;
 
         List<ResourceLocation> musicRLs = musicSoundEvents.list().stream()

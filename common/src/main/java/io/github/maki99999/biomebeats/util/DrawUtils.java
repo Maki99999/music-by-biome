@@ -6,7 +6,7 @@ import io.github.maki99999.biomebeats.gui.BaseTextureUv;
 import net.minecraft.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -16,7 +16,7 @@ public class DrawUtils {
     public static void drawRect(ResourceLocation resourceLocation, GuiGraphics guiGraphics, Rect pos, Rect uv) {
         Matrix4f lastPose = guiGraphics.pose().last().pose();
         RenderSystem.setShaderTexture(0, resourceLocation);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX);
         BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS,
                 DefaultVertexFormat.POSITION_TEX);
         bufferBuilder.addVertex(lastPose, pos.x1(), pos.y1(), 0f).setUv(uv.x1() / 256f, uv.y1() / 256f);

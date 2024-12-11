@@ -13,14 +13,14 @@ import java.util.Set;
 
 public class BiomeUtils {
     public static Collection<TagKey<Biome>> getBiomeTagKeys(Level level) {
-        if (level.registryAccess().registry(Registries.BIOME).isEmpty())
+        if (level.registryAccess().lookup(Registries.BIOME).isEmpty())
             return List.of();
 
-        return level.registryAccess().registry(Registries.BIOME).get().getTagNames().toList();
+        return level.registryAccess().lookup(Registries.BIOME).get().listTagIds().toList();
     }
 
     public static Collection<ResourceLocation> getBiomeRLs(Level level) {
-        return level.registryAccess().registry(Registries.BIOME)
+        return level.registryAccess().lookup(Registries.BIOME)
                 .map(Registry::keySet)
                 .orElseGet(Set::of);
     }
