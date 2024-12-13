@@ -138,6 +138,20 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
                 c -> c instanceof ScreenCondition screenCondition && screenCondition.getScreen() == null);
         addMusicToCondition(musicTracks, Musics.MENU, menuCondition);
 
+        Condition creativeModeCondition = Constants.CONDITION_MANAGER.findCondition(
+                c -> c instanceof InGameModeCondition inGameModeCondition
+                        && inGameModeCondition.getName().contains("Creative"));
+        addMusicToCondition(musicTracks, Musics.CREATIVE, creativeModeCondition);
+
+        Condition noOtherMusicCondition =
+                Constants.CONDITION_MANAGER.findCondition(c -> c instanceof NoOtherMusicCondition);
+        addMusicToCondition(musicTracks, Musics.GAME, noOtherMusicCondition);
+
+        Player player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+
         Condition endBossCondition =
                 Constants.CONDITION_MANAGER.findCondition(c -> c instanceof CombinedCondition combinedCondition
                         && combinedCondition.getName().equals("End Boss"));
@@ -153,20 +167,7 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
                         && combinedCondition.getName().equals("Is Under Water in Underwater Biome"));
         addMusicToCondition(musicTracks, Musics.UNDER_WATER, underwaterCondition);
 
-        Condition creativeModeCondition = Constants.CONDITION_MANAGER.findCondition(
-                c -> c instanceof InGameModeCondition inGameModeCondition
-                        && inGameModeCondition.getName().contains("Creative"));
-        addMusicToCondition(musicTracks, Musics.CREATIVE, creativeModeCondition);
-
-        Condition noOtherMusicCondition =
-                Constants.CONDITION_MANAGER.findCondition(c -> c instanceof NoOtherMusicCondition);
-        addMusicToCondition(musicTracks, Musics.GAME, noOtherMusicCondition);
-
         Collection<? extends Condition> biomeConditions = Constants.CONDITION_MANAGER.getBiomeConditions();
-
-        Minecraft minecraft = Minecraft.getInstance();
-        Player player = minecraft.player;
-        if (player == null) return;
 
         try (Level level = player.level()) {
             Registry<Biome> biomeRegistry = level.registryAccess().registryOrThrow(Registries.BIOME);
@@ -188,11 +189,18 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
     private void addMusicToCondition(Collection<ResourceLocationMusicTrack> musicTracks,
                                      Music music,
                                      Condition condition) {
-        if (music == null) return;
+        if (condition == null) {
+            throw new IllegalArgumentException("Condition must not be null");
+        }
+        if (music == null) {
+            return;
+        }
 
         MixinWeighedSoundEvents musicSoundEvents = (MixinWeighedSoundEvents) Minecraft.getInstance().getSoundManager()
                 .getSoundEvent(music.getEvent().value().getLocation());
-        if (musicSoundEvents == null) return;
+        if (musicSoundEvents == null) {
+            return;
+        }
 
         List<ResourceLocation> musicRLs = musicSoundEvents.list().stream()
                 .map(weightedSound -> weightedSound.getSound(rdm))
