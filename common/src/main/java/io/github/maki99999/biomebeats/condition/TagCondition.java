@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import static io.github.maki99999.biomebeats.util.StringUtils.formatToTitleCase;
 
 public class TagCondition extends Condition implements BiomeChangeListener {
-    public static final String TAG_PREFIX = "is_";
+    public static final String[] TAG_PREFIXES = new String[]{"is_", "plays_"};
 
     private final Collection<TagKey<Biome>> biomeTagKeys;
     private final String id;
@@ -41,7 +41,7 @@ public class TagCondition extends Condition implements BiomeChangeListener {
 
         for (TagKey<Biome> tagKey : biomeTagKeys) {
             String path = tagKey.location().getPath();
-            if (path.startsWith(TAG_PREFIX))
+            if (Arrays.stream(TAG_PREFIXES).anyMatch(path::startsWith))
                 tagKeysByName.computeIfAbsent(path, k -> new ArrayList<>()).add(tagKey);
         }
 

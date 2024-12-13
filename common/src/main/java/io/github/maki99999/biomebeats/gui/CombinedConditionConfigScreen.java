@@ -48,6 +48,10 @@ public class CombinedConditionConfigScreen extends Screen {
 
     @Override
     public void onClose() {
+        if (condition.getName().isBlank()) {
+            condition.setName("Combined Condition");
+        }
+
         configScreen.updateCombinedCondition(oldCondition, condition);
         if (this.minecraft != null) {
             this.minecraft.setScreen(configScreen);

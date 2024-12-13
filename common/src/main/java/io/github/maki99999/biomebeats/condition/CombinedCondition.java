@@ -69,7 +69,7 @@ public class CombinedCondition extends Condition implements ConditionChangeListe
 
     public void addCondition(Condition condition) {
         if (condition == null) {
-            return;
+            throw new IllegalArgumentException("Condition cannot be null");
         }
 
         if (condition instanceof CombinedCondition) {
