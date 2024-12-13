@@ -179,8 +179,8 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
             for (String conditionId : conditionConfig.getConditionIds()) {
                 combinedConditionMappings.computeIfAbsent(conditionId, id -> new ArrayList<>()).add(combinedCondition);
             }
-            mapToCombinedCondition(conditions);
         }
+        mapToCombinedCondition(conditions);
 
         Map<String, ConditionConfig> conditionConfigById = config.getConditionConfigById();
         for (Condition condition : conditions) {
@@ -204,28 +204,28 @@ public class ConditionManager implements ConditionChangeListener, ConfigChangeLi
                 && tagCondition.getName().equals("Is End"));
         Condition boss = findCondition(c -> c instanceof BossOverlayWithMusicCondition);
 
-        CombinedCondition endBoss = new CombinedCondition();
-        endBoss.setName("End Boss");
-        endBoss.setDescription("Default Configuration");
-        endBoss.addCondition(isEnd);
-        endBoss.addCondition(boss);
-        endBoss.setPriority(4);
-        addCombinedCondition(endBoss);
+        if (isEnd != null && boss != null) {
+            CombinedCondition endBoss = new CombinedCondition();
+            endBoss.setName("End Boss");
+            endBoss.setDescription("Default Configuration");
+            endBoss.addCondition(isEnd);
+            endBoss.addCondition(boss);
+            endBoss.setPriority(4);
+            addCombinedCondition(endBoss);
+        }
 
-        if (isEnd != null) isEnd.setPriority(3);
+        if (isEnd != null) {
+            isEnd.setPriority(3);
+        }
 
-        Condition underwater = findCondition(c -> c instanceof IsUnderWaterCondition);
         Condition playsUnderWaterMusic = findCondition(c -> c instanceof TagCondition tagCondition
                 && tagCondition.getName().equals("Plays Underwater Music"));
 
-        CombinedCondition underwaterMusicCondition = new CombinedCondition();
-        underwaterMusicCondition.setName("Is Under Water in Underwater Biome");
-        underwaterMusicCondition.setDescription("Default Configuration");
-        underwaterMusicCondition.addCondition(underwater);
-        underwaterMusicCondition.addCondition(playsUnderWaterMusic);
-        underwaterMusicCondition.setPriority(2);
-        addCombinedCondition(underwaterMusicCondition);
+        if (playsUnderWaterMusic != null) {
+            playsUnderWaterMusic.setPriority(2);
+        }
 
+        findCondition(c -> c instanceof IsUnderWaterCondition).setPriority(2);
         findCondition(c -> c instanceof ScreenCondition screenCondition
                 && Objects.equals(screenCondition.getScreen(), WinScreen.class)).setPriority(6);
         findCondition(c -> c instanceof ScreenCondition screenCondition

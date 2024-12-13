@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 
 import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
 
-public class ConditionCheckboxList extends AbstractScrollWidget implements Renderable, ContainerEventHandler {
-    private static final int SCROLL_BAR_WIDTH = 8;
+public class ConditionCheckboxList extends ScrollArea implements Renderable, ContainerEventHandler {
     private static final int CHILDREN_HEIGHT = 16;
     private static final int CHILDREN_SPACING = 4;
     private static final List<Component> GROUP_ORDER;
@@ -54,7 +53,7 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
     public ConditionCheckboxList(Minecraft minecraft, Rect bounds, Component message,
                                  Collection<Condition> conditions, OnConditionToggle onConditionToggle,
                                  OnGroupToggle onGroupToggle) {
-        super(bounds.x(), bounds.y(), bounds.w() - SCROLL_BAR_WIDTH, bounds.h(), message);
+        super(bounds, message);
 
         this.minecraft = minecraft;
         this.onConditionToggle = onConditionToggle;
@@ -81,7 +80,7 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
     public boolean mouseClicked(double x, double y, int button) {
         if (!visible) return false;
 
-        boolean clickedInArea = super.mouseClicked(x, y, button);
+        boolean clickedScrollbar = updateScrolling(x, y, button);
         boolean clickedChild = false;
 
         var childrenCopy = new ArrayList<>(children);
@@ -91,14 +90,14 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
                 clickedChild = true;
             }
         }
-        return clickedInArea || clickedChild;
+        return clickedScrollbar || clickedChild;
     }
 
     @Override
     protected void renderBackground(@NotNull GuiGraphics guiGraphics) {
         guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), BiomeBeatsColor.DARK_GREY.getHex());
         if (scrollbarVisible()) {
-            guiGraphics.fill(getX() + getWidth(), getY(), getX() + getWidth() + SCROLL_BAR_WIDTH,
+            guiGraphics.fill(getX() + getWidth(), getY(), getX() + getWidth(),
                     getY() + getHeight(), BiomeBeatsColor.DARK_GREY.getHex());
         }
     }
@@ -107,8 +106,8 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
     protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {}
 
     @Override
-    protected int getInnerHeight() {
-        int height = -10;
+    protected int contentHeight() {
+        int height = -2;
         for (EntryGroup entryGroup : children) {
             height += entryGroup.getHeight() + 5;
         }
@@ -197,9 +196,9 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
             }
         }
 
-        width = scrollbarVisible() ? bounds.w() - SCROLL_BAR_WIDTH : bounds.w();
+        int childrenWidth = scrollbarVisible() ? width - SCROLLBAR_WIDTH : width;
         for (AbstractWidget entry : children) {
-            entry.setWidth(width);
+            entry.setWidth(childrenWidth);
         }
         UpdateY();
 
@@ -222,7 +221,7 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
             collapseButton.setState(isCollapsed);
 
             for (Condition condition : conditions) {
-                children.add(new Entry(condition, new Rect(x, 0, width, CHILDREN_HEIGHT)));
+                children.add(new Entry(condition, new Rect(x + 1, 0, width - 2, CHILDREN_HEIGHT)));
             }
 
             setHeight((children.size() + 1) * CHILDREN_HEIGHT + (children.size() - 1) * CHILDREN_SPACING + 8);
@@ -256,7 +255,7 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
             collapseButton.setX(getX() + width - 24);
 
             for (AbstractWidget entry : children) {
-                entry.setWidth(width);
+                entry.setWidth(width - 2);
             }
         }
 
@@ -292,8 +291,8 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
                 super(bounds.x(), bounds.y(), bounds.w(), bounds.h(), Component.literal(condition.getName()));
                 this.condition = condition;
 
-                checkbox = new TwoStateImageButton(getX() + 1, getY(), new LayeredImageButton(getX() + 1, getY(),
-                        BaseTextureUv.CHECKBOX_CHECKED_UV, null, null), new LayeredImageButton(getX() + 1, getY(),
+                checkbox = new TwoStateImageButton(getX(), getY(), new LayeredImageButton(getX(), getY(),
+                        BaseTextureUv.CHECKBOX_CHECKED_UV, null, null), new LayeredImageButton(getX(), getY(),
                         BaseTextureUv.BUTTON_BASE_INVERTED_UV, null, null),
                         (c, newValue) -> ConditionCheckboxList.this.onConditionToggle.onConditionToggle(condition,
                                 newValue), null, null);
@@ -304,7 +303,7 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
                 guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(),
                         BiomeBeatsColor.LIGHT_GREY.getHex());
 
-                var textRect = new Rect(getX() + 19, getY(), getWidth() - 22, getHeight());
+                Rect textRect = new Rect(getX() + 18, getY(), getWidth() - 22, getHeight());
                 drawScrollingString(guiGraphics, ConditionCheckboxList.this.minecraft.font, getMessage(), textRect,
                         (int) -ConditionCheckboxList.this.scrollAmount(), BiomeBeatsColor.WHITE.getHex());
 
