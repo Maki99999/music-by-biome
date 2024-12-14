@@ -256,7 +256,6 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
         // Background
         drawContainer(guiGraphics, bounds);
         drawRect(BaseTextureUv.RL, guiGraphics,

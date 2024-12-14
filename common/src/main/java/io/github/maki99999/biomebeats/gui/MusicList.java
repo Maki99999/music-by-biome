@@ -21,8 +21,7 @@ import java.util.*;
 
 import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
 
-public class MusicList extends AbstractScrollWidget implements Renderable, ContainerEventHandler {
-    private static final int SCROLL_BAR_WIDTH = 8;
+public class MusicList extends ScrollArea implements Renderable, ContainerEventHandler {
     private static final int CHILDREN_HEIGHT = 16;
     private static final int CHILDREN_SPACING = 4;
 
@@ -39,7 +38,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
     public MusicList(Minecraft minecraft, Rect bounds, Component message, Collection<MusicGroup> musicGroups,
                      OnMusicTrackToggle onMusicTrackToggle, OnGroupToggle onGroupToggle) {
-        super(bounds.x(), bounds.y(), bounds.w() - SCROLL_BAR_WIDTH, bounds.h(), message);
+        super(bounds, message);
 
         this.minecraft = minecraft;
         this.onMusicTrackToggle = onMusicTrackToggle;
@@ -67,7 +66,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
     public boolean mouseClicked(double x, double y, int button) {
         if (!visible) return false;
 
-        boolean clickedInArea = super.mouseClicked(x, y, button);
+        boolean clickedScrollbar = updateScrolling(x, y, button);
         boolean clickedChild = false;
 
         var childrenCopy = new ArrayList<>(children);
@@ -77,14 +76,14 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                 clickedChild = true;
             }
         }
-        return clickedInArea || clickedChild;
+        return clickedScrollbar || clickedChild;
     }
 
     @Override
     protected void renderBackground(@NotNull GuiGraphics guiGraphics) {
         guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), BiomeBeatsColor.DARK_GREY.getHex());
         if (scrollbarVisible()) {
-            guiGraphics.fill(getX() + getWidth(), getY(), getX() + getWidth() + SCROLL_BAR_WIDTH, getY() + getHeight(),
+            guiGraphics.fill(getX() + getWidth(), getY(), getX() + getWidth(), getY() + getHeight(),
                     BiomeBeatsColor.DARK_GREY.getHex());
         }
     }
@@ -93,8 +92,8 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
     protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {}
 
     @Override
-    protected int getInnerHeight() {
-        int height = -10;
+    protected int contentHeight() {
+        int height = -2;
         for (EntryGroup entryGroup : children) {
             height += entryGroup.getHeight() + 5;
         }
@@ -209,9 +208,9 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                     collapsedMusicGroups.contains(musicGroup.getName())));
         }
 
-        width = scrollbarVisible() ? bounds.w() - SCROLL_BAR_WIDTH : bounds.w();
+        int childrenWidth = scrollbarVisible() ? width - SCROLLBAR_WIDTH : width;
         for (AbstractWidget entry : children) {
-            entry.setWidth(width);
+            entry.setWidth(childrenWidth);
         }
         UpdateY();
     }
@@ -233,7 +232,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
             collapseButton.setState(isCollapsed);
 
             for (MusicTrack musicTrack : musicGroup.getMusicTracks()) {
-                children.add(new Entry(musicTrack, new Rect(x, 0, width, CHILDREN_HEIGHT)));
+                children.add(new Entry(musicTrack, new Rect(x + 1, 0, width - 2, CHILDREN_HEIGHT)));
             }
 
             setHeight((children.size() + 1) * CHILDREN_HEIGHT + (children.size() - 1) * CHILDREN_SPACING + 8);
@@ -273,7 +272,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
             collapseButton.setX(getX() + width - 24);
 
             for (AbstractWidget entry : children) {
-                entry.setWidth(width);
+                entry.setWidth(width - 2);
             }
         }
 
@@ -313,18 +312,18 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                 this.musicTrack = musicTrack;
 
                 tooltip.set(Tooltip.create(Component.literal(musicTrack.getPathName())));
-                checkbox = new TwoStateImageButton(getX() + 1, getY(),
-                        new LayeredImageButton(getX() + 1, getY(), BaseTextureUv.CHECKBOX_CHECKED_UV, null, null),
-                        new LayeredImageButton(getX() + 1, getY(), BaseTextureUv.BUTTON_BASE_INVERTED_UV, null, null),
+                checkbox = new TwoStateImageButton(getX(), getY(),
+                        new LayeredImageButton(getX(), getY(), BaseTextureUv.CHECKBOX_CHECKED_UV, null, null),
+                        new LayeredImageButton(getX(), getY(), BaseTextureUv.BUTTON_BASE_INVERTED_UV, null, null),
                         (c, newValue) -> MusicList.this.onMusicTrackToggle.onMusicTrackToggle(musicTrack, newValue),
                         null, null);
 
                 previewButton = new TwoStateImageButton(
-                        getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(),
-                        new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(),
+                        getX() + width - BaseTextureUv.PLAY_UV.w(), getY(),
+                        new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w(), getY(),
                                 BaseTextureUv.STOP_UV, null,
                                 Tooltip.create(Component.translatable("menu.biomebeats.stop"))),
-                        new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w() - 1, getY(),
+                        new LayeredImageButton(getX() + width - BaseTextureUv.PLAY_UV.w(), getY(),
                                 BaseTextureUv.PLAY_UV, null,
                                 Tooltip.create(Component.translatable("menu.biomebeats.play"))),
                         (btn, newValue) -> {
@@ -336,7 +335,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                             System.out.println("clicked 'preview' on " + musicTrack.getName());
                         }, null, null);
                 editButton = new LayeredImageButton(
-                        getX() + width - previewButton.getWidth() - BaseTextureUv.EDIT_UV.w() - 1, getY(),
+                        getX() + width - previewButton.getWidth() - BaseTextureUv.EDIT_UV.w(), getY(),
                         BaseTextureUv.EDIT_UV, (click) -> {
                     //TODO
                     System.out.println("clicked 'edit' on " + getMessage());
@@ -354,7 +353,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                 guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(),
                         BiomeBeatsColor.LIGHT_GREY.getHex());
 
-                var textRect = new Rect(getX() + 19, getY(), editButton.getX() - (getX() + 22), getHeight());
+                var textRect = new Rect(getX() + 18, getY(), editButton.getX() - (getX() + 22), getHeight());
                 drawScrollingString(guiGraphics, MusicList.this.minecraft.font, getMessage(), textRect,
                         (int) -MusicList.this.scrollAmount(), BiomeBeatsColor.WHITE.getHex());
                 tooltip.refreshTooltipForNextRenderPass(isHoveringText(textRect, guiGraphics, mouseX, mouseY,
@@ -387,8 +386,8 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
             public void setWidth(int width) {
                 super.setWidth(width);
 
-                previewButton.setX(getX() + width - BaseTextureUv.PLAY_UV.w() - 1);
-                editButton.setX(getX() + width - previewButton.getWidth() - BaseTextureUv.EDIT_UV.w() - 1);
+                previewButton.setX(getX() + width - BaseTextureUv.PLAY_UV.w());
+                editButton.setX(getX() + width - previewButton.getWidth() - BaseTextureUv.EDIT_UV.w());
             }
 
             @Override

@@ -21,15 +21,13 @@ import java.util.List;
 
 import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
 
-public class ConditionList extends AbstractScrollWidget implements Renderable, ContainerEventHandler {
-    private static final int SCROLL_BAR_WIDTH = 8;
+public class ConditionList extends ScrollArea implements Renderable, ContainerEventHandler {
     private static final int CHILDREN_HEIGHT = 16;
     private static final int CHILDREN_SPACING = 4;
 
     private final OnSelected onSelected;
     private final OnEditPress onEditPress;
     private final Minecraft minecraft;
-    private final int widthExclScrollBar;
 
     private List<Entry> children = new ArrayList<>();
     @Nullable
@@ -40,17 +38,15 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
 
     public ConditionList(Minecraft minecraft, Rect bounds, Component message, OnSelected onSelected,
                          OnEditPress onEditPress) {
-        super(bounds.x(), bounds.y(), bounds.w() - SCROLL_BAR_WIDTH, bounds.h(), message);
+        super(bounds, message);
         this.onSelected = onSelected;
         this.onEditPress = onEditPress;
         this.minecraft = minecraft;
-
-        widthExclScrollBar = bounds.w();
     }
 
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        boolean clickedInArea = super.mouseClicked(x, y, button);
+        boolean clickedScrollbar = updateScrolling(x, y, button);
         boolean clickedChild = false;
 
         for (Entry child : children) {
@@ -60,14 +56,14 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
                 clickedChild = true;
             }
         }
-        return clickedInArea || clickedChild;
+        return clickedScrollbar || clickedChild;
     }
 
     @Override
     protected void renderBackground(@NotNull GuiGraphics guiGraphics) {
         guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), BiomeBeatsColor.DARK_GREY.getHex());
         if (scrollbarVisible()) {
-            guiGraphics.fill(getX() + getWidth(), getY(), getX() + getWidth() + SCROLL_BAR_WIDTH, getY() + getHeight(),
+            guiGraphics.fill(getX() + getWidth(), getY(), getX() + getWidth(), getY() + getHeight(),
                     BiomeBeatsColor.DARK_GREY.getHex());
         }
     }
@@ -76,8 +72,12 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
     protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {}
 
     @Override
-    protected int getInnerHeight() {
-        return children.size() * (CHILDREN_HEIGHT + CHILDREN_SPACING) - 4;
+    protected int contentHeight() {
+        return contentHeight(children.size());
+    }
+
+    private int contentHeight(int childrenCount) {
+        return Math.max(childrenCount * (CHILDREN_HEIGHT + CHILDREN_SPACING), 0);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
         for (int i = 0; i < children.size(); i++) {
             Entry entry = children.get(i);
             entry.setSelected(entry == selectedChild);
-            entry.setY(getY() + CHILDREN_SPACING + i * (CHILDREN_HEIGHT + CHILDREN_SPACING));
+            entry.setY(2 + getY() + i * (CHILDREN_HEIGHT + CHILDREN_SPACING));
             entry.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
     }
@@ -129,16 +129,12 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
         this.focusedChild = guiEventListener;
     }
 
-    private boolean isScrollbarVisible(int childrenCount) {
-        return (childrenCount * (CHILDREN_HEIGHT + CHILDREN_SPACING) - 4) > this.getHeight();
-    }
-
     public void setConditions(Collection<? extends Condition> conditions, Condition currentCondition) {
-        width = isScrollbarVisible(conditions.size()) ? widthExclScrollBar - SCROLL_BAR_WIDTH : widthExclScrollBar;
+        int childrenWidth = contentHeight(conditions.size()) > getHeight() ? width - SCROLLBAR_WIDTH - 2 : width - 2;
 
         children = new ArrayList<>();
         for (Condition condition : conditions) {
-            var entry = new Entry(minecraft, getX(), 0, width, CHILDREN_HEIGHT, condition);
+            Entry entry = new Entry(minecraft, getX() + 1, 0, childrenWidth, CHILDREN_HEIGHT, condition);
             children.add(entry);
         }
         selectedChild = currentCondition == null
@@ -169,7 +165,7 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
             this.condition = condition;
 
             if (condition instanceof CombinedCondition combinedCondition) {
-                editButton = new LayeredImageButton(getX() + width - BaseTextureUv.EDIT_UV.w() - 1, getY(),
+                editButton = new LayeredImageButton(getX() + width - BaseTextureUv.EDIT_UV.w(), getY(),
                         BaseTextureUv.EDIT_UV, (click) -> onEditPress.onEditPress(combinedCondition),
                         Tooltip.create(Component.translatable("menu.biomebeats.edit")));
                 tooltip.set(Tooltip.create(Component.literal(combinedCondition.getDescription())));
@@ -187,7 +183,7 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
             if (selected) {
                 guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(),
                         BiomeBeatsColor.WHITE.getHex());
-                guiGraphics.fill(getX() + 2, getY() + 1, getX() - 2 + getWidth(), getY() - 1 + getHeight(),
+                guiGraphics.fill(getX() + 1, getY() + 1, getX() - 1 + getWidth(), getY() - 1 + getHeight(),
                         BiomeBeatsColor.LIGHT_GREY.getHex());
             } else {
                 guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(),
@@ -201,7 +197,7 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
             if (editButton != null) {
                 editButton.render(guiGraphics, mouseX, mouseY, (int) -ConditionList.this.scrollAmount());
                 tooltip.refreshTooltipForNextRenderPass(guiGraphics.containsPointInScissor(mouseX,
-                        mouseY + (int) -ConditionList.this.scrollAmount()) && textRect.contains(mouseX, mouseY),
+                                mouseY + (int) -ConditionList.this.scrollAmount()) && textRect.contains(mouseX, mouseY),
                         false, new ScreenRectangle(textRect.x(), textRect.y(), textRect.w(), textRect.h()));
             }
         }
@@ -224,7 +220,7 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
         public void setWidth(int x) {
             super.setWidth(x);
             if (editButton != null) {
-                editButton.setX(getX() + width - BaseTextureUv.EDIT_UV.w() - 1);
+                editButton.setX(getX() + width - BaseTextureUv.EDIT_UV.w());
             }
         }
 

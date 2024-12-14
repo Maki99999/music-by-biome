@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.Musics;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -138,21 +139,6 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
                 c -> c instanceof ScreenCondition screenCondition && screenCondition.getScreen() == null);
         addMusicToCondition(musicTracks, Musics.MENU, menuCondition);
 
-        Condition endBossCondition =
-                Constants.CONDITION_MANAGER.findCondition(c -> c instanceof CombinedCondition combinedCondition
-                        && combinedCondition.getName().equals("End Boss"));
-        addMusicToCondition(musicTracks, Musics.END_BOSS, endBossCondition);
-
-        Condition isEndCondition = Constants.CONDITION_MANAGER.findCondition(
-                c -> c instanceof TagCondition tagCondition && tagCondition.getName().equals("Is End"));
-        if (isEndCondition != null)
-            addMusicToCondition(musicTracks, Musics.END, isEndCondition);
-
-        Condition underwaterCondition =
-                Constants.CONDITION_MANAGER.findCondition(c -> c instanceof CombinedCondition combinedCondition
-                        && combinedCondition.getName().equals("Is Under Water in Underwater Biome"));
-        addMusicToCondition(musicTracks, Musics.UNDER_WATER, underwaterCondition);
-
         Condition creativeModeCondition = Constants.CONDITION_MANAGER.findCondition(
                 c -> c instanceof InGameModeCondition inGameModeCondition
                         && inGameModeCondition.getName().contains("Creative"));
@@ -162,23 +148,42 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
                 Constants.CONDITION_MANAGER.findCondition(c -> c instanceof NoOtherMusicCondition);
         addMusicToCondition(musicTracks, Musics.GAME, noOtherMusicCondition);
 
+        Player player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+
+        Condition endBossCondition =
+                Constants.CONDITION_MANAGER.findCondition(c -> c instanceof CombinedCondition combinedCondition
+                        && combinedCondition.getName().equals("End Boss"));
+        addMusicToCondition(musicTracks, Musics.END_BOSS, endBossCondition);
+
+        Condition isEndCondition = Constants.CONDITION_MANAGER.findCondition(
+                c -> c instanceof TagCondition tagCondition && tagCondition.getName().equals("Is End"));
+        addMusicToCondition(musicTracks, Musics.END, isEndCondition);
+
+        Condition underwaterCondition1 = Constants.CONDITION_MANAGER.findCondition(
+                c -> c instanceof TagCondition tagCondition && tagCondition.getName().equals("Plays Underwater Music"));
+        Condition underwaterCondition2 =
+                Constants.CONDITION_MANAGER.findCondition(c -> c instanceof IsUnderWaterCondition);
+        addMusicToCondition(musicTracks, Musics.UNDER_WATER, underwaterCondition1);
+        addMusicToCondition(musicTracks, Musics.UNDER_WATER, underwaterCondition2);
+
         Collection<? extends Condition> biomeConditions = Constants.CONDITION_MANAGER.getBiomeConditions();
 
-        Minecraft minecraft = Minecraft.getInstance();
-        Player player = minecraft.player;
-        if (player == null) return;
-
         try (Level level = player.level()) {
-            Registry<Biome> biomeRegistry = level.registryAccess().registryOrThrow(Registries.BIOME);
+            Registry<Biome> biomeRegistry = level.registryAccess().lookupOrThrow(Registries.BIOME);
             for (Condition condition : biomeConditions) {
                 ResourceLocation biomeRL = ((BiomeCondition) condition).getBiomeRL();
-                Biome biome = biomeRegistry.get(biomeRL);
+                Biome biome = biomeRegistry.getValue(biomeRL);
                 if (biome == null) continue;
 
-                Optional<Music> biomeBgm = biome.getBackgroundMusic();
-                if (biomeBgm.isEmpty()) continue;
+                Optional<SimpleWeightedRandomList<Music>> biomeBgms = biome.getBackgroundMusic();
+                if (biomeBgms.isEmpty()) continue;
 
-                addMusicToCondition(musicTracks, biomeBgm.get(), condition);
+                for (var biomeBgm : biomeBgms.get().unwrap()) {
+                    addMusicToCondition(musicTracks, biomeBgm.data(), condition);
+                }
             }
         } catch (IOException e) {
             Constants.LOG.error(e.getMessage(), e);
@@ -188,11 +193,18 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
     private void addMusicToCondition(Collection<ResourceLocationMusicTrack> musicTracks,
                                      Music music,
                                      Condition condition) {
-        if (music == null) return;
+        if (condition == null) {
+            throw new IllegalArgumentException("Condition must not be null");
+        }
+        if (music == null) {
+            return;
+        }
 
         MixinWeighedSoundEvents musicSoundEvents = (MixinWeighedSoundEvents) Minecraft.getInstance().getSoundManager()
-                .getSoundEvent(music.getEvent().value().getLocation());
-        if (musicSoundEvents == null) return;
+                .getSoundEvent(music.getEvent().value().location());
+        if (musicSoundEvents == null) {
+            return;
+        }
 
         List<ResourceLocation> musicRLs = musicSoundEvents.list().stream()
                 .map(weightedSound -> weightedSound.getSound(rdm))
