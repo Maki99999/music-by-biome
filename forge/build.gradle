@@ -43,7 +43,7 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.21.1-52.0.28"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.0"))
