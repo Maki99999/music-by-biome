@@ -59,9 +59,9 @@ def getJarTaskName(Project subproject) {
     switch (subproject.name) {
         case 'fabric':
             return 'remapJar'
+        case 'forge':
         case 'neoforge':
             return 'shadowJar'
-        case 'forge':
         default:
             return null
     }
