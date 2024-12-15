@@ -1,6 +1,9 @@
+import net.fabricmc.loom.task.RemapJarTask
+
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom'
+    id 'com.gradleup.shadow'
 }
 
 repositories {
@@ -18,23 +21,10 @@ dependencies {
 
     implementation 'com.google.auto.service:auto-service-annotations:1.1.1'
     annotationProcessor 'com.google.auto.service:auto-service:1.1.1'
-    include(implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2')
-    include(implementation('com.github.goxr3plus:java-stream-player:9.0.4') {
+    shadow(implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2')
+    shadow(implementation('com.github.goxr3plus:java-stream-player:9.0.4') {
         exclude group: 'junit', module: 'junit'
     })
-    include('com.fasterxml.jackson.core:jackson-databind:2.17.2')
-    include('com.fasterxml.jackson.core:jackson-annotations:2.17.2')
-    include('com.fasterxml.jackson:jackson-bom:2.17.2')
-    include('com.fasterxml.jackson.core:jackson-core:2.17.2')
-    include('com.github.goxr3plus:java-stream-player:9.0.4')
-    include('com.googlecode.soundlibs:mp3spi:1.9.5.4')
-    include('com.googlecode.soundlibs:jlayer:1.0.1.4')
-    include('org.jflac:jflac-codec:1.5.2')
-    include('com.github.trilarion:vorbis-support:1.1.0')
-    include('com.googlecode.soundlibs:tritonus-all:0.3.7.2')
-    include('com.googlecode.soundlibs:jorbis:0.0.17-2')
-    include('com.github.goxr3plus:jaudiotagger:2.2.7')
-    include('commons-io:commons-io:2.6')
 }
 
 loom {
@@ -54,3 +44,28 @@ loom {
         }
     }
 }
+
+shadowJar {
+    archiveFileName = "${mod_id}-fabric-${minecraft_version}-${version}-all.jar"
+    configurations = [project.configurations.shadow]
+    mergeServiceFiles()
+
+    relocate("com.fasterxml.jackson", "${project.property('group')}.com.fasterxml.jackson")
+    relocate("com.github.trilarion.sound", "${project.property('group')}.com.github.trilarion.sound")
+    relocate("com.goxr3plus.streamplayer", "${project.property('group')}.com.goxr3plus.streamplayer")
+    relocate("com.jcraft", "${project.property('group')}.com.jcraft")
+    relocate("javazoom", "${project.property('group')}.javazoom")
+    relocate("org.apache.commons.io", "${project.property('group')}.org.apache.commons.io")
+    relocate("org.jaudiotagger", "${project.property('group')}.org.jaudiotagger")
+    relocate("org.jflac", "${project.property('group')}.org.jflac")
+    relocate("org.tritonus", "${project.property('group')}.org.tritonus")
+}
+
+tasks.register('remappedShadowJar', RemapJarTask) {
+    dependsOn tasks.shadowJar
+    input = tasks.shadowJar.archiveFile
+    addNestedDependencies = true
+    archiveFileName = "${mod_id}-fabric-${minecraft_version}-${version}.jar"
+}
+
+tasks.assemble.dependsOn tasks.remappedShadowJar

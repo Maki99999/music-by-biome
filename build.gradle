@@ -11,6 +11,11 @@ allprojects {
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
+    configurations.configureEach {
+        resolutionStrategy {
+            force 'commons-io:commons-io:2.15.1'
+        }
+    }
 }
 
 // Root build.gradle
@@ -58,7 +63,7 @@ tasks.register('generateJars') {
 def getJarTaskName(Project subproject) {
     switch (subproject.name) {
         case 'fabric':
-            return 'remapJar'
+            return 'remappedShadowJar'
         case 'forge':
         case 'neoforge':
             return 'shadowJar'
