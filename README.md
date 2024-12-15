@@ -125,6 +125,7 @@ Recently played tracks are tracked to avoid back-to-back repeats if possible.
 
 I still have some ideas I want to implement in the future.
 
+- Structure Conditions: Like biome conditions but with structures like the stronghold.
 - Individual Track Volume Control: This would allow you to adjust the volume of each track separately, which is helpful if your custom tracks have different audio levels.
 - UI Improvements: Small tweaks, like an indicator to show which conditions have music assigned and which ones are currently active.
 - Backports for Earlier Minecraft Versions: Backporting the mod to older versions is a bit tricky with the multiloader setup I have, but doing it modloader by modloader and version by version should be manageable, just time-consuming.
