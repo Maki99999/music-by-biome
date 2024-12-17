@@ -119,8 +119,6 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
     public void close() {
         if (javaStreamPlayer != null)
             javaStreamPlayer.close();
-        if (executorService != null)
-            executorService.close();
     }
 
     public void setCurrentMusicTracks(Collection<MusicTrack> musicTracks) {
@@ -225,10 +223,10 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
 
     private void addRecentMusicTrack(MusicTrack musicTrack) {
         recentMusicTracks.remove(musicTrack);
-        recentMusicTracks.addFirst(musicTrack);
+        recentMusicTracks.add(0, musicTrack);
 
         if (recentMusicTracks.size() > 5) {
-            recentMusicTracks.removeLast();
+            recentMusicTracks.remove(recentMusicTracks.size() - 1);
         }
     }
 

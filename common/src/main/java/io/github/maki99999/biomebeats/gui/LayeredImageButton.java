@@ -13,12 +13,12 @@ public class LayeredImageButton extends ImageButton {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int mouseYScissorOffset) {
+    public void render(@NotNull GuiGraphics guiGraphics, Rect scissorBounds, int mouseX, int mouseY, int mouseYScissorOffset) {
         if (!isActive()) return;
 
         Rect renderingUv;
         if (isActive()) {
-            renderingUv = isHovering(guiGraphics, mouseX, mouseY, mouseYScissorOffset)
+            renderingUv = isHovering(scissorBounds, mouseX, mouseY, mouseYScissorOffset)
                     ? BaseTextureUv.BUTTON_BASE_FOCUSED_UV
                     : BaseTextureUv.BUTTON_BASE_UV;
         } else {
@@ -26,6 +26,6 @@ public class LayeredImageButton extends ImageButton {
         }
 
         drawRect(BaseTextureUv.RL, guiGraphics, new Rect(getX(), getY(), getUv().w(), getUv().h()), renderingUv);
-        super.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
+        super.render(guiGraphics, scissorBounds, mouseX, mouseY, mouseYScissorOffset);
     }
 }

@@ -48,7 +48,7 @@ public class CombinedConditionConfigScreen extends Screen {
 
     @Override
     public void onClose() {
-        if (condition.getName().isBlank()) {
+        if (condition != null && condition.getName().isBlank()) {
             condition.setName("Combined Condition");
         }
 
@@ -142,14 +142,14 @@ public class CombinedConditionConfigScreen extends Screen {
                 BiomeBeatsColor.WHITE.getHex());
         conditionSearchBox.render(guiGraphics, mouseX, mouseY, partialTick);
         conditionList.render(guiGraphics, mouseX, mouseY, partialTick);
-        if (oldCondition != null) deleteBtn.render(guiGraphics, mouseX, mouseY, 0);
-        confirmBtn.render(guiGraphics, mouseX, mouseY, 0);
+        if (oldCondition != null) deleteBtn.render(guiGraphics, bounds, mouseX, mouseY, 0);
+        confirmBtn.render(guiGraphics, bounds, mouseX, mouseY, 0);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return (oldCondition != null && deleteBtn.mouseClicked(mouseX, mouseY, button))
-                || confirmBtn.mouseClicked(mouseX, mouseY, button)
+        return (oldCondition != null && deleteBtn.mouseClicked(bounds, 0, mouseX, mouseY, button))
+                || confirmBtn.mouseClicked(bounds, 0, mouseX, mouseY, button)
                 || super.mouseClicked(mouseX, mouseY, button);
     }
 }

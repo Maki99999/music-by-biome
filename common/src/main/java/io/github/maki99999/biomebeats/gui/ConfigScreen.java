@@ -192,7 +192,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     }
 
     private void onFolderPress(Button imageButton) {
-        Util.getPlatform().openPath(Services.PLATFORM.getModConfigFolder().resolve(Constants.MUSIC_FOLDER));
+        Util.getPlatform().openUri(Services.PLATFORM.getModConfigFolder().resolve(Constants.MUSIC_FOLDER).toUri());
     }
 
     private void initData() {
@@ -241,16 +241,16 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (currentTab == TabType.COMBINED && addCombinedConditionBtn.mouseClicked(mouseX, mouseY, button)) {
+        if (currentTab == TabType.COMBINED && addCombinedConditionBtn.mouseClicked(new Rect(0, 0, width, height), 0, mouseX, mouseY, button)) {
             return true;
         }
 
         boolean pressedTab = false;
         for (TwoStateImageButton tab : tabs.keySet()) {
-            pressedTab = pressedTab || tab.mouseClicked(mouseX, mouseY, button);
+            pressedTab = pressedTab || tab.mouseClicked(new Rect(0, 0, width, height), 0, mouseX, mouseY, button);
         }
-        pressedTab = pressedTab || folderButton.mouseClicked(mouseX, mouseY, button);
-        pressedTab = pressedTab || reloadButton.mouseClicked(mouseX, mouseY, button);
+        pressedTab = pressedTab || folderButton.mouseClicked(new Rect(0, 0, width, height), 0, mouseX, mouseY, button);
+        pressedTab = pressedTab || reloadButton.mouseClicked(new Rect(0, 0, width, height), 0, mouseX, mouseY, button);
         return super.mouseClicked(mouseX, mouseY, button) | pressedTab;
     }
 
@@ -276,8 +276,8 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
                 addonBounds.x2() + 2, addonBounds.y2()), BaseTextureUv.CONTAINER_UV_B);
         drawRect(BaseTextureUv.RL, guiGraphics, Rect.fromCoordinates(addonBounds.x() + 4, addonBounds.y() + 3,
                 addonBounds.x2() + 2, addonBounds.y2() - 4), BaseTextureUv.CONTAINER_UV_C);
-        folderButton.render(guiGraphics, mouseX, mouseY, 0);
-        reloadButton.render(guiGraphics, mouseX, mouseY, 0);
+        folderButton.render(guiGraphics, new Rect(0, 0, width, height), mouseX, mouseY, 0);
+        reloadButton.render(guiGraphics, new Rect(0, 0, width, height), mouseX, mouseY, 0);
 
         // Left column
         conditionSearchBox.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -292,12 +292,12 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         musicSearchBox.render(guiGraphics, mouseX, mouseY, partialTick);
         musicList.render(guiGraphics, mouseX, mouseY, partialTick);
         for (TwoStateImageButton tab : tabs.keySet()) {
-            tab.render(guiGraphics, mouseX, mouseY, 0);
+            tab.render(guiGraphics, new Rect(0, 0, width, height), mouseX, mouseY, 0);
         }
 
         // Combined Conditions
         if (currentTab == TabType.COMBINED) {
-            addCombinedConditionBtn.render(guiGraphics, mouseX, mouseY, 0);
+            addCombinedConditionBtn.render(guiGraphics, new Rect(0, 0, width, height), mouseX, mouseY, 0);
         }
     }
 

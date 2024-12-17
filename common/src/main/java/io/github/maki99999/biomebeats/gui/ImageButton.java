@@ -16,8 +16,8 @@ public class ImageButton extends Button {
         this.uv = uv;
     }
 
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int mouseYScissorOffset) {
-        super.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
+    public void render(@NotNull GuiGraphics guiGraphics, Rect scissorBounds, int mouseX, int mouseY, int mouseYScissorOffset) {
+        super.render(scissorBounds, mouseX, mouseY, mouseYScissorOffset);
         drawRect(RL, guiGraphics, getBounds(), uv);
     }
 

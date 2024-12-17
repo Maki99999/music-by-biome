@@ -10,7 +10,6 @@ import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -147,6 +146,10 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
         setScrollAmount(0);
     }
 
+    public void setHeight(int i) {
+        height = i;
+    }
+
     public interface OnSelected {
         void onSelected(Condition condition);
     }
@@ -159,7 +162,7 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
         private final Minecraft minecraft;
         private final Condition condition;
         private final ImageButton editButton;
-        private final WidgetTooltipHolder tooltip = new WidgetTooltipHolder();
+        private final SimpleTooltipHolder tooltip = new SimpleTooltipHolder();
 
         private boolean selected = false;
 
@@ -183,7 +186,7 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
         }
 
         @Override
-        protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (selected) {
                 guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(),
                         BiomeBeatsColor.WHITE.getHex());
@@ -199,16 +202,18 @@ public class ConditionList extends AbstractScrollWidget implements Renderable, C
                     (int) -ConditionList.this.scrollAmount(), BiomeBeatsColor.WHITE.getHex());
 
             if (editButton != null) {
-                editButton.render(guiGraphics, mouseX, mouseY, (int) -ConditionList.this.scrollAmount());
-                tooltip.refreshTooltipForNextRenderPass(guiGraphics.containsPointInScissor(mouseX,
-                        mouseY + (int) -ConditionList.this.scrollAmount()) && textRect.contains(mouseX, mouseY),
-                        false, new ScreenRectangle(textRect.x(), textRect.y(), textRect.w(), textRect.h()));
+                Rect bounds = new Rect(getX(), getY(), width, height);
+                editButton.render(guiGraphics, bounds, mouseX, mouseY, (int) -ConditionList.this.scrollAmount());
+                tooltip.refreshTooltipForNextRenderPass(bounds.contains(mouseX,
+                                mouseY + (int) -ConditionList.this.scrollAmount()) && textRect.contains(mouseX, mouseY),
+                        false, textRect);
             }
         }
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            return (editButton != null && editButton.mouseClicked(mouseX, mouseY, button))
+            Rect bounds = new Rect(getX(), getY(), width, height);
+            return (editButton != null && editButton.mouseClicked(bounds, (int) -ConditionList.this.scrollAmount(), mouseX, mouseY, button))
                     || super.mouseClicked(mouseX, mouseY, button);
         }
 

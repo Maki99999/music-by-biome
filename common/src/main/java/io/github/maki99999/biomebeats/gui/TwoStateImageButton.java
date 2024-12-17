@@ -30,11 +30,11 @@ public class TwoStateImageButton extends ImageButton {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int mouseYScissorOffset) {
+    public void render(@NotNull GuiGraphics guiGraphics, Rect scissorBounds, int mouseX, int mouseY, int mouseYScissorOffset) {
         if (state)
-            positiveButton.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
+            positiveButton.render(guiGraphics, scissorBounds, mouseX, mouseY, mouseYScissorOffset);
         else
-            negativeButton.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
+            negativeButton.render(guiGraphics, scissorBounds, mouseX, mouseY, mouseYScissorOffset);
 
         if (text != null)
             drawScrollingString(guiGraphics, Minecraft.getInstance().font, text, new Rect(getX() + 8, getY(),

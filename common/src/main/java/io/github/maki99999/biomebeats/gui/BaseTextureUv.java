@@ -5,8 +5,7 @@ import io.github.maki99999.biomebeats.util.Rect;
 import net.minecraft.resources.ResourceLocation;
 
 public class BaseTextureUv {
-    public static final ResourceLocation RL = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID,
-            "textures/gui/base.png");
+    public static final ResourceLocation RL = new ResourceLocation(Constants.MOD_ID, "textures/gui/base.png");
 
     public static final Rect CONTAINER_UV = new Rect(0, 0, 12, 12);
     public static final Rect CONTAINER_INNER_UV = new Rect(4, 4, 4, 4);

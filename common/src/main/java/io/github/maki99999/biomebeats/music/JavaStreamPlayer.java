@@ -278,7 +278,6 @@ public class JavaStreamPlayer {
         }
         stopAndResetGain();
         player.reset();
-        fadeExecutor.close();
     }
 
     public void addStreamPlayerListener(StreamPlayerListener listener) {

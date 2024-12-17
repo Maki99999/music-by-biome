@@ -2,18 +2,14 @@ package io.github.maki99999.biomebeats.gui;
 
 import io.github.maki99999.biomebeats.util.Rect;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.WidgetTooltipHolder;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 public abstract class Button {
-    private final WidgetTooltipHolder tooltip = new WidgetTooltipHolder();
+    private final SimpleTooltipHolder tooltip = new SimpleTooltipHolder();
 
     private TextButton.OnPress onPress;
     private Rect bounds;
@@ -24,13 +20,12 @@ public abstract class Button {
         this.tooltip.set(tooltip);
     }
 
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int mouseYScissorOffset) {
-        this.tooltip.refreshTooltipForNextRenderPass(isHovering(guiGraphics, mouseX, mouseY, mouseYScissorOffset),
-                false, new ScreenRectangle(bounds.x(), bounds.y(), bounds.w(), bounds.h()));
+    protected void render(Rect scissorBounds, int mouseX, int mouseY, int mouseYScissorOffset) {
+        this.tooltip.refreshTooltipForNextRenderPass(isHovering(scissorBounds, mouseX, mouseY, mouseYScissorOffset), false, getBounds());
     }
 
-    protected boolean isHovering(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int mouseYScissorOffset) {
-        return guiGraphics.containsPointInScissor(mouseX, mouseY + mouseYScissorOffset)
+    protected boolean isHovering(Rect scissorBounds, int mouseX, int mouseY, int mouseYScissorOffset) {
+        return scissorBounds.contains(mouseX, mouseY + mouseYScissorOffset)
                 && bounds.contains(mouseX, mouseY);
     }
 
@@ -66,14 +61,11 @@ public abstract class Button {
         this.onPress = onPress;
     }
 
-    public boolean mouseClicked(double x, double y, int button) {
-        if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
-            if (bounds.contains(Mth.ceil(x), (int) y)) {
-                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK,
-                        1.0F));
-                onPress.onPress(this);
-                return true;
-            }
+    public boolean mouseClicked(Rect scissorBounds, int mouseYScissorOffset, double mouseX, double mouseY, int button) {
+        if (button == GLFW.GLFW_MOUSE_BUTTON_1 && isHovering(scissorBounds, Mth.ceil(mouseX), (int) mouseY, mouseYScissorOffset) && bounds.contains(Mth.ceil(mouseX), (int) mouseY)) {
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            onPress.onPress(this);
+            return true;
         }
         return false;
     }

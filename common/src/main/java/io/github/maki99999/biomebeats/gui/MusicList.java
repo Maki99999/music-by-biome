@@ -12,7 +12,6 @@ import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -198,7 +197,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
         updateVisibleMusicTracks(sortedMusic, collapsedMusicGroups);
         setCheckedMusicTracks(checkedMusicTracks);
-        mouseScrolled(0, 0, 0, 0);
+        mouseScrolled(0, 0, 0);
     }
 
     private void updateVisibleMusicTracks(Collection<MusicGroup> musicGroups,
@@ -236,7 +235,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
                 children.add(new Entry(musicTrack, new Rect(x, 0, width, CHILDREN_HEIGHT)));
             }
 
-            setHeight((children.size() + 1) * CHILDREN_HEIGHT + (children.size() - 1) * CHILDREN_SPACING + 8);
+            height = ((children.size() + 1) * CHILDREN_HEIGHT + (children.size() - 1) * CHILDREN_SPACING + 8);
         }
 
         public void onClose() {
@@ -246,11 +245,11 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
         }
 
         @Override
-        protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             drawScrollingString(guiGraphics, MusicList.this.minecraft.font, Component.literal(musicGroup.getName()),
                     new Rect(getX() + 16, getY() + 4, getWidth() - 48, 8),
                     (int) -MusicList.this.scrollAmount(), BiomeBeatsColor.WHITE.getHex());
-            collapseButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
+            collapseButton.render(guiGraphics, bounds, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
 
             for (Entry c : children) {
                 c.render(guiGraphics, mouseX, mouseY, partialTicks);
@@ -279,7 +278,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
         @Override
         public boolean mouseClicked(double x, double y, int button) {
-            if (collapseButton.mouseClicked(x, y, button)) {
+            if (collapseButton.mouseClicked(bounds, (int) -MusicList.this.scrollAmount(), x, y, button)) {
                 return true;
             }
 
@@ -303,7 +302,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
         private class Entry extends AbstractWidget implements PreviewListener {
             private final MusicTrack musicTrack;
-            private final WidgetTooltipHolder tooltip = new WidgetTooltipHolder();
+            private final SimpleTooltipHolder tooltip = new SimpleTooltipHolder();
             private final TwoStateImageButton previewButton;
             private final ImageButton editButton;
             private final TwoStateImageButton checkbox;
@@ -350,25 +349,25 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
             }
 
             @Override
-            protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+            public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
                 guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(),
                         BiomeBeatsColor.LIGHT_GREY.getHex());
 
                 var textRect = new Rect(getX() + 19, getY(), editButton.getX() - (getX() + 22), getHeight());
                 drawScrollingString(guiGraphics, MusicList.this.minecraft.font, getMessage(), textRect,
                         (int) -MusicList.this.scrollAmount(), BiomeBeatsColor.WHITE.getHex());
-                tooltip.refreshTooltipForNextRenderPass(isHoveringText(textRect, guiGraphics, mouseX, mouseY,
+                tooltip.refreshTooltipForNextRenderPass(isHoveringText(textRect, mouseX, mouseY,
                                 (int) -MusicList.this.scrollAmount()),
-                        false, new ScreenRectangle(textRect.x(), textRect.y(), textRect.w(), textRect.h()));
+                        false,textRect);
 
-                checkbox.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
+                checkbox.render(guiGraphics, bounds, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
                 //editButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
-                previewButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
+                previewButton.render(guiGraphics, bounds, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
             }
 
-            private boolean isHoveringText(Rect textRect, @NotNull GuiGraphics guiGraphics, int mouseX, int mouseY,
+            private boolean isHoveringText(Rect textRect, int mouseX, int mouseY,
                                            int mouseYScissorOffset) {
-                return guiGraphics.containsPointInScissor(mouseX, mouseY + mouseYScissorOffset)
+                return bounds.contains(mouseX, mouseY + mouseYScissorOffset)
                         && mouseX >= textRect.x1()
                         && mouseY >= textRect.y1()
                         && mouseX < textRect.x2()
@@ -396,9 +395,9 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
             @Override
             public boolean mouseClicked(double x, double y, int button) {
-                return checkbox.mouseClicked(x, y, button)
+                return checkbox.mouseClicked(bounds, (int) -MusicList.this.scrollAmount(), x, y, button)
                         //|| editButton.mouseClicked(x, y, button)
-                        || previewButton.mouseClicked(x, y, button);
+                        || previewButton.mouseClicked(bounds, (int) -MusicList.this.scrollAmount(), x, y, button);
             }
 
             public MusicTrack getMusicTrack() {

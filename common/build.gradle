@@ -1,18 +1,18 @@
 plugins {
-    id 'multiloader-common'
-    id 'net.neoforged.moddev'
+    id 'idea'
+    id 'java'
+    id 'maven-publish'
+    id 'org.spongepowered.gradle.vanilla'
 }
 
-neoForge {
-    neoFormVersion = neo_form_version
-    // Automatically enable AccessTransformers if the file exists
-    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
-    if (at.exists()) {
-        accessTransformers.add(at.absolutePath)
-    }
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
+base {
+    archivesName = "${mod_name}-common-${minecraft_version}"
+}
+
+minecraft {
+    version(minecraft_version)
+    if(file("src/main/resources/${mod_id}.accesswidener").exists()){
+        accessWideners(file("src/main/resources/${mod_id}.accesswidener"))
     }
 }
 
@@ -20,6 +20,7 @@ dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
     annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
 
     implementation 'com.google.auto.service:auto-service-annotations:1.1.1'
     annotationProcessor 'com.google.auto.service:auto-service:1.1.1'

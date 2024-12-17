@@ -1,7 +1,6 @@
 import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
-    id 'multiloader-loader'
     id 'fabric-loom'
     id 'com.gradleup.shadow'
 }
@@ -25,6 +24,7 @@ dependencies {
     shadow(implementation('com.github.goxr3plus:java-stream-player:9.0.4') {
         exclude group: 'junit', module: 'junit'
     })
+    implementation project(":common")
 }
 
 loom {
@@ -43,6 +43,20 @@ loom {
             runDir('runs/client')
         }
     }
+}
+
+jar {
+    manifest {
+        attributes(['MixinConfigs' : "${project.mod_id}.mixins.json"])
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    source(project(":common").sourceSets.main.allSource)
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
 }
 
 shadowJar {

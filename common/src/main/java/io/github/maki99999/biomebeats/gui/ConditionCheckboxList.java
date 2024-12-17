@@ -204,7 +204,7 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
         UpdateY();
 
         setCheckedConditions(checkedConditions);
-        mouseScrolled(0, 0, 0, 0);
+        mouseScrolled(0, 0, 0);
     }
 
     private class EntryGroup extends AbstractWidget {
@@ -225,15 +225,15 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
                 children.add(new Entry(condition, new Rect(x, 0, width, CHILDREN_HEIGHT)));
             }
 
-            setHeight((children.size() + 1) * CHILDREN_HEIGHT + (children.size() - 1) * CHILDREN_SPACING + 8);
+            height = ((children.size() + 1) * CHILDREN_HEIGHT + (children.size() - 1) * CHILDREN_SPACING + 8);
         }
 
         @Override
-        protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             drawScrollingString(guiGraphics, ConditionCheckboxList.this.minecraft.font, getMessage(),
                     new Rect(getX() + 16, getY() + 4, getWidth() - 48, 8),
                     (int) -ConditionCheckboxList.this.scrollAmount(), BiomeBeatsColor.WHITE.getHex());
-            collapseButton.render(guiGraphics, mouseX, mouseY, (int) -ConditionCheckboxList.this.scrollAmount());
+            collapseButton.render(guiGraphics, bounds, mouseX, mouseY, (int) -ConditionCheckboxList.this.scrollAmount());
 
             for (Entry c : children) {
                 c.render(guiGraphics, mouseX, mouseY, partialTicks);
@@ -262,7 +262,7 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
 
         @Override
         public boolean mouseClicked(double x, double y, int button) {
-            if (collapseButton.mouseClicked(x, y, button)) {
+            if (collapseButton.mouseClicked(bounds, (int) -ConditionCheckboxList.this.scrollAmount(), x, y, button)) {
                 return true;
             }
 
@@ -300,7 +300,7 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
             }
 
             @Override
-            protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+            public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
                 guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(),
                         BiomeBeatsColor.LIGHT_GREY.getHex());
 
@@ -308,7 +308,7 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
                 drawScrollingString(guiGraphics, ConditionCheckboxList.this.minecraft.font, getMessage(), textRect,
                         (int) -ConditionCheckboxList.this.scrollAmount(), BiomeBeatsColor.WHITE.getHex());
 
-                checkbox.render(guiGraphics, mouseX, mouseY, (int) -ConditionCheckboxList.this.scrollAmount());
+                checkbox.render(guiGraphics, bounds, mouseX, mouseY, (int) -ConditionCheckboxList.this.scrollAmount());
             }
 
             @Override
@@ -322,7 +322,7 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
 
             @Override
             public boolean mouseClicked(double x, double y, int button) {
-                return checkbox.mouseClicked(x, y, button);
+                return checkbox.mouseClicked(bounds, (int) -ConditionCheckboxList.this.scrollAmount(), x, y, button);
             }
 
             public Condition getCondition() {
