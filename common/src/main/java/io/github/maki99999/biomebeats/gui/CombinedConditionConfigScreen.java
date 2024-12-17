@@ -48,7 +48,7 @@ public class CombinedConditionConfigScreen extends Screen {
 
     @Override
     public void onClose() {
-        if (condition.getName().isBlank()) {
+        if (condition != null && condition.getName().isBlank()) {
             condition.setName("Combined Condition");
         }
 
