@@ -1,12 +1,8 @@
-buildscript {
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
-    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle'
+    id 'org.spongepowered.mixin'
     id 'com.gradleup.shadow'
 }
 
@@ -15,22 +11,31 @@ base {
 }
 
 mixin {
+    add(sourceSets.main, "${mod_id}.refmap.json")
+
     config("${mod_id}.mixins.json")
 }
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
     copyIdeResources = true
-    reobf = false
+    reobf = true
+
+    if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
+        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    }
 
     runs {
         client {
-            workingDirectory file('runs/client')
+            workingDirectory project.file('run')
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName 'Client'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
                 modClientRun {
                     source sourceSets.main
+                    source project(":common").sourceSets.main
                 }
             }
         }
@@ -41,8 +46,11 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
+sourceSets.main.resources.srcDir 'src/generated/resources'
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.0"))
@@ -58,16 +66,12 @@ dependencies {
     })
 }
 
-jar {
-    manifest {
-        attributes(['MixinConfigs' : "${project.mod_id}.mixins.json"])
-    }
+tasks.withType(JavaCompile).configureEach {
+    source(project(":common").sourceSets.main.allSource)
 }
 
-sourceSets.each {
-    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
-    it.output.resourcesDir = dir
-    it.java.destinationDirectory = dir
+processResources {
+    from project(":common").sourceSets.main.resources
 }
 
 shadowJar {
@@ -83,8 +87,17 @@ shadowJar {
     relocate("org.jflac", "${project.property('group')}.org.jflac")
     relocate("org.tritonus", "${project.property('group')}.org.tritonus")
 
-    from project.file('build/tmp/compileJava/refmap.biomebeats.mixins.json')
-
     from(sourceSets.main.output)
     archiveFileName = "${mod_id}-forge-${minecraft_version}-${version}.jar"
+
+    afterEvaluate {
+        finalizedBy reobfShadowJar
+    }
 }
+
+reobf {
+    jar { classpath.from(sourceSets.main.compileClasspath) }
+    shadowJar {}
+}
+
+jar.finalizedBy('reobfJar')

@@ -16,7 +16,7 @@ public class BiomeBeats {
         MinecraftForge.EVENT_BUS.addListener(BiomeBeats::onClientTick);
     }
 
-    public static void onClientTick(TickEvent.ClientTickEvent.Post event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         BiomeBeatsCommon.tick();
     }
 

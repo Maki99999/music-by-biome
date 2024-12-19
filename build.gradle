@@ -114,10 +114,10 @@ tasks.register('generateJars') {
         subprojects.each { subproject ->
             def jarTaskName = getJarTaskName(subproject)
             if (jarTaskName) {
-                def jarTask = subproject.tasks.findByName(jarTaskName)
-                if (jarTask?.archiveFile?.get()?.asFile?.exists()) {
+                def jarFile = file("${subproject.buildDir}/libs/${mod_id}-${subproject.name}-${minecraft_version}-${version}.jar")
+                if (jarFile.exists()) {
                     copy {
-                        from jarTask.archiveFile.get().asFile
+                        from jarFile
                         into outputDir
                     }
                 }
@@ -132,6 +132,7 @@ def getJarTaskName(Project subproject) {
         case 'fabric':
             return 'remappedShadowJar'
         case 'forge':
+            return 'reobfShadowJar'
         case 'neoforge':
             return 'shadowJar'
         default:
