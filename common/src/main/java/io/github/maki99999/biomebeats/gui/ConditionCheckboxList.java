@@ -204,7 +204,7 @@ public class ConditionCheckboxList extends AbstractScrollWidget implements Rende
         UpdateY();
 
         setCheckedConditions(checkedConditions);
-        mouseScrolled(0, 0, 0);
+        mouseScrolled(0, 0, 0, 0);
     }
 
     private class EntryGroup extends AbstractWidget {

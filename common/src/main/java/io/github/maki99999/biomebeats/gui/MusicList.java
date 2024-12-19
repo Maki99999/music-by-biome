@@ -197,7 +197,7 @@ public class MusicList extends AbstractScrollWidget implements Renderable, Conta
 
         updateVisibleMusicTracks(sortedMusic, collapsedMusicGroups);
         setCheckedMusicTracks(checkedMusicTracks);
-        mouseScrolled(0, 0, 0);
+        mouseScrolled(0, 0, 0, 0);
     }
 
     private void updateVisibleMusicTracks(Collection<MusicGroup> musicGroups,
