@@ -12,7 +12,7 @@ plugins {
 subprojects {
     apply plugin: 'java'
 
-    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+    java.toolchain.languageVersion = JavaLanguageVersion.of(21)
     java.withSourcesJar()
     java.withJavadocJar()
 
@@ -57,7 +57,7 @@ subprojects {
     tasks.withType(JavaCompile).configureEach {
 
         it.options.encoding = 'UTF-8'
-        it.options.getRelease().set(17)
+        it.options.getRelease().set(21)
     }
 
     processResources {
@@ -132,7 +132,6 @@ def getJarTaskName(Project subproject) {
         case 'fabric':
             return 'remappedShadowJar'
         case 'forge':
-            return 'reobfShadowJar'
         case 'neoforge':
             return 'shadowJar'
         default:

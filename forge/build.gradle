@@ -11,15 +11,13 @@ base {
 }
 
 mixin {
-    add(sourceSets.main, "${mod_id}.refmap.json")
-
     config("${mod_id}.mixins.json")
 }
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
     copyIdeResources = true
-    reobf = true
+    reobf = false
 
     if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
         accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -46,8 +44,6 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
-sourceSets.main.resources.srcDir 'src/generated/resources'
-
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compileOnly project(":common")
@@ -64,6 +60,18 @@ dependencies {
     shadow(minecraftLibrary('com.github.goxr3plus:java-stream-player:9.0.4') {
         exclude group: 'junit', module: 'junit'
     })
+}
+
+jar {
+    manifest {
+        attributes(['MixinConfigs' : "${project.mod_id}.mixins.json"])
+    }
+}
+
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -89,15 +97,4 @@ shadowJar {
 
     from(sourceSets.main.output)
     archiveFileName = "${mod_id}-forge-${minecraft_version}-${version}.jar"
-
-    afterEvaluate {
-        finalizedBy reobfShadowJar
-    }
 }
-
-reobf {
-    jar { classpath.from(sourceSets.main.compileClasspath) }
-    shadowJar {}
-}
-
-jar.finalizedBy('reobfJar')
