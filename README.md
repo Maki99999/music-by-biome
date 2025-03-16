@@ -37,9 +37,6 @@ You can combine conditions by selecting multiple individual ones. A combined con
 - Other Mods:  Automatically detects music tracks, biomes, and biome tags from other mods.
 - Minecraft Version: Currently supports Minecraft 1.21 only.
 
-### Note for the 1.20 Version:
-The 1.20 version of this mod is the original 1.0 version, which works completely differently from the current release. It is a bit tricky to use and configure compared to the current version. If you still want to use the 1.0 version, please look [here](https://github.com/Maki99999/music-by-biome/blob/1.0/README.md#configuration) for instructions on setup and configuration.
-
 ## Configuration
 
 Configuration is managed in-game through the config menu. When in a world, press the "Open Config" key (default is "B") to access the configuration screen. The configuration auto-saves after exiting the screen.
