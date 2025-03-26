@@ -120,6 +120,5 @@ public class BiomeBeatsCommon {
         Constants.CONFIG_IO.loadConfig();
         Constants.BIOME_MANAGER.clearBiomeChangeListeners();
         Constants.MUSIC_MANAGER.reloadMusicTracksAndGroups();
-        Constants.CONDITION_MANAGER.resetConditions();
     }
 }

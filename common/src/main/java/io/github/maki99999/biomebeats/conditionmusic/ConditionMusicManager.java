@@ -35,20 +35,26 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
 
     @Override
     public void onActiveConditionsChanged(Collection<? extends Condition> activeConditions) {
-        int highestPriority = activeConditions.stream()
+        Constants.MUSIC_MANAGER.setCurrentMusicTracks(getTracksFromActiveConditions(activeConditions));
+    }
+
+    public Collection<MusicTrack> getTracksFromActiveConditions(Collection<? extends Condition> activeConditions) {
+        int highestPriority = getHighestPriorityOfConditionsWithMusicTracks(activeConditions);
+
+        return musicTracksByCondition
+                .entrySet()
+                .stream()
+                .filter(e -> activeConditions.contains(e.getKey()) && e.getKey().getPriority() == highestPriority)
+                .flatMap(e -> e.getValue().stream())
+                .toList();
+    }
+
+    public int getHighestPriorityOfConditionsWithMusicTracks(Collection<? extends Condition> conditions) {
+        return conditions.stream()
                 .filter(c -> musicTracksByCondition.containsKey(c))
                 .mapToInt(Condition::getPriority)
                 .max()
                 .orElse(Integer.MIN_VALUE);
-
-        Constants.MUSIC_MANAGER.setCurrentMusicTracks(
-                musicTracksByCondition
-                        .entrySet()
-                        .stream()
-                        .filter(e -> activeConditions.contains(e.getKey()) && e.getKey().getPriority() == highestPriority)
-                        .flatMap(e -> e.getValue().stream())
-                        .toList()
-        );
     }
 
     @Override
@@ -174,8 +180,8 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
         try (Level level = player.level()) {
             Registry<Biome> biomeRegistry = level.registryAccess().lookupOrThrow(Registries.BIOME);
             for (Condition condition : biomeConditions) {
-                ResourceLocation biomeRL = ((BiomeCondition) condition).getBiomeRL();
-                Biome biome = biomeRegistry.getValue(biomeRL);
+                ResourceLocation biomeRl = ((BiomeCondition) condition).getBiomeRl();
+                Biome biome = biomeRegistry.getValue(biomeRl);
                 if (biome == null) continue;
 
                 Optional<SimpleWeightedRandomList<Music>> biomeBgms = biome.getBackgroundMusic();

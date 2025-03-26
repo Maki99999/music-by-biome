@@ -63,9 +63,9 @@ public class BiomeManager {
         }
     }
 
-    public void addBiomeChangeListeners(Collection<? extends BiomeChangeListener> listeners) {
-        biomeChangeListener.addAll(listeners);
-        listeners.forEach(x -> x.onBiomeChanged(lastBiome));
+    public void addBiomeChangeListener(BiomeChangeListener listener) {
+        biomeChangeListener.add(listener);
+        listener.onBiomeChanged(lastBiome);
     }
 
     public void clearBiomeChangeListeners() {

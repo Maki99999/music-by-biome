@@ -1,5 +1,6 @@
 package io.github.maki99999.biomebeats.gui;
 
+import io.github.maki99999.biomebeats.Constants;
 import io.github.maki99999.biomebeats.condition.CombinedCondition;
 import io.github.maki99999.biomebeats.condition.Condition;
 import io.github.maki99999.biomebeats.util.BiomeBeatsColor;
@@ -25,9 +26,9 @@ public class CombinedConditionConfigScreen extends Screen {
     private final ConfigScreen configScreen;
     private final CombinedCondition oldCondition;
     private final Collection<Condition> allConditions;
+    private final Collection<Condition> checkedConditions = new ArrayList<>();
     private final Collection<Component> collapsedConditionTypes = new ArrayList<>();
 
-    private CombinedCondition condition;
     private Rect bounds;
     private Rect innerBounds;
     private EditBox nameField;
@@ -42,20 +43,37 @@ public class CombinedConditionConfigScreen extends Screen {
         super(Component.literal("BiomeBeats combined condition config screen"));
         this.configScreen = configScreen;
         this.oldCondition = condition;
-        this.condition = oldCondition == null ? new CombinedCondition() : new CombinedCondition(oldCondition);
         this.allConditions = allConditions;
+        this.checkedConditions.addAll(allConditions.stream()
+                .filter(x -> condition == null || condition.getConditionIds().contains(x.getId()))
+                .toList());
     }
 
     @Override
     public void onClose() {
-        if (condition != null && condition.getName().isBlank()) {
-            condition.setName("Combined Condition");
+        if (oldCondition == null) {
+            Constants.CONDITION_MANAGER.addCondition(
+                    new CombinedCondition(
+                            nameField.getValue().isBlank() ? "Combined Condition" : nameField.getValue(),
+                            descriptionField.getValue(),
+                            checkedConditions.stream().map(Condition::getId).toList()
+                    )
+            );
+        } else {
+            Constants.CONDITION_MANAGER.updateCombinedCondition(
+                    oldCondition,
+                    nameField.getValue().isBlank() ? "Combined Condition" : nameField.getValue(),
+                    descriptionField.getValue(),
+                    checkedConditions.stream().map(Condition::getId).toList()
+            );
         }
 
-        configScreen.updateCombinedCondition(oldCondition, condition);
-        if (this.minecraft != null) {
-            this.minecraft.setScreen(configScreen);
-        }
+        configScreen.returnToThisScreen();
+    }
+
+    public void deleteAndClose() {
+        Constants.CONDITION_MANAGER.removeCombinedCondition(oldCondition);
+        configScreen.returnToThisScreen();
     }
 
     @Override
@@ -72,14 +90,12 @@ public class CombinedConditionConfigScreen extends Screen {
                 ELEMENT_HEIGHT, Component.translatable("menu.biomebeats.name")));
         if (oldCondition != null) nameField.setValue(oldCondition.getName());
         nameField.setHint(Component.translatable("menu.biomebeats.name"));
-        nameField.setResponder(condition::setName);
 
         descriptionField = addWidget(new MultiLineEditBox(font, innerBounds.x() + 80,
                 innerBounds.y() + ELEMENT_HEIGHT + ELEMENT_SPACING, innerBounds.w() - 80, 2 * ELEMENT_HEIGHT,
                 Component.translatable("menu.biomebeats.description"), Component.translatable("menu.biomebeats" +
                 ".description")));
         if (oldCondition != null) descriptionField.setValue(oldCondition.getDescription());
-        descriptionField.setValueListener(condition::setDescription);
         descriptionField.setCharacterLimit(42);
 
         conditionSearchBox = addWidget(new EditBox(font, innerBounds.x(),
@@ -89,10 +105,7 @@ public class CombinedConditionConfigScreen extends Screen {
         conditionSearchBox.setResponder(this::onConditionSearchUpdate);
 
         deleteBtn = new TextButton(new Rect(innerBounds.x1(), innerBounds.y2() - ELEMENT_HEIGHT, 50, ELEMENT_HEIGHT),
-                Component.translatable("menu.biomebeats.delete"), (btn) -> {
-            condition = null;
-            onClose();
-        }, null);
+                Component.translatable("menu.biomebeats.delete"), (btn) -> deleteAndClose(), null);
 
         confirmBtn = new TextButton(new Rect(innerBounds.x2() - 100, innerBounds.y2() - ELEMENT_HEIGHT, 100,
                 ELEMENT_HEIGHT), Component.translatable("menu.biomebeats.confirm"), (btn) -> onClose(), null);
@@ -101,12 +114,11 @@ public class CombinedConditionConfigScreen extends Screen {
                 conditionSearchBox.getY() + conditionSearchBox.getHeight(), innerBounds.x2(),
                 confirmBtn.getY() - ELEMENT_SPACING), Component.translatable("menu" + ".biomebeats.search.music"),
                 allConditions, this::onConditionToggle, this::onGroupToggle));
-        conditionList.setCheckedConditions(condition.getConditions());
+        conditionList.setCheckedConditions(checkedConditions);
     }
 
     private void onConditionSearchUpdate(String text) {
-        conditionList.sortAndFilterConditions(text.trim().toLowerCase(), condition.getConditions(),
-                collapsedConditionTypes);
+        conditionList.sortAndFilterConditions(text.trim().toLowerCase(), checkedConditions, collapsedConditionTypes);
     }
 
     private void onGroupToggle(Component typeName, boolean newValue) {
@@ -117,17 +129,17 @@ public class CombinedConditionConfigScreen extends Screen {
         }
 
         conditionList.sortAndFilterConditions(conditionSearchBox.getValue().trim().toLowerCase(),
-                condition.getConditions(), collapsedConditionTypes);
+                checkedConditions, collapsedConditionTypes);
     }
 
     private void onConditionToggle(Condition condition, boolean newValue) {
         if (newValue) {
-            this.condition.addCondition(condition);
+            checkedConditions.add(condition);
         } else {
-            this.condition.removeCondition(condition);
+            checkedConditions.remove(condition);
         }
 
-        conditionList.setCheckedConditions(this.condition.getConditions());
+        conditionList.setCheckedConditions(checkedConditions);
     }
 
     @Override

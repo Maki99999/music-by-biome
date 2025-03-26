@@ -165,7 +165,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
                     .sorted(Comparator
                             .comparingInt((Condition c) -> {
                                 if (c instanceof BiomeCondition bc) {
-                                    int index = recentBiomesRLs.indexOf(bc.getBiomeRL());
+                                    int index = recentBiomesRLs.indexOf(bc.getBiomeRl());
                                     return index >= 0 ? index : Integer.MAX_VALUE;
                                 }
                                 return Integer.MAX_VALUE;
@@ -381,13 +381,9 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         init();
     }
 
-    public void updateCombinedCondition(CombinedCondition oldCondition, CombinedCondition condition) {
-        if (oldCondition == null && condition != null && !condition.isEmpty()) {
-            Constants.CONDITION_MANAGER.addCombinedCondition(condition);
-        } else if (oldCondition != null && condition != null) {
-            Constants.CONDITION_MANAGER.updateCombinedCondition(oldCondition, condition);
-        } else if (oldCondition != null) {
-            Constants.CONDITION_MANAGER.removeCombinedCondition(oldCondition);
+    public void returnToThisScreen() {
+        if (this.minecraft != null) {
+            this.minecraft.setScreen(this);
         }
         currentCondition = null;
         init();
