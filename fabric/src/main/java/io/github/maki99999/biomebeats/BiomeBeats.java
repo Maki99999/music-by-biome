@@ -16,6 +16,7 @@ public class BiomeBeats implements ClientModInitializer {
         BiomeBeatsCommon.init();
 
         KeyBindingHelper.registerKeyBinding(Constants.CONFIG_KEY_MAPPING);
+        KeyBindingHelper.registerKeyBinding(Constants.OPEN_DEBUG_SCREEN_KEY_MAPPING);
         ClientTickEvents.END_CLIENT_TICK.register(BiomeBeats::onEndTick);
 
         HudRenderCallback.EVENT.register((guiGraphics, deltaTracker) -> DebugHud.onRenderHUD(guiGraphics));

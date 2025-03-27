@@ -34,6 +34,7 @@ public class BiomeBeats {
         @SubscribeEvent
         public static void eventRegisterKeyMappingsEvent(RegisterKeyMappingsEvent event) {
             event.register(Constants.CONFIG_KEY_MAPPING);
+            event.register(Constants.OPEN_DEBUG_SCREEN_KEY_MAPPING);
         }
     }
 }

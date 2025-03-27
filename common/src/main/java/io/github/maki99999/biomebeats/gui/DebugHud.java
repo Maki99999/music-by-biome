@@ -20,7 +20,7 @@ public class DebugHud {
     private static final int Y_PADDING = 2;
     private static final int Y_OFFSET = 2 + Y_PADDING;
 
-    public static boolean enabled = true;
+    public static boolean enabled = false;
 
     public static void onRenderHUD(GuiGraphics guiGraphics) {
         Minecraft mc = Minecraft.getInstance();
