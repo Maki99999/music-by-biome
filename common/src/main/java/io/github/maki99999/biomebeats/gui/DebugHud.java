@@ -57,12 +57,16 @@ public class DebugHud {
 
         Collection<CombinedCondition> combinedConditions = allConditions.stream().filter(x -> x instanceof CombinedCondition).map(x -> (CombinedCondition) x).toList();
         Collection<Condition> biomeConditions = activeConditions.stream().filter(x -> x instanceof BiomeCondition).toList();
+        Collection<Condition> inactiveBiomeConditions = allConditions.stream().filter(x -> x instanceof BiomeCondition && !x.isConditionMet()).toList();
         Collection<Condition> biomeTagConditions = activeConditions.stream().filter(x -> x instanceof TagCondition).toList();
+        Collection<Condition> inactiveBiomeTagConditions = allConditions.stream().filter(x -> x instanceof TagCondition && !x.isConditionMet()).toList();
         Collection<Condition> otherConditions = activeConditions.stream().filter(x -> !(x instanceof TagCondition) && !(x instanceof CombinedCondition) && !(x instanceof BiomeCondition)).toList();
+        Collection<Condition> inactiveOtherConditions = allConditions.stream().filter(x -> !(x instanceof TagCondition) && !(x instanceof CombinedCondition) && !(x instanceof BiomeCondition) && !x.isConditionMet()).toList();
 
+        // Draw Combined Conditions with subconditions
         for (CombinedCondition combinedCondition : combinedConditions) {
             int color = (combinedCondition.isConditionMet() ? BiomeBeatsColor.BLUE : BiomeBeatsColor.WHITE).getHex();
-            guiGraphics.drawString(font, "%s [%d] %s".formatted(combinedCondition.isConditionMet() ? "✔" : "✖", combinedCondition.getPriority(), combinedCondition.getName()), X_GLOBAL_OFFSET, y.get(), color);  // TODO: (neo)forge cannot handle ✔✖
+            guiGraphics.drawString(font, "%s [%d] %s".formatted(combinedCondition.isConditionMet() ? "✔" : "✖", combinedCondition.getPriority(), combinedCondition.getName()), X_GLOBAL_OFFSET, y.get(), color);
             y.addAndGet(LINE_SPACING);
             combinedCondition.getConditionIds().stream()
                     .map(ConditionManager::getCondition)
@@ -71,7 +75,7 @@ public class DebugHud {
                         if (c == null) {
                             guiGraphics.drawString(font, "? [?] <unknown>", X_GLOBAL_OFFSET + SMALL_OFFSET, y.get(), color);
                         } else {
-                            guiGraphics.drawString(font, "%s [%d] %s".formatted(c.isConditionMet() ? "✔" : "✖", c.getPriority(), c.getName()), X_GLOBAL_OFFSET + SMALL_OFFSET, y.get(), color);  // TODO: (neo)forge cannot handle ✔✖
+                            guiGraphics.drawString(font, "%s [%d] %s".formatted(c.isConditionMet() ? "✔" : "✖", c.getPriority(), c.getName()), X_GLOBAL_OFFSET + SMALL_OFFSET, y.get(), color);
                         }
                         y.addAndGet(LINE_SPACING);
                     });
@@ -80,8 +84,14 @@ public class DebugHud {
 
         drawConditionList(guiGraphics, biomeConditions, font, y, X_GLOBAL_OFFSET, maxPriority);
         drawConditionList(guiGraphics, biomeTagConditions, font, y, X_GLOBAL_OFFSET + SMALL_OFFSET, maxPriority);
-        y.addAndGet(SMALL_OFFSET);
+
+        guiGraphics.drawString(font, "✖ %d inactive Biome Conditions,".formatted(inactiveBiomeConditions.size()), X_GLOBAL_OFFSET, y.get(), BiomeBeatsColor.LIGHT_GREY.getHex());
+        y.addAndGet(LINE_SPACING);
+        guiGraphics.drawString(font, "     %d inactive Tag Conditions".formatted(inactiveBiomeTagConditions.size()), X_GLOBAL_OFFSET, y.get(), BiomeBeatsColor.LIGHT_GREY.getHex());
+        y.addAndGet(LINE_SPACING + SMALL_OFFSET);
+
         drawConditionList(guiGraphics, otherConditions, font, y, X_GLOBAL_OFFSET, maxPriority);
+        guiGraphics.drawString(font, "✖ %d inactive Other Conditions".formatted(inactiveOtherConditions.size()), X_GLOBAL_OFFSET, y.get(), BiomeBeatsColor.LIGHT_GREY.getHex());
     }
 
     private static void drawConditionList(GuiGraphics guiGraphics,
@@ -92,7 +102,7 @@ public class DebugHud {
         conditions.stream()
                 .sorted(Comparator.comparing(Condition::getPriority).reversed())
                 .forEach(condition -> {
-                    guiGraphics.drawString(font, "✔ [%d] %s".formatted(condition.getPriority(), condition.getName()), x, y.get(), condition.getPriority() == maxPrio ? BiomeBeatsColor.BLUE.getHex() : BiomeBeatsColor.WHITE.getHex());  // TODO: (neo)forge cannot handle ✔
+                    guiGraphics.drawString(font, "✔ [%d] %s".formatted(condition.getPriority(), condition.getName()), x, y.get(), condition.getPriority() == maxPrio ? BiomeBeatsColor.BLUE.getHex() : BiomeBeatsColor.WHITE.getHex());
                     y.addAndGet(LINE_SPACING);
                 });
     }

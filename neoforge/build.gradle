@@ -44,6 +44,10 @@ dependencies {
     })
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
+
 shadowJar {
     configurations = [project.configurations.shadow]
     mergeServiceFiles()
