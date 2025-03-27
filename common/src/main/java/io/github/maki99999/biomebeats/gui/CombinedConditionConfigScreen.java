@@ -45,12 +45,16 @@ public class CombinedConditionConfigScreen extends Screen {
         this.oldCondition = condition;
         this.allConditions = allConditions;
         this.checkedConditions.addAll(allConditions.stream()
-                .filter(x -> condition == null || condition.getConditionIds().contains(x.getId()))
+                .filter(x -> condition != null && condition.getConditionIds().contains(x.getId()))
                 .toList());
     }
 
     @Override
     public void onClose() {
+        configScreen.returnToThisScreen();
+    }
+
+    public void saveAndClose() {
         if (oldCondition == null) {
             Constants.CONDITION_MANAGER.addCondition(
                     new CombinedCondition(
@@ -108,7 +112,7 @@ public class CombinedConditionConfigScreen extends Screen {
                 Component.translatable("menu.biomebeats.delete"), (btn) -> deleteAndClose(), null);
 
         confirmBtn = new TextButton(new Rect(innerBounds.x2() - 100, innerBounds.y2() - ELEMENT_HEIGHT, 100,
-                ELEMENT_HEIGHT), Component.translatable("menu.biomebeats.confirm"), (btn) -> onClose(), null);
+                ELEMENT_HEIGHT), Component.translatable("menu.biomebeats.confirm"), (btn) -> saveAndClose(), null);
 
         conditionList = addWidget(new ConditionCheckboxList(minecraft, Rect.fromCoordinates(innerBounds.x1(),
                 conditionSearchBox.getY() + conditionSearchBox.getHeight(), innerBounds.x2(),

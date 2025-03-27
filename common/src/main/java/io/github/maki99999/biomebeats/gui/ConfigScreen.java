@@ -382,11 +382,11 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     }
 
     public void returnToThisScreen() {
+        currentCondition = null;
+
         if (this.minecraft != null) {
             this.minecraft.setScreen(this);
         }
-        currentCondition = null;
-        init();
     }
 
     private enum TabType {
