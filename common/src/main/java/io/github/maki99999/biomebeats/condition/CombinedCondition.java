@@ -2,7 +2,6 @@ package io.github.maki99999.biomebeats.condition;
 
 import io.github.maki99999.biomebeats.Constants;
 import io.github.maki99999.biomebeats.event.ConditionChangeEvent;
-import io.github.maki99999.biomebeats.exception.NestedException;
 import io.github.maki99999.biomebeats.util.EventBus;
 
 import java.util.*;
@@ -78,5 +77,6 @@ public class CombinedCondition extends Condition {
 
         this.conditionIds.addAll(conditionIds);
         this.metConditionIds.addAll(conditionIds.stream().filter(Constants.CONDITION_MANAGER::isConditionMet).toList());
+        updateConditionMet();
     }
 }
