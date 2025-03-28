@@ -1,5 +1,6 @@
 package io.github.maki99999.biomebeats;
 
+import io.github.maki99999.biomebeats.gui.DebugHud;
 import io.github.maki99999.biomebeats.util.MenuChangeListener;
 import io.github.maki99999.biomebeats.gui.ConfigScreen;
 import io.github.maki99999.biomebeats.service.Services;
@@ -72,6 +73,10 @@ public class BiomeBeatsCommon {
             Minecraft.getInstance().setScreen(new ConfigScreen());
         }
 
+        while (Constants.OPEN_DEBUG_SCREEN_KEY_MAPPING.consumeClick()) {
+            DebugHud.enabled = !DebugHud.enabled;
+        }
+
         for (TickListener tickListener : TICK_LISTENERS) {
             tickListener.onTick();
         }
@@ -120,6 +125,5 @@ public class BiomeBeatsCommon {
         Constants.CONFIG_IO.loadConfig();
         Constants.BIOME_MANAGER.clearBiomeChangeListeners();
         Constants.MUSIC_MANAGER.reloadMusicTracksAndGroups();
-        Constants.CONDITION_MANAGER.resetConditions();
     }
 }

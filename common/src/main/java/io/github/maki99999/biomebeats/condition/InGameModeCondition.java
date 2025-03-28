@@ -3,7 +3,6 @@ package io.github.maki99999.biomebeats.condition;
 import io.github.maki99999.biomebeats.BiomeBeatsCommon;
 import io.github.maki99999.biomebeats.util.TickListener;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 
@@ -13,19 +12,13 @@ public class InGameModeCondition extends Condition implements TickListener {
     private final GameType gameType;
 
     public InGameModeCondition(GameType gameType) {
-        super("In " + formatToTitleCase(gameType.getName()) + " Mode");
+        super(getId(gameType), ConditionType.OTHER, "In " + formatToTitleCase(gameType.getName()) + " Mode");
         this.gameType = gameType;
         BiomeBeatsCommon.addTickListener(this);
     }
 
-    @Override
-    public String getId() {
+    public static String getId(GameType gameType) {
         return "InMode" + gameType.getName();
-    }
-
-    @Override
-    public Component getTypeName() {
-        return Component.translatable("menu.biomebeats.by_other");
     }
 
     @Override

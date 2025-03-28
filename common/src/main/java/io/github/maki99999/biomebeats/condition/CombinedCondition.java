@@ -1,44 +1,35 @@
 package io.github.maki99999.biomebeats.condition;
 
-import net.minecraft.network.chat.Component;
+import io.github.maki99999.biomebeats.Constants;
+import io.github.maki99999.biomebeats.event.ConditionChangeEvent;
+import io.github.maki99999.biomebeats.util.EventBus;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-public class CombinedCondition extends Condition implements ConditionChangeListener {
-    private final UUID uuid;
-    private final List<Condition> conditions = new ArrayList<>();
-    private final List<Condition> metConditions = new ArrayList<>();
+public class CombinedCondition extends Condition {
+    private final Collection<String> conditionIds = new ArrayList<>();
+    private final Collection<String> metConditionIds = new ArrayList<>();
 
-    private String description = "";
-    private String name = "";
+    private String description;
 
-    public CombinedCondition(UUID uuid, String name, String description) {
-        super(name);
-        this.name = name;
+    /**
+     * Create from config
+     */
+    public CombinedCondition(String id, String name, String description, Collection<String> conditionIds) {
+        super(id, ConditionType.COMBINED, name);
         this.description = description;
-        this.uuid = uuid;
+        setConditionIds(conditionIds);
+        EventBus.subscribe(ConditionChangeEvent.class, e -> onConditionChanged(e.condition()));
     }
 
-    public CombinedCondition(CombinedCondition condition) {
-        super(condition.getName());
-        uuid = condition.uuid;
-        conditions.addAll(condition.conditions);
-        metConditions.addAll(condition.metConditions);
-        description = condition.description;
-        name = condition.name;
-        setPriority(condition.getPriority());
-    }
-
-    public CombinedCondition() {
-        super("New Combined Condition");
-        uuid = UUID.randomUUID();
-    }
-
-    public UUID getUuid() {
-        return uuid;
+    /**
+     * Create from scratch
+     */
+    public CombinedCondition(String name, String description, Collection<String> conditionIds) {
+        super(UUID.randomUUID().toString(), ConditionType.COMBINED, name);
+        this.description = description;
+        setConditionIds(conditionIds);
+        EventBus.subscribe(ConditionChangeEvent.class, e -> onConditionChanged(e.condition()));
     }
 
     public String getDescription() {
@@ -49,68 +40,43 @@ public class CombinedCondition extends Condition implements ConditionChangeListe
         this.description = description;
     }
 
-    @Override
-    public String getName() {
-        return name;
+    public List<String> getConditionIds() {
+        return conditionIds.stream().toList();
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Condition> getConditions() {
-        return Collections.unmodifiableList(conditions);
-    }
-
-    @Override
-    public String getId() {
-        return uuid.toString();
-    }
-
-    public void addCondition(Condition condition) {
-        if (condition == null) {
-            throw new IllegalArgumentException("Condition cannot be null");
-        }
-
-        if (condition instanceof CombinedCondition) {
-            throw new NestedException("CombinedCondition cannot hold another CombinedCondition.");
-        }
-
-        conditions.add(condition);
-        condition.addListener(this);
-        onConditionChanged(condition);
-    }
-
-    @Override
-    public Component getTypeName() {
-        return Component.translatable("menu.biomebeats.combined");
-    }
-
-    public void removeCondition(Condition condition) {
-        conditions.remove(condition);
-        metConditions.remove(condition);
-        condition.removeListener(this);
-        setConditionMet(!conditions.isEmpty() && metConditions.size() == conditions.size());
-    }
-
-    @Override
     public void onConditionChanged(Condition condition) {
-        if (condition.isConditionMet()) {
-            metConditions.add(condition);
-        } else {
-            metConditions.remove(condition);
+        if (!conditionIds.contains(condition.getId())) {
+            return;
         }
-        setConditionMet(!conditions.isEmpty() && metConditions.size() == conditions.size());
-    }
 
-    @Override
-    public boolean isConditionMet() {
-        return super.isConditionMet();
+        if (condition.isConditionMet()) {
+            metConditionIds.add(condition.getId());
+        } else {
+            metConditionIds.remove(condition.getId());
+        }
+        updateConditionMet();
     }
 
     public boolean isEmpty() {
-        return conditions.isEmpty()
-                && (name == null || name.isEmpty())
+        return conditionIds.isEmpty()
+                && (getName() == null || getName().isEmpty())
                 && (description == null || description.isEmpty());
+    }
+
+    private void updateConditionMet() {
+        setConditionMet(!conditionIds.isEmpty() && metConditionIds.size() == conditionIds.size());
+    }
+
+    public void dispose() {
+        EventBus.unsubscribe(ConditionChangeEvent.class, e -> onConditionChanged(e.condition()));
+    }
+
+    public void setConditionIds(Collection<String> conditionIds) {
+        this.conditionIds.clear();
+        this.metConditionIds.clear();
+
+        this.conditionIds.addAll(conditionIds);
+        this.metConditionIds.addAll(conditionIds.stream().filter(Constants.CONDITION_MANAGER::isConditionMet).toList());
+        updateConditionMet();
     }
 }

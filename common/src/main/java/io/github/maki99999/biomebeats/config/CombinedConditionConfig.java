@@ -5,25 +5,25 @@ import java.util.List;
 import java.util.UUID;
 
 public class CombinedConditionConfig {
-    private UUID uuid = new UUID(0L, 0L);
+    private String uuid = new UUID(0L, 0L).toString();
     private String name = "";
     private String description = "";
     private List<String> conditionIds = new ArrayList<>();
 
     public CombinedConditionConfig() {}
 
-    public CombinedConditionConfig(UUID uuid, String name, String description, List<String> conditionIds) {
+    public CombinedConditionConfig(String uuid, String name, String description, List<String> conditionIds) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;
         this.conditionIds = conditionIds;
     }
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 

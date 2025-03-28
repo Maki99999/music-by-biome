@@ -180,10 +180,10 @@ public class ConditionCheckboxList extends ScrollArea implements Renderable, Con
         var conditionsByType = conditions
                 .stream()
                 .filter(c -> !(c instanceof CombinedCondition))
-                .peek(c -> typeNames.add(c.getTypeName()))
-                .filter(c -> !collapsedGroups.contains(c.getTypeName()) && c.getName().toLowerCase().contains(filter))
+                .peek(c -> typeNames.add(c.getType().getComponent()))
+                .filter(c -> !collapsedGroups.contains(c.getType().getComponent()) && c.getName().toLowerCase().contains(filter))
                 .sorted(Comparator.comparing(Condition::getName))
-                .collect(Collectors.groupingBy(Condition::getTypeName));
+                .collect(Collectors.groupingBy(x -> x.getType().getComponent()));
 
         children.clear();
         for (Component conditionType : typeNames.stream().sorted(GROUP_ORDER_COMPARATOR).toList()) {

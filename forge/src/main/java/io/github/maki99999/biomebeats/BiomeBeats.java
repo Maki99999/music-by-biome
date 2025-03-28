@@ -1,9 +1,11 @@
 package io.github.maki99999.biomebeats;
 
+import io.github.maki99999.biomebeats.gui.DebugHud;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -12,16 +14,27 @@ import net.minecraftforge.fml.common.Mod;
 public class BiomeBeats {
     public BiomeBeats() {
         BiomeBeatsCommon.init();
-
-        MinecraftForge.EVENT_BUS.addListener(BiomeBeats::onClientTick);
     }
 
-    public static void onClientTick(TickEvent.ClientTickEvent.Post event) {
-        BiomeBeatsCommon.tick();
+    @Mod.EventBusSubscriber(value = Dist.CLIENT)
+    static class ClientEvents {
+        @SubscribeEvent(priority = EventPriority.HIGH)
+        public static void eventRenderGameOverlayEvent(CustomizeGuiOverlayEvent event) {
+            DebugHud.onRenderHUD(event.getGuiGraphics());
+        }
+
+        @SubscribeEvent
+        public static void eventClientTickEventPost(TickEvent.ClientTickEvent.Post event) {
+            BiomeBeatsCommon.tick();
+        }
     }
 
-    @SubscribeEvent
-    public static void registerBindings(RegisterKeyMappingsEvent event) {
-        event.register(Constants.CONFIG_KEY_MAPPING);
+    @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+    static class ModClientEvents {
+        @SubscribeEvent
+        public static void eventRegisterKeyMappingsEvent(RegisterKeyMappingsEvent event) {
+            event.register(Constants.CONFIG_KEY_MAPPING);
+            event.register(Constants.OPEN_DEBUG_SCREEN_KEY_MAPPING);
+        }
     }
 }
