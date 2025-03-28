@@ -54,6 +54,10 @@ public class JavaStreamPlayer {
         }
     }
 
+    public String getDebugString() {
+        return "S: %s C: %.3f T: %.3f".formatted(currentState.getDescription(), currentGain, targetGain);
+    }
+
     private synchronized void setCurrentState(State currentState) {
         this.currentState = currentState;
         if (debugLogger != null) debugLogger.log("Current state: " + currentState);
@@ -297,10 +301,20 @@ public class JavaStreamPlayer {
     }
 
     enum State {
-        NoMusic,
-        FadeIn,
-        FadeOut,
-        Music
+        NoMusic("No Music"),
+        FadeIn("Fading In"),
+        FadeOut("Fading Out"),
+        Music("Playing Music");
+
+        private final String description;
+
+        State(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
     }
 
     interface StateLogger {

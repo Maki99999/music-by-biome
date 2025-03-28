@@ -93,6 +93,14 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
         }
     }
 
+    public String getDebugString1() {
+        return javaStreamPlayer.getDebugString();
+    }
+
+    public String getDebugString2() {
+        return previewJavaStreamPlayer.getDebugString();
+    }
+
     public void stopPreviewTrack() {
         executorService.submit(previewJavaStreamPlayer::stop);
     }
