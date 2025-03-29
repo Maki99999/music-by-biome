@@ -27,6 +27,7 @@ public class ConditionManager implements ConfigChangeListener {
     private static final Map<String, Condition> CONDITIONS = new HashMap<>();
     private static final Map<ConditionType, Collection<Condition>> CONDITIONS_BY_TYPE = new HashMap<>();
     private static final Collection<CombinedCondition> COMBINED_CONDITIONS = new ArrayList<>();
+    public static final String END_BOSS_COMB_COND = "End Boss";
 
     public static void createCondition(String id, Supplier<Condition> factory) {
         CONDITIONS.computeIfAbsent(id, key -> {
@@ -41,7 +42,7 @@ public class ConditionManager implements ConfigChangeListener {
     }
 
     public static Condition getCondition(String id) {
-        return CONDITIONS.get(id);
+        return CONDITIONS.getOrDefault(id, null);
     }
 
     private final Collection<ActiveConditionsListener> activeConditionsListener = new HashSet<>();
@@ -76,8 +77,8 @@ public class ConditionManager implements ConfigChangeListener {
     }
 
     private void initOtherConditions() {
-        createCondition("MainMenu", () -> new ScreenCondition("MainMenu", "In Main Menu", null));
-        createCondition("WinScreen", () -> new ScreenCondition("WinScreen", "In Win Screen", WinScreen.class));
+        createCondition(ScreenCondition.MAIN_MENU, () -> new ScreenCondition(ScreenCondition.MAIN_MENU, "In Main Menu", null));
+        createCondition(ScreenCondition.WIN_SCREEN, () -> new ScreenCondition(ScreenCondition.WIN_SCREEN, "In Win Screen", WinScreen.class));
         createCondition(DayTimeCondition.IS_DAY, () -> new DayTimeCondition(true));
         createCondition(DayTimeCondition.IS_NIGHT, () -> new DayTimeCondition(false));
         createCondition(BossOverlayWithMusicCondition.ID, BossOverlayWithMusicCondition::new);
@@ -211,7 +212,7 @@ public class ConditionManager implements ConfigChangeListener {
                 && tagCondition.getName().equals("Is End"));
 
         if (isEnd != null) {
-            CombinedCondition endBoss = new CombinedCondition("End Boss", "Default Configuration", List.of(isEnd.getId(), BossOverlayWithMusicCondition.ID));
+            CombinedCondition endBoss = new CombinedCondition(END_BOSS_COMB_COND, "Default Configuration", List.of(isEnd.getId(), BossOverlayWithMusicCondition.ID));
             endBoss.setPriority(4);
             addCondition(endBoss);
 

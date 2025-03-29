@@ -6,6 +6,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.player.Player;
 
 public class ScreenCondition extends Condition implements MenuChangeListener {
+    public static final String MAIN_MENU = "MainMenu";
+    public static final String WIN_SCREEN = "WinScreen";
+
     private final Class<? extends Screen> screen;
 
     public ScreenCondition(String id, String name, Class<? extends Screen> screen) {

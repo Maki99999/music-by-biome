@@ -8,7 +8,6 @@ import io.github.maki99999.biomebeats.mixin.MixinWeighedSoundEvents;
 import io.github.maki99999.biomebeats.music.MusicTrack;
 import io.github.maki99999.biomebeats.music.ResourceLocationMusicTrack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.WinScreen;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -18,14 +17,16 @@ import net.minecraft.sounds.Musics;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ConditionMusicManager implements ActiveConditionsListener, ConfigChangeListener {
-    private Map<Condition, Collection<MusicTrack>> musicTracksByCondition = Map.of();
+    private Map<String, Collection<MusicTrack>> musicTracksByConditionId = Map.of();
     private final RandomSource rdm = RandomSource.create();
 
     public void init() {
@@ -40,18 +41,21 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
 
     public Collection<MusicTrack> getTracksFromActiveConditions(Collection<? extends Condition> activeConditions) {
         int highestPriority = getHighestPriorityOfConditionsWithMusicTracks(activeConditions);
+        List<String> relevantConditionIds = activeConditions.stream()
+                .filter(x -> x.getPriority() == highestPriority)
+                .map(Condition::getId).toList();
 
-        return musicTracksByCondition
+        return musicTracksByConditionId
                 .entrySet()
                 .stream()
-                .filter(e -> activeConditions.contains(e.getKey()) && e.getKey().getPriority() == highestPriority)
+                .filter(e -> relevantConditionIds.contains(e.getKey()))
                 .flatMap(e -> e.getValue().stream())
                 .toList();
     }
 
     public int getHighestPriorityOfConditionsWithMusicTracks(Collection<? extends Condition> conditions) {
         return conditions.stream()
-                .filter(c -> musicTracksByCondition.containsKey(c))
+                .filter(c -> musicTracksByConditionId.containsKey(c.getId()))
                 .mapToInt(Condition::getPriority)
                 .max()
                 .orElse(Integer.MIN_VALUE);
@@ -60,9 +64,9 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
     @Override
     public void beforeConfigChange(MainConfig config) {
         Map<String, Collection<String>> musicTrackIdsByConditionId = config.getMusicTrackIdsByConditionId();
-        for (Map.Entry<? extends Condition, Collection<MusicTrack>> entry : musicTracksByCondition.entrySet()) {
+        for (Map.Entry<String, Collection<MusicTrack>> entry : musicTracksByConditionId.entrySet()) {
             Collection<String> musicTrackIds = musicTrackIdsByConditionId
-                    .computeIfAbsent(entry.getKey().getId(), k -> new HashSet<>());
+                    .computeIfAbsent(entry.getKey(), k -> new HashSet<>());
             musicTrackIds.clear();
             entry.getValue().forEach(musicTrack -> musicTrackIds.add(musicTrack.getId()));
         }
@@ -72,47 +76,30 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
 
     @Override
     public void afterConfigChange(MainConfig config) {
-        var conditions = Constants.CONDITION_MANAGER.getConditions();
-        var musicTracks = Constants.MUSIC_MANAGER.getMusicTracks();
-        musicTracksByCondition = new HashMap<>();
+        Collection<? extends MusicTrack> musicTracks = Constants.MUSIC_MANAGER.getMusicTracks();
+        musicTracksByConditionId = new HashMap<>();
 
-        List<String> invalidConditionIds = new ArrayList<>();
         List<String> invalidMusicTrackIds = new ArrayList<>();
 
         for (Map.Entry<String, Collection<String>> entry : config.getMusicTrackIdsByConditionId().entrySet()) {
-            Condition condition = conditions
-                    .stream()
-                    .filter(c -> entry.getKey().equals(c.getId()))
-                    .findAny()
-                    .orElse(null);
+            Collection<MusicTrack> conditionMusicTracks = new HashSet<>();
+            for (String musicTrackId : entry.getValue()) {
+                MusicTrack musicTrack = musicTracks
+                        .stream()
+                        .filter(m -> musicTrackId.equals(m.getId()))
+                        .findAny()
+                        .orElse(null);
 
-            if (condition == null) {
-                invalidConditionIds.add(entry.getKey());
-            } else {
-                Collection<MusicTrack> conditionMusicTracks = new HashSet<>();
-                for (String musicTrackId : entry.getValue()) {
-                    MusicTrack musicTrack = musicTracks
-                            .stream()
-                            .filter(m -> musicTrackId.equals(m.getId()))
-                            .findAny()
-                            .orElse(null);
-
-                    if (musicTrack == null) {
-                        invalidMusicTrackIds.add(musicTrackId);
-                    } else {
-                        conditionMusicTracks.add(musicTrack);
-                    }
-                }
-
-                if (!conditionMusicTracks.isEmpty()) {
-                    musicTracksByCondition.put(condition, conditionMusicTracks);
+                if (musicTrack == null) {
+                    invalidMusicTrackIds.add(musicTrackId);
+                } else {
+                    conditionMusicTracks.add(musicTrack);
                 }
             }
-        }
 
-        if (!invalidConditionIds.isEmpty()) {
-            Constants.LOG.info("Conditions have been changed. Unknown condition IDs: {}.", String.join(", ",
-                    invalidConditionIds));
+            if (!conditionMusicTracks.isEmpty()) {
+                musicTracksByConditionId.put(entry.getKey(), conditionMusicTracks);
+            }
         }
 
         if (!invalidMusicTrackIds.isEmpty()) {
@@ -121,7 +108,7 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
         }
 
         if (config.isNewConfig()) {
-            if (!musicTracksByCondition.isEmpty()) {
+            if (!musicTracksByConditionId.isEmpty()) {
                 Constants.LOG.warn("New config, but 'musicTracksByCondition' is not empty?");
             }
 
@@ -136,46 +123,36 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
                         .filter(m -> m instanceof ResourceLocationMusicTrack)
                         .map(m -> (ResourceLocationMusicTrack) m).toList();
 
-        Condition winScreenCondition = Constants.CONDITION_MANAGER.findCondition(
-                c -> c instanceof ScreenCondition screenCondition && Objects.equals(screenCondition.getScreen(),
-                        WinScreen.class));
-        addMusicToCondition(musicTracks, Musics.CREDITS, winScreenCondition);
+        addMusicToCondition(musicTracks, Musics.CREDITS, ScreenCondition.WIN_SCREEN);
+        addMusicToCondition(musicTracks, Musics.MENU, ScreenCondition.MAIN_MENU);
+        addMusicToCondition(musicTracks, Musics.CREATIVE, InGameModeCondition.getId(GameType.CREATIVE));
+        addMusicToCondition(musicTracks, Musics.GAME, NoOtherMusicCondition.ID);
+        addMusicToCondition(musicTracks, Musics.END_BOSS, ConditionManager.END_BOSS_COMB_COND);
 
-        Condition menuCondition = Constants.CONDITION_MANAGER.findCondition(
-                c -> c instanceof ScreenCondition screenCondition && screenCondition.getScreen() == null);
-        addMusicToCondition(musicTracks, Musics.MENU, menuCondition);
+        Condition isEndCondition = Constants.CONDITION_MANAGER.findCondition(
+                c -> c instanceof TagCondition tagCondition && tagCondition.getName().equals("Is End"));
+        if (isEndCondition != null) {
+            addMusicToCondition(musicTracks, Musics.END, isEndCondition.getId());
+        }
 
-        Condition creativeModeCondition = Constants.CONDITION_MANAGER.findCondition(
-                c -> c instanceof InGameModeCondition inGameModeCondition
-                        && inGameModeCondition.getName().contains("Creative"));
-        addMusicToCondition(musicTracks, Musics.CREATIVE, creativeModeCondition);
+        Condition underwaterCondition1 = Constants.CONDITION_MANAGER.findCondition(
+                c -> c instanceof TagCondition tagCondition && tagCondition.getName().equals("Plays Underwater Music"));
+        if (underwaterCondition1 != null) {
+            addMusicToCondition(musicTracks, Musics.UNDER_WATER, underwaterCondition1.getId());
+        }
 
-        Condition noOtherMusicCondition =
-                Constants.CONDITION_MANAGER.findCondition(c -> c instanceof NoOtherMusicCondition);
-        addMusicToCondition(musicTracks, Musics.GAME, noOtherMusicCondition);
+        Condition underwaterCondition2 =
+                Constants.CONDITION_MANAGER.findCondition(c -> c instanceof IsUnderWaterCondition);
+        if (underwaterCondition2 != null) {
+            addMusicToCondition(musicTracks, Musics.UNDER_WATER, underwaterCondition2.getId());
+        }
+
+        Collection<? extends Condition> biomeConditions = Constants.CONDITION_MANAGER.getBiomeConditions();
 
         Player player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
-
-        Condition endBossCondition =
-                Constants.CONDITION_MANAGER.findCondition(c -> c instanceof CombinedCondition combinedCondition
-                        && combinedCondition.getName().equals("End Boss"));
-        addMusicToCondition(musicTracks, Musics.END_BOSS, endBossCondition);
-
-        Condition isEndCondition = Constants.CONDITION_MANAGER.findCondition(
-                c -> c instanceof TagCondition tagCondition && tagCondition.getName().equals("Is End"));
-        addMusicToCondition(musicTracks, Musics.END, isEndCondition);
-
-        Condition underwaterCondition1 = Constants.CONDITION_MANAGER.findCondition(
-                c -> c instanceof TagCondition tagCondition && tagCondition.getName().equals("Plays Underwater Music"));
-        Condition underwaterCondition2 =
-                Constants.CONDITION_MANAGER.findCondition(c -> c instanceof IsUnderWaterCondition);
-        addMusicToCondition(musicTracks, Musics.UNDER_WATER, underwaterCondition1);
-        addMusicToCondition(musicTracks, Musics.UNDER_WATER, underwaterCondition2);
-
-        Collection<? extends Condition> biomeConditions = Constants.CONDITION_MANAGER.getBiomeConditions();
 
         try (Level level = player.level()) {
             Registry<Biome> biomeRegistry = level.registryAccess().lookupOrThrow(Registries.BIOME);
@@ -188,7 +165,7 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
                 if (biomeBgms.isEmpty()) continue;
 
                 for (var biomeBgm : biomeBgms.get().unwrap()) {
-                    addMusicToCondition(musicTracks, biomeBgm.data(), condition);
+                    addMusicToCondition(musicTracks, biomeBgm.data(), condition.getId());
                 }
             }
         } catch (IOException e) {
@@ -198,10 +175,7 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
 
     private void addMusicToCondition(Collection<ResourceLocationMusicTrack> musicTracks,
                                      Music music,
-                                     Condition condition) {
-        if (condition == null) {
-            throw new IllegalArgumentException("Condition must not be null");
-        }
+                                     String conditionId) {
         if (music == null) {
             return;
         }
@@ -220,12 +194,16 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
 
         musicTracks.stream()
                 .filter(m -> musicRLs.stream().anyMatch(rl -> rl.equals(m.getResourceLocation())))
-                .forEach(musicTrack -> musicTracksByCondition
-                        .computeIfAbsent(condition, k -> new HashSet<>())
+                .forEach(musicTrack -> musicTracksByConditionId
+                        .computeIfAbsent(conditionId, k -> new HashSet<>())
                         .add(musicTrack));
     }
 
     public Map<Condition, Collection<MusicTrack>> getMusicTracksByCondition() {
-        return musicTracksByCondition;
+        return musicTracksByConditionId.entrySet()
+                .stream()
+                .map(entry -> Map.entry(ConditionManager.getCondition(entry.getKey()), entry.getValue()))
+                .filter(entry -> entry.getKey() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
