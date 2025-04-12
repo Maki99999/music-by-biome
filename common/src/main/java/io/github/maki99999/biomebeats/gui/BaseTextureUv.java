@@ -36,4 +36,7 @@ public class BaseTextureUv {
     public static final Rect ACCORDION_CLOSE_UV = new Rect(144, 60, 16, 16);
     public static final Rect PLUS_UV = new Rect(162, 60, 16, 16);
     public static final Rect CHECKMARK_UV = new Rect(180, 60, 16, 16);
+    public static final Rect SETTINGS_UV = new Rect(198, 60, 16, 16);
+    public static final Rect DANGER_BORDER_UV = new Rect(0, 76, 12, 12);
+    public static final Rect DANGER_BORDER_INNER_UV = new Rect(4, 80, 4, 4);
 }

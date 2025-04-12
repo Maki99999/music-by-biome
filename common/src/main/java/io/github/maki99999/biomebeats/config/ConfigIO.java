@@ -38,10 +38,10 @@ public class ConfigIO {
         config.setNewConfig(false);
         notifyBeforeConfigChangeListeners(config);
 
-        //TODO: optimize what to save: remove everything that only has default values/that has no values (condition
-        // with priority 0 etc, musicTrackIdsByConditionId with empty music list, minecraft music with all config
-        // fields default)
+        setConfig(config);
+    }
 
+    private void setConfig(MainConfig config) {
         Path configFilePath = getConfigFilePath();
 
         try {
@@ -94,5 +94,17 @@ public class ConfigIO {
 
     public void updateConfigListeners() {
         notifyAfterConfigChangeListeners(config);
+    }
+
+    public void resetConfig() {
+        setConfig(MainConfig.fromScratch());
+    }
+
+    public void clearConfig() {
+        setConfig(new MainConfig());
+    }
+
+    public GeneralConfig getGeneralConfig() {
+        return config.getGeneralConfig();
     }
 }

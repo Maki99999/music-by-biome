@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
 public class DrawUtils {
@@ -28,39 +29,88 @@ public class DrawUtils {
 
     public static void drawNineSliceRect(ResourceLocation rl, GuiGraphics guiGraphics, Rect bounds, Rect uv,
                                          Rect innerUv) {
-        int leftPadding = innerUv.x1() - uv.x1();
-        int rightPadding = uv.x2() - innerUv.x2();
-        int topPadding = innerUv.y1() - uv.y1();
-        int bottomPadding = uv.y2() - innerUv.y2();
+        Padding padding = getPadding(uv, innerUv);
 
         // Corners
-        drawRect(rl, guiGraphics, new Rect(bounds.x1(), bounds.y1(), leftPadding, topPadding),
-                Rect.fromCoordinates(uv.x1(), uv.y1(), innerUv.x1(), innerUv.y1()));
-        drawRect(rl, guiGraphics, new Rect(bounds.x2() - rightPadding, bounds.y(), rightPadding, topPadding),
-                Rect.fromCoordinates(innerUv.x2(), uv.y1(), uv.x2(), innerUv.y1()));
-        drawRect(rl, guiGraphics, new Rect(bounds.x1(), bounds.y2() - bottomPadding, leftPadding, bottomPadding),
-                Rect.fromCoordinates(uv.x1(), innerUv.y2(), innerUv.x1(), uv.y2()));
-        drawRect(rl, guiGraphics, new Rect(bounds.x2() - rightPadding, bounds.y2() - bottomPadding, rightPadding,
-                bottomPadding), Rect.fromCoordinates(innerUv.x2(), innerUv.y2(), uv.x2(), uv.y2()));
+        drawNineSliceRectCorners(rl, guiGraphics, bounds, uv, innerUv, padding);
 
         // Sides
-        drawRect(rl, guiGraphics, new Rect(bounds.x1(), bounds.y1() + topPadding, leftPadding,
-                bounds.h() - topPadding - bottomPadding), Rect.fromCoordinates(uv.x1(), innerUv.y1(), innerUv.x1(),
+        drawRect(rl, guiGraphics, new Rect(bounds.x1(), bounds.y1() + padding.top(), padding.left(),
+                bounds.h() - padding.top() - padding.bottom()), Rect.fromCoordinates(uv.x1(), innerUv.y1(), innerUv.x1(),
                 innerUv.y2()));
-        drawRect(rl, guiGraphics, new Rect(bounds.x2() - rightPadding, bounds.y1() + topPadding, rightPadding,
-                bounds.h() - topPadding - bottomPadding), Rect.fromCoordinates(innerUv.x2(), innerUv.y1(), uv.x2(),
+        drawRect(rl, guiGraphics, new Rect(bounds.x2() - padding.right(), bounds.y1() + padding.top(), padding.right(),
+                bounds.h() - padding.top() - padding.bottom()), Rect.fromCoordinates(innerUv.x2(), innerUv.y1(), uv.x2(),
                 innerUv.y2()));
-        drawRect(rl, guiGraphics, new Rect(bounds.x1() + leftPadding, bounds.y1(),
-                bounds.w() - leftPadding - rightPadding, topPadding), Rect.fromCoordinates(innerUv.x1(), uv.y1(),
+        drawRect(rl, guiGraphics, new Rect(bounds.x1() + padding.left(), bounds.y1(),
+                bounds.w() - padding.left() - padding.right(), padding.top()), Rect.fromCoordinates(innerUv.x1(), uv.y1(),
                 innerUv.x2(), innerUv.y1()));
-        drawRect(rl, guiGraphics, new Rect(bounds.x1() + leftPadding, bounds.y2() - bottomPadding,
-                bounds.w() - leftPadding - rightPadding, bottomPadding), Rect.fromCoordinates(innerUv.x1(),
+        drawRect(rl, guiGraphics, new Rect(bounds.x1() + padding.left(), bounds.y2() - padding.bottom(),
+                bounds.w() - padding.left() - padding.right(), padding.bottom()), Rect.fromCoordinates(innerUv.x1(),
                 innerUv.y2(), innerUv.x2(), uv.y2()));
 
         // Center
-        drawRect(rl, guiGraphics, new Rect(bounds.x1() + leftPadding, bounds.y1() + topPadding,
-                        bounds.w() - leftPadding - rightPadding, bounds.h() - topPadding - bottomPadding),
+        drawRect(rl, guiGraphics, new Rect(bounds.x1() + padding.left(), bounds.y1() + padding.top(),
+                        bounds.w() - padding.left() - padding.right(), bounds.h() - padding.top() - padding.bottom()),
                 Rect.fromCoordinates(innerUv.x1(), innerUv.y1(), innerUv.x2(), innerUv.y2()));
+    }
+
+    private static void drawNineSliceRectCorners(ResourceLocation rl, GuiGraphics guiGraphics, Rect bounds, Rect uv, Rect innerUv, Padding padding) {
+        drawRect(rl, guiGraphics, new Rect(bounds.x1(), bounds.y1(), padding.left(), padding.top()),
+                Rect.fromCoordinates(uv.x1(), uv.y1(), innerUv.x1(), innerUv.y1()));
+        drawRect(rl, guiGraphics, new Rect(bounds.x2() - padding.right(), bounds.y1(), padding.right(), padding.top()),
+                Rect.fromCoordinates(innerUv.x2(), uv.y1(), uv.x2(), innerUv.y1()));
+        drawRect(rl, guiGraphics, new Rect(bounds.x1(), bounds.y2() - padding.bottom(), padding.left(), padding.bottom()),
+                Rect.fromCoordinates(uv.x1(), innerUv.y2(), innerUv.x1(), uv.y2()));
+        drawRect(rl, guiGraphics, new Rect(bounds.x2() - padding.right(), bounds.y2() - padding.bottom(), padding.right(),
+                padding.bottom()), Rect.fromCoordinates(innerUv.x2(), innerUv.y2(), uv.x2(), uv.y2()));
+    }
+
+    public static void drawTiledNineSliceRect(ResourceLocation rl, GuiGraphics guiGraphics, Rect bounds, Rect uv, Rect innerUv) {
+        Padding padding = getPadding(uv, innerUv);
+
+        // Corners
+        drawNineSliceRectCorners(rl, guiGraphics, bounds, uv, innerUv, padding);
+
+        int centerWidth = innerUv.w();
+        int centerHeight = innerUv.h();
+
+        int innerW = bounds.w() - padding.left() - padding.right();
+        int innerH = bounds.h() - padding.top() - padding.bottom();
+
+        // Sides
+        for (int x = 0; x < innerW; x += centerWidth) {
+            int tileW = Math.min(centerWidth, innerW - x);
+            drawRect(rl, guiGraphics, new Rect(bounds.x1() + padding.left() + x, bounds.y1(), tileW, padding.top()),
+                    Rect.fromCoordinates(innerUv.x1(), uv.y1(), innerUv.x1() + tileW, innerUv.y1()));
+            drawRect(rl, guiGraphics, new Rect(bounds.x1() + padding.left() + x, bounds.y2() - padding.bottom(), tileW, padding.bottom()),
+                    Rect.fromCoordinates(innerUv.x1(), innerUv.y2(), innerUv.x1() + tileW, uv.y2()));
+        }
+
+        for (int y = 0; y < innerH; y += centerHeight) {
+            int tileH = Math.min(centerHeight, innerH - y);
+            drawRect(rl, guiGraphics, new Rect(bounds.x1(), bounds.y1() + padding.top() + y, padding.left(), tileH),
+                    Rect.fromCoordinates(uv.x1(), innerUv.y1(), innerUv.x1(), innerUv.y1() + tileH));
+            drawRect(rl, guiGraphics, new Rect(bounds.x2() - padding.right(), bounds.y1() + padding.top() + y, padding.right(), tileH),
+                    Rect.fromCoordinates(innerUv.x2(), innerUv.y1(), uv.x2(), innerUv.y1() + tileH));
+        }
+
+        // Center
+        for (int x = 0; x < innerW; x += centerWidth) {
+            int tileW = Math.min(centerWidth, innerW - x);
+            for (int y = 0; y < innerH; y += centerHeight) {
+                int tileH = Math.min(centerHeight, innerH - y);
+                drawRect(rl, guiGraphics, new Rect(bounds.x1() + padding.left() + x, bounds.y1() + padding.top() + y, tileW, tileH),
+                        Rect.fromCoordinates(innerUv.x1(), innerUv.y1(), innerUv.x1() + tileW, innerUv.y1() + tileH));
+            }
+        }
+    }
+
+    private static @NotNull Padding getPadding(Rect uv, Rect innerUv) {
+        int left = innerUv.x1() - uv.x1();
+        int right = uv.x2() - innerUv.x2();
+        int top = innerUv.y1() - uv.y1();
+        int bottom = uv.y2() - innerUv.y2();
+        return new Padding(left, right, top, bottom);
     }
 
     public static void drawContainer(GuiGraphics guiGraphics, Rect bounds) {
@@ -95,4 +145,6 @@ public class DrawUtils {
             guiGraphics.drawString(font, text, bounds.x1(), textPosY, color);
         }
     }
+
+    private record Padding(int left, int right, int top, int bottom) {}
 }

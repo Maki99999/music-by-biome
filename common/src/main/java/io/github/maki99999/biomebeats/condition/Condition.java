@@ -33,6 +33,7 @@ public abstract class Condition {
 
     public final void setName(String name) {
         this.name = name;
+        EventBus.publish(new ConditionChangeEvent(this));
     }
 
     public final int getPriority() {
@@ -40,7 +41,10 @@ public abstract class Condition {
     }
 
     public final void setPriority(int priority) {
-        this.priority = priority;
+        if(this.priority != priority) {
+            this.priority = priority;
+            EventBus.publish(new ConditionChangeEvent(this));
+        }
     }
 
     public final boolean isConditionMet() {

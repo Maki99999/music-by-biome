@@ -185,6 +185,10 @@ public class ConditionManager implements ConfigChangeListener {
 
     @Override
     public void afterConfigChange(MainConfig config) {
+        for (var cond : COMBINED_CONDITIONS) {
+            CONDITIONS.remove(cond.getId());
+        }
+
         for (CombinedConditionConfig conditionConfig : config.getCombinedConditionConfigs()) {
             createCondition(conditionConfig.getUuid(), () -> new CombinedCondition(conditionConfig.getUuid(),
                     conditionConfig.getName(), conditionConfig.getDescription(), conditionConfig.getConditionIds()));
