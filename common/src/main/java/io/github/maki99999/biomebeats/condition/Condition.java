@@ -40,7 +40,7 @@ public abstract class Condition {
         return priority;
     }
 
-    public final void setPriority(int priority) {
+    public void setPriority(int priority) {
         if(this.priority != priority) {
             this.priority = priority;
             EventBus.publish(new ConditionChangeEvent(this));

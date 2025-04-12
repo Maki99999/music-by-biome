@@ -12,9 +12,6 @@ public class CombinedCondition extends Condition {
 
     private String description;
 
-    /**
-     * Create from config
-     */
     public CombinedCondition(String id, String name, String description, Collection<String> conditionIds) {
         super(id, ConditionType.COMBINED, name);
         this.description = description;
@@ -23,13 +20,10 @@ public class CombinedCondition extends Condition {
     }
 
     /**
-     * Create from scratch
+     * With random ID.
      */
-    public CombinedCondition(String name, String description, Collection<String> conditionIds) {
-        super(UUID.randomUUID().toString(), ConditionType.COMBINED, name);
-        this.description = description;
-        setConditionIds(conditionIds);
-        EventBus.subscribe(ConditionChangeEvent.class, e -> onConditionChanged(e.condition()));
+    public CombinedCondition(String name, String description, List<String> conditionIds) {
+        this(UUID.randomUUID().toString(), name, description, conditionIds);
     }
 
     public String getDescription() {

@@ -16,7 +16,6 @@ import static io.github.maki99999.biomebeats.util.DrawUtils.*;
 public class GeneralConfigScreen extends Screen {
     private static final int ELEMENT_HEIGHT = 17;
     private static final int SPACING = 4;
-    private final ConfigScreen configScreen;
     private Rect bounds;
     private Rect dangerBounds;
     private TextButton clearConfigBtn;
@@ -26,9 +25,8 @@ public class GeneralConfigScreen extends Screen {
     private GridLayout topGrid;
     private GridLayout dangerGrid;
 
-    public GeneralConfigScreen(ConfigScreen configScreen) {
+    public GeneralConfigScreen() {
         super(Component.literal("BiomeBeats settings config screen"));
-        this.configScreen = configScreen;
     }
 
     @Override
@@ -107,7 +105,7 @@ public class GeneralConfigScreen extends Screen {
     @Override
     public void onClose() {
         if (minecraft != null) {
-            minecraft.setScreen(configScreen);
+            minecraft.setScreen(new ConfigScreen());
         }
 
         try {

@@ -127,7 +127,13 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
         addMusicToCondition(musicTracks, Musics.MENU, ScreenCondition.MAIN_MENU);
         addMusicToCondition(musicTracks, Musics.CREATIVE, InGameModeCondition.getId(GameType.CREATIVE));
         addMusicToCondition(musicTracks, Musics.GAME, NoOtherMusicCondition.ID);
-        addMusicToCondition(musicTracks, Musics.END_BOSS, ConditionManager.END_BOSS_COMB_COND);
+
+        Condition endBossCondition = Constants.CONDITION_MANAGER.findCondition(
+                c -> c instanceof CombinedCondition combCond
+                        && combCond.getName().equals(ConditionManager.END_BOSS_CONDITION_NAME));
+        if (endBossCondition != null) {
+            addMusicToCondition(musicTracks, Musics.END_BOSS, endBossCondition.getId());
+        }
 
         Condition isEndCondition = Constants.CONDITION_MANAGER.findCondition(
                 c -> c instanceof TagCondition tagCondition && tagCondition.getName().equals("Is End"));
@@ -215,8 +221,11 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
     public Map<Condition, Collection<MusicTrack>> getMusicTracksByCondition() {
         return musicTracksByConditionId.entrySet()
                 .stream()
-                .map(entry -> Map.entry(ConditionManager.getCondition(entry.getKey()), entry.getValue()))
-                .filter(entry -> entry.getKey() != null)
+                .map(entry -> {
+                    Condition condition = ConditionManager.getCondition(entry.getKey());
+                    return condition == null ? null : Map.entry(condition, entry.getValue());
+                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

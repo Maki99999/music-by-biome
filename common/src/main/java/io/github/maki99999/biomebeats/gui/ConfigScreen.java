@@ -196,7 +196,8 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
 
     private void onSettingsPress(Button button) {
         if (minecraft != null) {
-            minecraft.setScreen(new GeneralConfigScreen(this));
+            onClose();
+            minecraft.setScreen(new GeneralConfigScreen());
         }
     }
 

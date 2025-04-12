@@ -97,7 +97,9 @@ public class ConfigIO {
     }
 
     public void resetConfig() {
-        setConfig(MainConfig.fromScratch());
+        MainConfig config = MainConfig.fromScratch();
+        setConfig(config);
+        saveConfig(config);
     }
 
     public void clearConfig() {
