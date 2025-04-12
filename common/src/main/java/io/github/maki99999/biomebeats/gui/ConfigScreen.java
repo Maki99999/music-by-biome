@@ -48,6 +48,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     private EditBox priorityField;
     private LayeredImageButton folderButton;
     private LayeredImageButton reloadButton;
+    private LayeredImageButton settingsButton;
     private Rect bounds;
     private Rect boundsL;
     private Rect boundsR;
@@ -84,7 +85,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
                 Mth.floor((bounds.w() - BORDER_PADDING * 2) * 0.4f), bounds.h() - BORDER_PADDING * 2);
         boundsR = new Rect(boundsL.x2() + BORDER_PADDING, bounds.y() + BORDER_PADDING,
                 bounds.w() - BORDER_PADDING * 2 - boundsL.w() - BORDER_PADDING, bounds.h() - BORDER_PADDING * 2);
-        addonBounds = Rect.fromCoordinates(bounds.x1() - 18, bounds.y2() - 42, bounds.x1() + 1, bounds.y2());
+        addonBounds = Rect.fromCoordinates(bounds.x1() - 18, bounds.y2() - 60, bounds.x1() + 1, bounds.y2());
 
         // Left column
         conditionSearchBox = addWidget(new EditBox(font, boundsL.x(), boundsL.y(), boundsL.w(), ELEMENT_HEIGHT,
@@ -115,6 +116,8 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
                 this::onFolderPress, Tooltip.create(Component.translatable("menu.biomebeats.open_music_folder")));
         reloadButton = new LayeredImageButton(addonBounds.x() + 4, addonBounds.y() + 22, BaseTextureUv.RELOAD_UV,
                 this::onReloadPress, Tooltip.create(Component.translatable("menu.biomebeats.reload")));
+        settingsButton = new LayeredImageButton(addonBounds.x() + 4, addonBounds.y() + 40, BaseTextureUv.SETTINGS_UV,
+                this::onSettingsPress, Tooltip.create(Component.translatable("menu.biomebeats.settings")));
 
         musicList = addWidget(new MusicList(minecraft,
                 new Rect(boundsR.x(), boundsR.y() + ELEMENT_HEIGHT * 2 + ELEMENT_SPACING,
@@ -191,6 +194,13 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         }
     }
 
+    private void onSettingsPress(Button button) {
+        if (minecraft != null) {
+            onClose();
+            minecraft.setScreen(new GeneralConfigScreen());
+        }
+    }
+
     private void onFolderPress(Button imageButton) {
         Util.getPlatform().openPath(Services.PLATFORM.getModConfigFolder().resolve(Constants.MUSIC_FOLDER));
     }
@@ -251,6 +261,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         }
         pressedTab = pressedTab || folderButton.mouseClicked(mouseX, mouseY, button);
         pressedTab = pressedTab || reloadButton.mouseClicked(mouseX, mouseY, button);
+        pressedTab = pressedTab || settingsButton.mouseClicked(mouseX, mouseY, button);
         return super.mouseClicked(mouseX, mouseY, button) | pressedTab;
     }
 
@@ -277,6 +288,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
                 addonBounds.x2() + 2, addonBounds.y2() - 4), BaseTextureUv.CONTAINER_UV_C);
         folderButton.render(guiGraphics, mouseX, mouseY, 0);
         reloadButton.render(guiGraphics, mouseX, mouseY, 0);
+        settingsButton.render(guiGraphics, mouseX, mouseY, 0);
 
         // Left column
         conditionSearchBox.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -321,8 +333,10 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
 
     private void onMusicTrackToggle(MusicTrack musicTrack, boolean newValue) {
         if (newValue) {
+            Constants.CONDITION_MUSIC_MANAGER.addTrackToCondition(currentCondition.getId(), musicTrack);
             musicTracksByCondition.computeIfAbsent(currentCondition, c -> new HashSet<>()).add(musicTrack);
         } else if (musicTracksByCondition.containsKey(currentCondition)) {
+            Constants.CONDITION_MUSIC_MANAGER.removeTrackToCondition(currentCondition.getId(), musicTrack);
             musicTracksByCondition.get(currentCondition).remove(musicTrack);
         }
 

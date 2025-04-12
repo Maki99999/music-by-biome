@@ -24,10 +24,18 @@ import static io.github.maki99999.biomebeats.util.BiomeUtils.getBiomeRLs;
 import static io.github.maki99999.biomebeats.util.BiomeUtils.getBiomeTagKeys;
 
 public class ConditionManager implements ConfigChangeListener {
+    public static final String END_BOSS_CONDITION_NAME = "End Boss";
     private static final Map<String, Condition> CONDITIONS = new HashMap<>();
     private static final Map<ConditionType, Collection<Condition>> CONDITIONS_BY_TYPE = new HashMap<>();
     private static final Collection<CombinedCondition> COMBINED_CONDITIONS = new ArrayList<>();
-    public static final String END_BOSS_COMB_COND = "End Boss";
+    private final Collection<ActiveConditionsListener> activeConditionsListener = new HashSet<>();
+    private final Collection<Condition> activeConditions = new HashSet<>();
+    private boolean firstTickWithLevel = true;
+    private boolean needsToNotifyListeners = true;
+
+    public ConditionManager() {
+        EventBus.subscribe(ConditionChangeEvent.class, e -> onConditionChanged(e.condition()));
+    }
 
     public static void createCondition(String id, Supplier<Condition> factory) {
         CONDITIONS.computeIfAbsent(id, key -> {
@@ -45,14 +53,35 @@ public class ConditionManager implements ConfigChangeListener {
         return CONDITIONS.getOrDefault(id, null);
     }
 
-    private final Collection<ActiveConditionsListener> activeConditionsListener = new HashSet<>();
-    private final Collection<Condition> activeConditions = new HashSet<>();
+    private static void initTagConditions(Collection<TagKey<Biome>> biomeTagKeys) {
+        Map<String, Collection<TagKey<Biome>>> tagKeysByName = new HashMap<>();
 
-    private boolean firstTickWithLevel = true;
-    private boolean needsToNotifyListeners = true;
+        for (TagKey<Biome> tagKey : biomeTagKeys) {
+            String path = tagKey.location().getPath();
+            if (Arrays.stream(new String[]{"is_", "plays_"}).anyMatch(path::startsWith))
+                tagKeysByName.computeIfAbsent(path, k -> new ArrayList<>()).add(tagKey);
+        }
 
-    public ConditionManager() {
-        EventBus.subscribe(ConditionChangeEvent.class, e -> onConditionChanged(e.condition()));
+        var keys = new HashSet<>(tagKeysByName.keySet());
+
+        for (String key : keys) {
+            if (key.contains("/")) {
+                String baseKey = key.substring(0, key.indexOf('/'));
+
+                if (tagKeysByName.containsKey(baseKey)) {
+                    tagKeysByName.get(baseKey).addAll(tagKeysByName.get(key));
+                    tagKeysByName.remove(key);
+                }
+            }
+        }
+
+        for (Collection<TagKey<Biome>> tagKeys : tagKeysByName.values()) {
+            createCondition(TagCondition.getId(tagKeys), () -> {
+                TagCondition tagCondition = new TagCondition(tagKeys);
+                Constants.BIOME_MANAGER.addBiomeChangeListener(tagCondition);
+                return tagCondition;
+            });
+        }
     }
 
     public Collection<? extends Condition> getTagConditions() {
@@ -98,37 +127,6 @@ public class ConditionManager implements ConfigChangeListener {
         }
 
         initTagConditions(getBiomeTagKeys(level));
-    }
-
-    private static void initTagConditions(Collection<TagKey<Biome>> biomeTagKeys) {
-        Map<String, Collection<TagKey<Biome>>> tagKeysByName = new HashMap<>();
-
-        for (TagKey<Biome> tagKey : biomeTagKeys) {
-            String path = tagKey.location().getPath();
-            if (Arrays.stream(new String[]{"is_", "plays_"}).anyMatch(path::startsWith))
-                tagKeysByName.computeIfAbsent(path, k -> new ArrayList<>()).add(tagKey);
-        }
-
-        var keys = new HashSet<>(tagKeysByName.keySet());
-
-        for (String key : keys) {
-            if (key.contains("/")) {
-                String baseKey = key.substring(0, key.indexOf('/'));
-
-                if (tagKeysByName.containsKey(baseKey)) {
-                    tagKeysByName.get(baseKey).addAll(tagKeysByName.get(key));
-                    tagKeysByName.remove(key);
-                }
-            }
-        }
-
-        for (Collection<TagKey<Biome>> tagKeys : tagKeysByName.values()) {
-            createCondition(TagCondition.getId(tagKeys), () -> {
-                TagCondition tagCondition = new TagCondition(tagKeys);
-                Constants.BIOME_MANAGER.addBiomeChangeListener(tagCondition);
-                return tagCondition;
-            });
-        }
     }
 
     public void tick() {
@@ -185,6 +183,9 @@ public class ConditionManager implements ConfigChangeListener {
 
     @Override
     public void afterConfigChange(MainConfig config) {
+        COMBINED_CONDITIONS.stream().map(Condition::getId).forEach(CONDITIONS::remove);
+        COMBINED_CONDITIONS.clear();
+
         for (CombinedConditionConfig conditionConfig : config.getCombinedConditionConfigs()) {
             createCondition(conditionConfig.getUuid(), () -> new CombinedCondition(conditionConfig.getUuid(),
                     conditionConfig.getName(), conditionConfig.getDescription(), conditionConfig.getConditionIds()));
@@ -195,6 +196,8 @@ public class ConditionManager implements ConfigChangeListener {
             if (conditionConfigById.containsKey(condition.getId())) {
                 ConditionConfig conditionConfig = conditionConfigById.get(condition.getId());
                 condition.setPriority(conditionConfig.getPriority());
+            } else {
+                condition.setPriority(0);
             }
         }
 
@@ -212,7 +215,8 @@ public class ConditionManager implements ConfigChangeListener {
                 && tagCondition.getName().equals("Is End"));
 
         if (isEnd != null) {
-            CombinedCondition endBoss = new CombinedCondition(END_BOSS_COMB_COND, "Default Configuration", List.of(isEnd.getId(), BossOverlayWithMusicCondition.ID));
+            CombinedCondition endBoss = new CombinedCondition(END_BOSS_CONDITION_NAME,
+                    "Default Configuration", List.of(isEnd.getId(), BossOverlayWithMusicCondition.ID));
             endBoss.setPriority(4);
             addCondition(endBoss);
 

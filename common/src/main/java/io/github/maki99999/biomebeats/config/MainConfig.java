@@ -21,6 +21,7 @@ public class MainConfig {
     private Map<String, MusicTrackConfig> musicTrackConfigById = new HashMap<>();
     private Map<String, ConditionConfig> conditionConfigById = new HashMap<>();
     private Collection<CombinedConditionConfig> combinedConditionConfigs = new ArrayList<>();
+    private GeneralConfig generalConfig = new GeneralConfig();
 
     public @NotNull String getVersion() {
         return version;
@@ -52,6 +53,14 @@ public class MainConfig {
 
     public void setConditionConfigById(Map<String, ConditionConfig> conditionConfigById) {
         this.conditionConfigById = conditionConfigById;
+    }
+
+    public GeneralConfig getGeneralConfig() {
+        return generalConfig;
+    }
+
+    public void setGeneralConfig(GeneralConfig generalConfig) {
+        this.generalConfig = generalConfig;
     }
 
     public Collection<CombinedConditionConfig> getCombinedConditionConfigs() {

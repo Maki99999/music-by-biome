@@ -24,5 +24,13 @@
   "menu.biomebeats.name": "Name",
   "menu.biomebeats.description": "Description",
   "menu.biomebeats.add": "Add",
-  "menu.biomebeats.confirm": "Confirm"
+  "menu.biomebeats.confirm": "Confirm",
+  "menu.biomebeats.clear-config": "Clear",
+  "menu.biomebeats.reset-to-default": "Reset to Default",
+  "menu.biomebeats.clear-config-tooltip": "Clears all configs",
+  "menu.biomebeats.reset-to-default-tooltip": "Resets the config to the default, vanilla-like configs",
+  "menu.biomebeats.settings": "Settings",
+  "menu.biomebeats.configs": "Configurations:",
+  "menu.biomebeats.fade-time": "Fade In and Out Time:",
+  "menu.biomebeats.break-time": "Time Between Songs:"
 }

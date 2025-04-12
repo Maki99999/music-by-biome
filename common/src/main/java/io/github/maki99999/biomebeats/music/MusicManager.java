@@ -8,6 +8,7 @@ import io.github.maki99999.biomebeats.config.ConfigChangeListener;
 import io.github.maki99999.biomebeats.config.MainConfig;
 import io.github.maki99999.biomebeats.config.MusicTrackConfig;
 import io.github.maki99999.biomebeats.mixin.MixinWeighedSoundEvents;
+import io.github.maki99999.biomebeats.music.statemachine.JavaStreamPlayer;
 import io.github.maki99999.biomebeats.service.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.Sound;
@@ -19,33 +20,24 @@ import net.minecraft.util.RandomSource;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MusicManager implements StreamPlayerListener, ConfigChangeListener {
     private static final Collection<String> SUPPORTED_FILE_EXTENSIONS = List.of("wav", "au", "aiff", "aif", "aifc",
             "mp3", "ogg", "flac", "ape", "spx");
-
-    private ExecutorService executorService;
-    private JavaStreamPlayer javaStreamPlayer;
     private final RandomSource rdm = RandomSource.create();
-
+    private final List<MusicTrack> recentMusicTracks = new ArrayList<>();
+    private final Collection<PreviewListener> previewListeners = new ArrayList<>();
+    private JavaStreamPlayer javaStreamPlayer;
     private Collection<MusicTrack> musicTracks = null;
     private Collection<MusicGroup> musicGroups = null;
-
     private MusicTrack currentMusicTrack = null;
     private Collection<MusicTrack> currentMusicTracks = new HashSet<>();
-    private final List<MusicTrack> recentMusicTracks = new ArrayList<>();
-
     private JavaStreamPlayer previewJavaStreamPlayer;
     private MusicTrack currentPreviewTrack;
-    private final Collection<PreviewListener> previewListeners = new ArrayList<>();
-
     private boolean inPreviewMode = false;
 
     public void init() {
-        executorService = Executors.newSingleThreadExecutor();
-        javaStreamPlayer = new JavaStreamPlayer();
+        javaStreamPlayer = new JavaStreamPlayer("MAIN");
         javaStreamPlayer.addStreamPlayerListener(this);
         initPreviewPlayer();
         Minecraft minecraft = Minecraft.getInstance();
@@ -56,7 +48,7 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
     }
 
     private void initPreviewPlayer() {
-        previewJavaStreamPlayer = new JavaStreamPlayer();
+        previewJavaStreamPlayer = new JavaStreamPlayer("PREVIEW");
         previewJavaStreamPlayer.addStreamPlayerListener(new StreamPlayerListener() {
             @Override
             public void opened(Object dataSource, Map<String, Object> properties) {
@@ -84,13 +76,9 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
     }
 
     public void playPreviewTrack(MusicTrack musicTrack) {
-        if (currentPreviewTrack == musicTrack && previewJavaStreamPlayer.isPausedOrPausing()) {
-            executorService.execute(previewJavaStreamPlayer::resume);
-        } else {
-            executorService.execute(() -> previewJavaStreamPlayer.play(musicTrack));
-            currentPreviewTrack = musicTrack;
-            previewListeners.forEach(listener -> listener.onPreviewChanged(musicTrack));
-        }
+        previewJavaStreamPlayer.play(musicTrack);
+        currentPreviewTrack = musicTrack;
+        previewListeners.forEach(listener -> listener.onPreviewChanged(musicTrack));
     }
 
     public String getDebugString1() {
@@ -102,7 +90,7 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
     }
 
     public void stopPreviewTrack() {
-        executorService.submit(previewJavaStreamPlayer::stop);
+        previewJavaStreamPlayer.stop();
     }
 
     public void startPreviewMode() {
@@ -125,10 +113,9 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
     }
 
     public void close() {
-        if (javaStreamPlayer != null)
+        if (javaStreamPlayer != null) {
             javaStreamPlayer.close();
-        if (executorService != null)
-            executorService.close();
+        }
     }
 
     public void setCurrentMusicTracks(Collection<MusicTrack> musicTracks) {
@@ -136,36 +123,34 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
         Constants.LOG.debug("Songs: {}", String.join(", ", musicTracks.stream().map(MusicTrack::getName).toList()));
 
         if (!musicTracks.contains(currentMusicTrack)) {
-            playNext();
-        } else if (!inPreviewMode && javaStreamPlayer.isPausedOrPausing()) {
-            executorService.submit(javaStreamPlayer::resume);
+            playNext(false);
+        } else if (!inPreviewMode) {
+            javaStreamPlayer.resumeIfPausedOrPausing();
         }
     }
 
     public void play(MusicTrack musicTrack) {
-        executorService.submit(() -> {
-            javaStreamPlayer.play(musicTrack);
-            if (inPreviewMode) {
-                javaStreamPlayer.pause();
-            }
-        });
+        javaStreamPlayer.play(musicTrack);
+        if (inPreviewMode) {
+            javaStreamPlayer.pause();
+        }
     }
 
     public void stop() {
-        executorService.submit(javaStreamPlayer::stop);
+        javaStreamPlayer.stop();
     }
 
     public void pause() {
-        executorService.submit(javaStreamPlayer::pause);
+        javaStreamPlayer.pause();
     }
 
     public void resume() {
-        executorService.submit(javaStreamPlayer::resume);
+        javaStreamPlayer.resume();
     }
 
     public void setVolume(float volume) {
-        executorService.submit(() -> javaStreamPlayer.setTargetGain(volume * 0.5f));
-        executorService.submit(() -> previewJavaStreamPlayer.setTargetGain(volume * 0.5f));
+        javaStreamPlayer.setTargetGain(volume * 0.5f);
+        previewJavaStreamPlayer.setTargetGain(volume * 0.5f);
     }
 
     public Collection<? extends MusicTrack> getMusicTracks() {
@@ -196,8 +181,7 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
         final Status status = event.getPlayerStatus();
         Constants.LOG.debug("New music player status: {}", status.name());
         if (status == Status.EOM) {
-            javaStreamPlayer.musicEnded();
-            playNext();
+            playNext(true);
         }
     }
 
@@ -205,10 +189,10 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
         return currentMusicTrack;
     }
 
-    private void playNext() {
+    private void playNext(boolean fromEom) {
         if (currentMusicTracks == null || currentMusicTracks.isEmpty()) {
             currentMusicTrack = null;
-            executorService.submit(javaStreamPlayer::stop);
+            javaStreamPlayer.stop();
             return;
         }
 
@@ -228,7 +212,15 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
                 .orElseThrow();
 
         addRecentMusicTrack(currentMusicTrack);
-        play(currentMusicTrack);
+
+        if (fromEom) {
+            javaStreamPlayer.musicEnded(currentMusicTrack);
+        } else {
+            javaStreamPlayer.play(currentMusicTrack);
+        }
+        if (inPreviewMode) {
+            javaStreamPlayer.pause();
+        }
     }
 
     private void addRecentMusicTrack(MusicTrack musicTrack) {
