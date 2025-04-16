@@ -30,6 +30,7 @@
   "menu.biomebeats.clear-config-tooltip": "Clears all configs",
   "menu.biomebeats.reset-to-default-tooltip": "Resets the config to the default, vanilla-like configs",
   "menu.biomebeats.settings": "Settings",
+  "menu.biomebeats.help": "Help",
   "menu.biomebeats.configs": "Configurations:",
   "menu.biomebeats.fade-time": "Fade In and Out Time:",
   "menu.biomebeats.break-time": "Time Between Songs:"
