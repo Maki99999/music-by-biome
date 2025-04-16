@@ -31,4 +31,5 @@ public class Constants {
     public static final ConditionMusicManager CONDITION_MUSIC_MANAGER = new ConditionMusicManager();
     public static final ConfigIO CONFIG_IO = new ConfigIO();
     public static final BiomeManager BIOME_MANAGER = new BiomeManager();
+    public static final String HELP_URL = "https://maki99999.github.io/biome-beats-wiki/";
 }

@@ -49,6 +49,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     private LayeredImageButton folderButton;
     private LayeredImageButton reloadButton;
     private LayeredImageButton settingsButton;
+    private LayeredImageButton helpButton;
     private Rect bounds;
     private Rect boundsL;
     private Rect boundsR;
@@ -85,7 +86,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
                 Mth.floor((bounds.w() - BORDER_PADDING * 2) * 0.4f), bounds.h() - BORDER_PADDING * 2);
         boundsR = new Rect(boundsL.x2() + BORDER_PADDING, bounds.y() + BORDER_PADDING,
                 bounds.w() - BORDER_PADDING * 2 - boundsL.w() - BORDER_PADDING, bounds.h() - BORDER_PADDING * 2);
-        addonBounds = Rect.fromCoordinates(bounds.x1() - 18, bounds.y2() - 60, bounds.x1() + 1, bounds.y2());
+        addonBounds = Rect.fromCoordinates(bounds.x1() - 18, bounds.y2() - 78, bounds.x1() + 1, bounds.y2());
 
         // Left column
         conditionSearchBox = addWidget(new EditBox(font, boundsL.x(), boundsL.y(), boundsL.w(), ELEMENT_HEIGHT,
@@ -118,6 +119,8 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
                 this::onReloadPress, Tooltip.create(Component.translatable("menu.biomebeats.reload")));
         settingsButton = new LayeredImageButton(addonBounds.x() + 4, addonBounds.y() + 40, BaseTextureUv.SETTINGS_UV,
                 this::onSettingsPress, Tooltip.create(Component.translatable("menu.biomebeats.settings")));
+        helpButton = new LayeredImageButton(addonBounds.x() + 4, addonBounds.y() + 58, BaseTextureUv.HELP_UV,
+                this::onHelpPress, Tooltip.create(Component.translatable("menu.biomebeats.help")));
 
         musicList = addWidget(new MusicList(minecraft,
                 new Rect(boundsR.x(), boundsR.y() + ELEMENT_HEIGHT * 2 + ELEMENT_SPACING,
@@ -201,6 +204,10 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         }
     }
 
+    private void onHelpPress(Button button) {
+        Util.getPlatform().openUri(Constants.HELP_URL);
+    }
+
     private void onFolderPress(Button imageButton) {
         Util.getPlatform().openPath(Services.PLATFORM.getModConfigFolder().resolve(Constants.MUSIC_FOLDER));
     }
@@ -262,6 +269,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         pressedTab = pressedTab || folderButton.mouseClicked(mouseX, mouseY, button);
         pressedTab = pressedTab || reloadButton.mouseClicked(mouseX, mouseY, button);
         pressedTab = pressedTab || settingsButton.mouseClicked(mouseX, mouseY, button);
+        pressedTab = pressedTab || helpButton.mouseClicked(mouseX, mouseY, button);
         return super.mouseClicked(mouseX, mouseY, button) | pressedTab;
     }
 
@@ -289,6 +297,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         folderButton.render(guiGraphics, mouseX, mouseY, 0);
         reloadButton.render(guiGraphics, mouseX, mouseY, 0);
         settingsButton.render(guiGraphics, mouseX, mouseY, 0);
+        helpButton.render(guiGraphics, mouseX, mouseY, 0);
 
         // Left column
         conditionSearchBox.render(guiGraphics, mouseX, mouseY, partialTick);
