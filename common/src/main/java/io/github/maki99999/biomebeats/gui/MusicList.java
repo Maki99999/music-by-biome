@@ -172,7 +172,7 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
 
     public void sortAndFilterMusicTracks(String filter, Collection<? extends MusicTrack> checkedMusicTracks,
                                          Collection<String> collapsedMusicGroups) {
-        var sortedMusicGroups = musicGroups.stream()
+        List<MusicGroup> sortedMusicGroups = musicGroups.stream()
                 .sorted((m1, m2) -> {
                     if (m1.getName().contains("Custom")) return -1;
                     if (m2.getName().contains("Custom")) return 1;
@@ -191,7 +191,8 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
         for (MusicGroup musicGroup : sortedMusicGroups) {
             sortedMusic.add(new MusicGroup(musicGroup.getName(), musicGroup.getMusicTracks().stream()
                     .filter(m -> !collapsedMusicGroups.contains(musicGroup.getName()) && m.getName().toLowerCase().contains(filter))
-                    .sorted(Comparator.comparing(MusicTrack::getName))
+                    .sorted(Comparator.comparing((MusicTrack t) -> !checkedMusicTracks.contains(t))
+                            .thenComparing(MusicTrack::getName))
                     .toList()));
         }
 

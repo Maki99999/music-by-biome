@@ -8,7 +8,10 @@ public enum BiomeBeatsColor {
     LIGHTER_GREY(0xFFC6C6C6),
     WHITE(0xFFFFFFFF),
     BLUE(0xFF4A90E2),
-    RED(0xFFFF0000);
+    RED(0xFFFF0000),
+    GREEN(0xFF00FF00),
+    GREEN_50(0x7F00FF00),
+    TRANSPARENT(0x00000000);
 
     private final int hex;
 
