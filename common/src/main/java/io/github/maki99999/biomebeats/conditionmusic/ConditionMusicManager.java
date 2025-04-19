@@ -228,4 +228,8 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
+
+    public Collection<MusicTrack> getMusicTracksForCondition(String id) {
+        return musicTracksByConditionId.getOrDefault(id, Collections.emptyList());
+    }
 }

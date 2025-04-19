@@ -1,12 +1,16 @@
 package io.github.maki99999.biomebeats.gui;
 
+import io.github.maki99999.biomebeats.Constants;
 import io.github.maki99999.biomebeats.condition.CombinedCondition;
 import io.github.maki99999.biomebeats.condition.Condition;
 import io.github.maki99999.biomebeats.util.BiomeBeatsColor;
 import io.github.maki99999.biomebeats.util.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.WidgetTooltipHolder;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -139,7 +143,7 @@ public class ConditionList extends ScrollArea implements Renderable, ContainerEv
         }
         selectedChild = currentCondition == null
                 ? null
-                : children.stream().filter(c -> c.condition == currentCondition).findAny().orElse(null);
+                : children.stream().filter(c -> c.getCondition() == currentCondition).findAny().orElse(null);
         setScrollAmount(0);
     }
 
@@ -153,16 +157,15 @@ public class ConditionList extends ScrollArea implements Renderable, ContainerEv
 
     private class Entry extends AbstractWidget {
         private final Minecraft minecraft;
-        private final Condition condition;
+        private final ConditionViewModel vm;
         private final ImageButton editButton;
         private final WidgetTooltipHolder tooltip = new WidgetTooltipHolder();
-
-        private boolean selected = false;
 
         public Entry(Minecraft minecraft, int x, int y, int w, int h, Condition condition) {
             super(x, y, w, h, Component.literal(condition.getName()));
             this.minecraft = minecraft;
-            this.condition = condition;
+            vm = new ConditionViewModel(condition,
+                    !Constants.CONDITION_MUSIC_MANAGER.getMusicTracksForCondition(condition.getId()).isEmpty());
 
             if (condition instanceof CombinedCondition combinedCondition) {
                 editButton = new LayeredImageButton(getX() + width - BaseTextureUv.EDIT_UV.w(), getY(),
@@ -175,12 +178,12 @@ public class ConditionList extends ScrollArea implements Renderable, ContainerEv
         }
 
         public Condition getCondition() {
-            return condition;
+            return vm.getCondition();
         }
 
         @Override
         protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-            if (selected) {
+            if (vm.isSelected()) {
                 guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(),
                         BiomeBeatsColor.WHITE.getHex());
                 guiGraphics.fill(getX() + 1, getY() + 1, getX() - 1 + getWidth(), getY() - 1 + getHeight(),
@@ -189,6 +192,8 @@ public class ConditionList extends ScrollArea implements Renderable, ContainerEv
                 guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(),
                         BiomeBeatsColor.LIGHT_GREY.getHex());
             }
+            drawIndicator(guiGraphics);
+
             Rect textRect = new Rect(getX() + 4, getY(), getWidth() - (editButton == null ? 8 :
                     (8 + BaseTextureUv.EDIT_UV.w())), getHeight());
             drawScrollingString(guiGraphics, minecraft.font, getMessage(), textRect,
@@ -200,6 +205,12 @@ public class ConditionList extends ScrollArea implements Renderable, ContainerEv
                                 mouseY + (int) -ConditionList.this.scrollAmount()) && textRect.contains(mouseX, mouseY),
                         false, new ScreenRectangle(textRect.x(), textRect.y(), textRect.w(), textRect.h()));
             }
+        }
+
+        private void drawIndicator(@NotNull GuiGraphics guiGraphics) {
+            int offset = vm.isSelected() ? 1 : 0;
+
+            guiGraphics.fill(getX() + offset, getY() + offset, getX() + 2, getY() + getHeight() - offset, vm.getIndicatorColor());
         }
 
         @Override
@@ -228,7 +239,7 @@ public class ConditionList extends ScrollArea implements Renderable, ContainerEv
         protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {}
 
         public void setSelected(boolean selected) {
-            this.selected = selected;
+            vm.setSelected(selected);
         }
     }
 }

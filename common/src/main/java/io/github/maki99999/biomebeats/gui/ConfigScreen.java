@@ -37,9 +37,9 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     private static final int ELEMENT_HEIGHT = 17;
     private static final int ELEMENT_SPACING = 4;
     private static final Collection<MusicTrack> NO_MUSIC_TRACKS = Set.of();
-
+    private final Map<TabType, Collection<? extends Condition>> sortedFilteredConditions = new HashMap<>();
+    private final Set<String> collapsedMusicGroups = new HashSet<>();
     private MainConfig config;
-
     private Map<TwoStateImageButton, TabType> tabs;
     private ConditionList conditionList;
     private MusicList musicList;
@@ -55,12 +55,9 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     private Rect boundsR;
     private Rect addonBounds;
     private LayeredImageButton addCombinedConditionBtn;
-
     private Collection<MusicGroup> musicGroups;
     private Map<Condition, Collection<MusicTrack>> musicTracksByCondition;
     private Map<TabType, Collection<? extends Condition>> conditions;
-    private final Map<TabType, Collection<? extends Condition>> sortedFilteredConditions = new HashMap<>();
-    private final Set<String> collapsedMusicGroups = new HashSet<>();
     private boolean initialInitCall = true;
     private TabType currentTab = TabType.BY_BIOME;
     private Condition currentCondition = null;
@@ -146,6 +143,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         } else {
             setRightColumnVisibility(true);
             updateCheckedMusicTracks();
+            onMusicSearchUpdate("");
         }
     }
 
@@ -176,13 +174,21 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
                                 }
                                 return Integer.MAX_VALUE;
                             })
+                            .thenComparing((Condition c) ->
+                                    musicTracksByCondition.getOrDefault(c, Collections.emptyList()).isEmpty())
                             .thenComparing(Condition::getName))
                     .toList());
 
         } else {
             sortedFilteredConditions.put(currentTab, conditions.get(currentTab).stream()
                     .filter(condition -> condition.getName().toLowerCase().contains(cleanFilter))
-                    .sorted(Comparator.comparing(Condition::getName))
+                    .sorted(
+                            Comparator.comparing(Condition::isConditionMet).reversed()
+                                    .thenComparing((Condition c) ->
+                                            musicTracksByCondition.getOrDefault(c, Collections.emptyList()).isEmpty())
+                                    .thenComparing(Comparator.comparing(Condition::getPriority).reversed())
+                                    .thenComparing(Condition::getName)
+                    )
                     .toList());
         }
         conditionList.setConditions(sortedFilteredConditions.get(currentTab), currentCondition);
@@ -369,6 +375,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         priorityField.setValue("" + condition.getPriority());
         setRightColumnVisibility(true);
         updateCheckedMusicTracks();
+        onMusicSearchUpdate("");
     }
 
     private void onConditionSearchUpdate(String text) {
