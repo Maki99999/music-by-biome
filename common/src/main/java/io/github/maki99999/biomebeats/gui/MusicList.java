@@ -22,7 +22,6 @@ import java.util.*;
 import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
 
 public class MusicList extends ScrollArea implements Renderable, ContainerEventHandler {
-    private static final int CHILDREN_HEIGHT = 16;
     private static final int CHILDREN_SPACING = 4;
 
     private final Minecraft minecraft;
@@ -217,6 +216,9 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
     }
 
     private class EntryGroup extends AbstractWidget {
+        private static final int CHILDREN_HEIGHT = 16;
+        private static final int GROUP_HEADER_HEIGHT = 16;
+
         private final List<Entry> children = new ArrayList<>();
         private final MusicGroup musicGroup;
         private final TwoStateImageButton collapseButton;
@@ -235,8 +237,12 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
             for (MusicTrack musicTrack : musicGroup.getMusicTracks()) {
                 children.add(new Entry(musicTrack, new Rect(x + 1, 0, width - 2, CHILDREN_HEIGHT)));
             }
+            UpdateHeight();
+        }
 
-            setHeight((children.size() + 1) * CHILDREN_HEIGHT + (children.size() - 1) * CHILDREN_SPACING + 8);
+        public void UpdateHeight() {
+            setHeight(children.stream().mapToInt(AbstractWidget::getHeight).sum() + (children.size() + 1) * CHILDREN_SPACING + GROUP_HEADER_HEIGHT);
+            MusicList.this.UpdateY();
         }
 
         public void onClose() {
@@ -262,8 +268,10 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
             super.setY(y);
             collapseButton.setY(y);
 
-            for (int i = 0; i < children.size(); i++) {
-                children.get(i).setY(y + (i + 1) * (CHILDREN_HEIGHT + CHILDREN_SPACING));
+            int childY = y + GROUP_HEADER_HEIGHT + CHILDREN_SPACING;
+            for (Entry child : children) {
+                child.setY(childY);
+                childY += child.getHeight() + CHILDREN_SPACING;
             }
         }
 
@@ -307,6 +315,9 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
             private final TwoStateImageButton previewButton;
             private final ImageButton editButton;
             private final TwoStateImageButton checkbox;
+            private final EditBox volumeModifierEditBox;
+
+            private boolean editing = false;
 
             public Entry(MusicTrack musicTrack, Rect bounds) {
                 super(bounds.x(), bounds.y(), bounds.w(), bounds.h(), Component.literal(musicTrack.getName()));
@@ -337,13 +348,44 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
                         }, null, null);
                 editButton = new LayeredImageButton(
                         getX() + width - previewButton.getWidth() - BaseTextureUv.EDIT_UV.w(), getY(),
-                        BaseTextureUv.EDIT_UV, (click) -> {
-                    //TODO
-                    System.out.println("clicked 'edit' on " + getMessage());
-                }, Tooltip.create(Component.translatable("menu.biomebeats.edit")));
+                        BaseTextureUv.EDIT_UV, btn -> onEdit(), Tooltip.create(Component.translatable("menu.biomebeats.edit")));
 
                 Constants.MUSIC_MANAGER.addPreviewListener(this);
+
+                volumeModifierEditBox = new EditBox(minecraft.font, getX() + width - 60, getY() + CHILDREN_HEIGHT,
+                        60, CHILDREN_HEIGHT, Component.translatable("menu.biomebeats.volume_multiplier"));  //TODO doesn't work yet
+                volumeModifierEditBox.setHint(Component.literal("0"));
+                volumeModifierEditBox.setResponder(this::onVolumeModifierChange);
+                volumeModifierEditBox.setFilter(s -> s.matches("^\\d{0,2}\\.?\\d{0,4}$"));
             }
+
+            public boolean isEditing() {
+                return editing;
+            }
+
+            public void setEditing(boolean editing) {
+                this.editing = editing;
+                setHeight(CHILDREN_HEIGHT * (editing ? 2 : 1));
+            }
+
+            private void onVolumeModifierChange(String s) {
+                double volumeMultiplier;
+                try {
+                    volumeMultiplier = Double.parseDouble(s);
+                } catch (NumberFormatException e) {
+                    volumeMultiplier = 1;
+                }
+
+                musicTrack.setVolumeMultiplier(volumeMultiplier);
+            }
+
+            private void onEdit() {
+                for (Entry sibling : EntryGroup.this.children) {
+                    sibling.setEditing(sibling == this && !isEditing());
+                }
+                EntryGroup.this.UpdateHeight();
+            }
+
 
             public void onClose() {
                 Constants.MUSIC_MANAGER.removePreviewListener(this);
@@ -351,10 +393,10 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
 
             @Override
             protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-                guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(),
+                guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + CHILDREN_HEIGHT,
                         BiomeBeatsColor.LIGHT_GREY.getHex());
 
-                var textRect = new Rect(getX() + 18, getY(), editButton.getX() - (getX() + 22), getHeight());
+                Rect textRect = new Rect(getX() + 18, getY(), editButton.getX() - (getX() + 22), CHILDREN_HEIGHT);
                 drawScrollingString(guiGraphics, MusicList.this.minecraft.font, getMessage(), textRect,
                         (int) -MusicList.this.scrollAmount(), BiomeBeatsColor.WHITE.getHex());
                 tooltip.refreshTooltipForNextRenderPass(isHoveringText(textRect, guiGraphics, mouseX, mouseY,
@@ -362,8 +404,38 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
                         false, new ScreenRectangle(textRect.x(), textRect.y(), textRect.w(), textRect.h()));
 
                 checkbox.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
-                //editButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
+                editButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
                 previewButton.render(guiGraphics, mouseX, mouseY, (int) -MusicList.this.scrollAmount());
+
+                if (isEditing()) {
+                    renderAddon(guiGraphics, mouseX, mouseY, partialTicks);
+                }
+            }
+
+            private void renderAddon(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+                guiGraphics.fill(getX(), getY() + CHILDREN_HEIGHT, getX() + getWidth(),
+                        getY() + getHeight(), BiomeBeatsColor.LIGHT_GREY.getHex());
+
+                Rect symbolBounds = Rect.fromCoordinates(getX() + 12, getY() + CHILDREN_HEIGHT,
+                        getX() + 12 + minecraft.font.width("└"), getY() + getHeight());
+                drawScrollingString(guiGraphics,
+                        MusicList.this.minecraft.font,
+                        Component.literal("└"),
+                        symbolBounds,
+                        (int) -MusicList.this.scrollAmount(),
+                        BiomeBeatsColor.WHITE.getHex()
+                );
+                Rect textRect = Rect.fromCoordinates(symbolBounds.x2() + 1, getY() + CHILDREN_HEIGHT,
+                        volumeModifierEditBox.getX() - 2, getY() + getHeight());
+                drawScrollingString(guiGraphics,
+                        MusicList.this.minecraft.font,
+                        Component.translatable("menu.biomebeats.volume_multiplier"),
+                        textRect,
+                        (int) -MusicList.this.scrollAmount(),
+                        BiomeBeatsColor.WHITE.getHex()
+                );
+
+                volumeModifierEditBox.render(guiGraphics, mouseX, mouseY, partialTicks);
             }
 
             private boolean isHoveringText(Rect textRect, @NotNull GuiGraphics guiGraphics, int mouseX, int mouseY,
@@ -381,6 +453,7 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
                 checkbox.setY(y);
                 editButton.setY(y);
                 previewButton.setY(y);
+                volumeModifierEditBox.setY(y + CHILDREN_HEIGHT);
             }
 
             @Override
@@ -389,6 +462,7 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
 
                 previewButton.setX(getX() + width - BaseTextureUv.PLAY_UV.w());
                 editButton.setX(getX() + width - previewButton.getWidth() - BaseTextureUv.EDIT_UV.w());
+                volumeModifierEditBox.setX(getX() + width - 60);
             }
 
             @Override
@@ -396,8 +470,15 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
 
             @Override
             public boolean mouseClicked(double x, double y, int button) {
+                if (editing && volumeModifierEditBox.mouseClicked(x, y, button)) {
+                    volumeModifierEditBox.setFocused(true);
+                    return true;
+                } else {
+                    volumeModifierEditBox.setFocused(false);
+                }
+
                 return checkbox.mouseClicked(x, y, button)
-                        //|| editButton.mouseClicked(x, y, button)
+                        || editButton.mouseClicked(x, y, button)
                         || previewButton.mouseClicked(x, y, button);
             }
 
@@ -412,6 +493,27 @@ public class MusicList extends ScrollArea implements Renderable, ContainerEventH
             @Override
             public void onPreviewChanged(MusicTrack previewTrack) {
                 previewButton.setState(previewTrack == musicTrack);
+            }
+
+            @Override
+            public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+                if (volumeModifierEditBox.isFocused() && volumeModifierEditBox.keyPressed(keyCode, scanCode, modifiers)) {
+                    return true;
+                }
+                return super.keyPressed(keyCode, scanCode, modifiers);
+            }
+
+            @Override
+            public boolean charTyped(char c, int modifiers) {
+                if (volumeModifierEditBox.isFocused() && volumeModifierEditBox.charTyped(c, modifiers)) {
+                    return true;
+                }
+                return super.charTyped(c, modifiers);
+            }
+
+            @Override
+            public boolean mouseReleased(double x, double y, int button) {
+                return volumeModifierEditBox.mouseReleased(x, y, button) || super.mouseReleased(x, y, button);
             }
         }
     }

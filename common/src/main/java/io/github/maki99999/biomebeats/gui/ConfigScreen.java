@@ -75,6 +75,10 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
             initData();
         }
 
+        if (minecraft == null) {
+            return;
+        }
+
         // Update bounds
         int w = Math.min(width - 2 * SIDES_PADDING, MAX_WIDTH);
         int h = Math.min(height, MAX_HEIGHT);

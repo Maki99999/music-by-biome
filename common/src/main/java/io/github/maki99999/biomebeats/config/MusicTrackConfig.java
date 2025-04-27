@@ -2,7 +2,7 @@ package io.github.maki99999.biomebeats.config;
 
 public class MusicTrackConfig {
     private String customName;
-    private float volumeMultiplier;
+    private double volumeMultiplier;
 
     public String getCustomName() {
         return customName;
@@ -12,11 +12,11 @@ public class MusicTrackConfig {
         this.customName = customName;
     }
 
-    public float getVolumeMultiplier() {
+    public double getVolumeMultiplier() {
         return volumeMultiplier;
     }
 
-    public void setVolumeMultiplier(float volumeMultiplier) {
+    public void setVolumeMultiplier(double volumeMultiplier) {
         this.volumeMultiplier = volumeMultiplier;
     }
 }

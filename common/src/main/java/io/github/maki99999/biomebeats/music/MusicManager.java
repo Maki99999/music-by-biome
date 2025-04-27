@@ -305,8 +305,8 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
         for (MusicTrack musicTrack : musicTracks) {
             MusicTrackConfig musicTrackConfig = musicTrackConfigById.computeIfAbsent(musicTrack.getId(),
                     k -> new MusicTrackConfig());
-            musicTrack.setCustomName(musicTrackConfig.getCustomName());
-            musicTrack.setVolumeMultiplier(musicTrackConfig.getVolumeMultiplier());
+            musicTrackConfig.setCustomName(musicTrack.getCustomName());
+            musicTrackConfig.setVolumeMultiplier(musicTrack.getVolumeMultiplier());
         }
     }
 
