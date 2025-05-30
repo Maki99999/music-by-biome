@@ -1,4 +1,4 @@
-package io.github.maki99999.biomebeats.util;
+package io.github.maki99999.biomebeats.gui.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;

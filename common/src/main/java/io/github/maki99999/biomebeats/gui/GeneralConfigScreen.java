@@ -1,9 +1,12 @@
 package io.github.maki99999.biomebeats.gui;
 
 import io.github.maki99999.biomebeats.Constants;
-import io.github.maki99999.biomebeats.util.BiomeBeatsColor;
-import io.github.maki99999.biomebeats.util.GridLayout;
-import io.github.maki99999.biomebeats.util.Rect;
+import io.github.maki99999.biomebeats.gui.common.Button;
+import io.github.maki99999.biomebeats.gui.common.ForwardingScreen;
+import io.github.maki99999.biomebeats.gui.common.TextButton;
+import io.github.maki99999.biomebeats.gui.util.BiomeBeatsColor;
+import io.github.maki99999.biomebeats.gui.util.GridLayout;
+import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -11,7 +14,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
-import static io.github.maki99999.biomebeats.util.DrawUtils.*;
+import static io.github.maki99999.biomebeats.gui.util.DrawUtils.*;
 
 public class GeneralConfigScreen extends Screen {
     private static final int ELEMENT_HEIGHT = 17;
@@ -105,7 +108,7 @@ public class GeneralConfigScreen extends Screen {
     @Override
     public void onClose() {
         if (minecraft != null) {
-            minecraft.setScreen(new ConfigScreen());
+            minecraft.setScreen(new ForwardingScreen<>(new ConfigScreen()));
         }
 
         try {

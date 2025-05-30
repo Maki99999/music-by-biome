@@ -1,6 +1,6 @@
-package io.github.maki99999.biomebeats.gui;
+package io.github.maki99999.biomebeats.gui.common;
 
-import io.github.maki99999.biomebeats.util.Rect;
+import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.network.chat.Component;

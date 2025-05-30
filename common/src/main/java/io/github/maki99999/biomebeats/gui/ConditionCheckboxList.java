@@ -2,8 +2,12 @@ package io.github.maki99999.biomebeats.gui;
 
 import io.github.maki99999.biomebeats.condition.CombinedCondition;
 import io.github.maki99999.biomebeats.condition.Condition;
-import io.github.maki99999.biomebeats.util.BiomeBeatsColor;
-import io.github.maki99999.biomebeats.util.Rect;
+import io.github.maki99999.biomebeats.gui.common.ImageButton;
+import io.github.maki99999.biomebeats.gui.common.LayeredImageButton;
+import io.github.maki99999.biomebeats.gui.common.ScrollArea;
+import io.github.maki99999.biomebeats.gui.common.TwoStateImageButton;
+import io.github.maki99999.biomebeats.gui.util.BiomeBeatsColor;
+import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
@@ -17,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
+import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawScrollingString;
 
 public class ConditionCheckboxList extends ScrollArea implements Renderable, ContainerEventHandler {
     private static final int CHILDREN_HEIGHT = 16;
@@ -214,7 +218,7 @@ public class ConditionCheckboxList extends ScrollArea implements Renderable, Con
                           Component typeName, boolean isCollapsed) {
             super(x, y, w, 0, message);
             collapseButton = new TwoStateImageButton(x + w - 24, y + 1, new ImageButton(x + w - 24, y + 1,
-                    BaseTextureUv.ACCORDION_OPEN_UV, null, null), new ImageButton(x + w - 24, y + 1,
+                    BaseTextureUv.ACCORDION_OPEN_UV, null, null), new io.github.maki99999.biomebeats.gui.common.ImageButton(x + w - 24, y + 1,
                     BaseTextureUv.ACCORDION_CLOSE_UV, null, null),
                     (btn, newValue) -> onGroupToggle.onGroupToggle(typeName, newValue),
                     Tooltip.create(Component.translatable("menu.biomebeats.expand_collapse")), null);

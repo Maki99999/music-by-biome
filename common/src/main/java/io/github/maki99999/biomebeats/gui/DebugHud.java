@@ -4,7 +4,7 @@ import io.github.maki99999.biomebeats.Constants;
 import io.github.maki99999.biomebeats.condition.*;
 import io.github.maki99999.biomebeats.music.MusicTrack;
 import io.github.maki99999.biomebeats.service.Services;
-import io.github.maki99999.biomebeats.util.BiomeBeatsColor;
+import io.github.maki99999.biomebeats.gui.util.BiomeBeatsColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;

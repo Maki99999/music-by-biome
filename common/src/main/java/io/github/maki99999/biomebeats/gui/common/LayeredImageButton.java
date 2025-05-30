@@ -1,11 +1,12 @@
-package io.github.maki99999.biomebeats.gui;
+package io.github.maki99999.biomebeats.gui.common;
 
-import io.github.maki99999.biomebeats.util.Rect;
+import io.github.maki99999.biomebeats.gui.BaseTextureUv;
+import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import org.jetbrains.annotations.NotNull;
 
-import static io.github.maki99999.biomebeats.util.DrawUtils.drawRect;
+import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawRect;
 
 public class LayeredImageButton extends ImageButton {
     public LayeredImageButton(int x, int y, Rect uv, OnPress onPress, Tooltip tooltip) {

@@ -1,7 +1,7 @@
 package io.github.maki99999.biomebeats.gui;
 
 import io.github.maki99999.biomebeats.Constants;
-import io.github.maki99999.biomebeats.util.Rect;
+import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.resources.ResourceLocation;
 
 public class BaseTextureUv {

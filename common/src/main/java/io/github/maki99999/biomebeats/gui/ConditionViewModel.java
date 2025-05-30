@@ -1,7 +1,7 @@
 package io.github.maki99999.biomebeats.gui;
 
 import io.github.maki99999.biomebeats.condition.Condition;
-import io.github.maki99999.biomebeats.util.BiomeBeatsColor;
+import io.github.maki99999.biomebeats.gui.util.BiomeBeatsColor;
 
 public class ConditionViewModel {
     private final Condition condition;

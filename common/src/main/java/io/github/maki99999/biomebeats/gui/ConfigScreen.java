@@ -8,16 +8,19 @@ import io.github.maki99999.biomebeats.condition.Condition;
 import io.github.maki99999.biomebeats.condition.NoOtherMusicCondition;
 import io.github.maki99999.biomebeats.config.ConfigChangeListener;
 import io.github.maki99999.biomebeats.config.MainConfig;
+import io.github.maki99999.biomebeats.gui.common.*;
+import io.github.maki99999.biomebeats.gui.conditionlist.ConditionList;
+import io.github.maki99999.biomebeats.gui.musiclist.MusicList;
+import io.github.maki99999.biomebeats.gui.util.Point;
+import io.github.maki99999.biomebeats.gui.util.PointD;
 import io.github.maki99999.biomebeats.music.MusicGroup;
 import io.github.maki99999.biomebeats.music.MusicTrack;
 import io.github.maki99999.biomebeats.service.Services;
-import io.github.maki99999.biomebeats.util.BiomeBeatsColor;
-import io.github.maki99999.biomebeats.util.Rect;
+import io.github.maki99999.biomebeats.gui.util.BiomeBeatsColor;
+import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -27,9 +30,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static io.github.maki99999.biomebeats.util.DrawUtils.*;
+import static io.github.maki99999.biomebeats.gui.util.DrawUtils.*;
 
-public class ConfigScreen extends Screen implements ConfigChangeListener {
+public class ConfigScreen extends UiElement implements ConfigChangeListener {
     private static final int MAX_WIDTH = 400;
     private static final int MAX_HEIGHT = 400;
     private static final int SIDES_PADDING = 60;
@@ -43,9 +46,9 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     private Map<TwoStateImageButton, TabType> tabs;
     private ConditionList conditionList;
     private MusicList musicList;
-    private EditBox conditionSearchBox;
-    private EditBox musicSearchBox;
-    private EditBox priorityField;
+    private EditBoxWrapper conditionSearchBox;
+    private EditBoxWrapper musicSearchBox;
+    private EditBoxWrapper priorityField;
     private LayeredImageButton folderButton;
     private LayeredImageButton reloadButton;
     private LayeredImageButton settingsButton;
@@ -75,14 +78,14 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
             initData();
         }
 
-        if (minecraft == null) {
+        if (getMinecraft() == null) {
             return;
         }
 
         // Update bounds
-        int w = Math.min(width - 2 * SIDES_PADDING, MAX_WIDTH);
-        int h = Math.min(height, MAX_HEIGHT);
-        bounds = new Rect(SIDES_PADDING + (width - 2 * SIDES_PADDING - w) / 2, (height - h) / 2, w, h);
+        int w = Math.min(getWidth() - 2 * SIDES_PADDING, MAX_WIDTH);
+        int h = Math.min(getHeight(), MAX_HEIGHT);
+        bounds = new Rect(SIDES_PADDING + (getWidth() - 2 * SIDES_PADDING - w) / 2, (getHeight() - h) / 2, w, h);
         boundsL = new Rect(bounds.x() + BORDER_PADDING, bounds.y() + BORDER_PADDING,
                 Mth.floor((bounds.w() - BORDER_PADDING * 2) * 0.4f), bounds.h() - BORDER_PADDING * 2);
         boundsR = new Rect(boundsL.x2() + BORDER_PADDING, bounds.y() + BORDER_PADDING,
@@ -90,27 +93,26 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         addonBounds = Rect.fromCoordinates(bounds.x1() - 18, bounds.y2() - 78, bounds.x1() + 1, bounds.y2());
 
         // Left column
-        conditionSearchBox = addWidget(new EditBox(font, boundsL.x(), boundsL.y(), boundsL.w(), ELEMENT_HEIGHT,
-                Component.translatable("menu.biomebeats.search.condition")));
+        conditionSearchBox = addChild(new EditBoxWrapper(Component.translatable("menu.biomebeats.search.condition"),
+                new Rect(boundsL.x(), boundsL.y(), boundsL.w(), ELEMENT_HEIGHT)));
         conditionSearchBox.setHint(Component.translatable("menu.biomebeats.search.condition"));
         conditionSearchBox.setResponder(this::onConditionSearchUpdate);
 
-        conditionList = addWidget(new ConditionList(minecraft, new Rect(boundsL.x(), boundsL.y() + ELEMENT_HEIGHT,
+        conditionList = addChild(new ConditionList(getMinecraft(), new Rect(boundsL.x(), boundsL.y() + ELEMENT_HEIGHT,
                 boundsL.w(), boundsL.h() - ELEMENT_HEIGHT),
                 Component.translatable("menu.biomebeats.search.condition"), this::onConditionSelected,
                 this::openCombinedConditionScreen));
         updateCurrentConditions("");
 
         // Right column
-        priorityField = addWidget(new EditBox(font, boundsR.x2() - 60, boundsR.y(), 60, ELEMENT_HEIGHT,
-                Component.translatable("menu.biomebeats.priority")));
+        priorityField = addChild(new EditBoxWrapper(Component.translatable("menu.biomebeats.priority"),
+                new Rect(boundsR.x2() - 60, boundsR.y(), 60, ELEMENT_HEIGHT)));
         priorityField.setHint(Component.literal("0"));
         priorityField.setResponder(this::onPriorityUpdate);
         priorityField.setFilter(s -> s.matches("^[+-]?\\d{1,9}$"));
 
-        musicSearchBox = addWidget(new EditBox(font, boundsR.x(), boundsR.y() + ELEMENT_HEIGHT + ELEMENT_SPACING,
-                boundsR.w(),
-                ELEMENT_HEIGHT, Component.translatable("menu.biomebeats.search.music")));
+        musicSearchBox = addChild(new EditBoxWrapper(Component.translatable("menu.biomebeats.search.music"),
+                new Rect(boundsR.x(), boundsR.y() + ELEMENT_HEIGHT + ELEMENT_SPACING, boundsR.w(), ELEMENT_HEIGHT)));
         musicSearchBox.setHint(Component.translatable("menu.biomebeats.search.music"));
         musicSearchBox.setResponder(this::onMusicSearchUpdate);
 
@@ -123,7 +125,7 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         helpButton = new LayeredImageButton(addonBounds.x() + 4, addonBounds.y() + 58, BaseTextureUv.HELP_UV,
                 this::onHelpPress, Tooltip.create(Component.translatable("menu.biomebeats.help")));
 
-        musicList = addWidget(new MusicList(minecraft,
+        musicList = addChild(new MusicList(
                 new Rect(boundsR.x(), boundsR.y() + ELEMENT_HEIGHT * 2 + ELEMENT_SPACING,
                         boundsR.w(), boundsR.h() - ELEMENT_HEIGHT * 2 - ELEMENT_SPACING),
                 Component.translatable("menu.biomebeats.search.music"), musicGroups,
@@ -152,9 +154,9 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     }
 
     private void openCombinedConditionScreen(CombinedCondition combinedCondition) {
-        if (minecraft != null) {
-            minecraft.setScreen(null);
-            minecraft.setScreen(new CombinedConditionConfigScreen(this, combinedCondition,
+        if (getMinecraft() != null) {
+            getMinecraft().setScreen(null);
+            getMinecraft().setScreen(new CombinedConditionConfigScreen(this, combinedCondition,
                     conditions.values().stream().flatMap(Collection::stream).collect(Collectors.toList())));
         }
     }
@@ -202,15 +204,15 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
         Constants.CONFIG_IO.removeListener(this);
         Constants.CONFIG_IO.saveConfig(config);
         BiomeBeatsCommon.reload();
-        if (minecraft != null) {
-            minecraft.setScreen(new ConfigScreen());
+        if (getMinecraft() != null) {
+            getMinecraft().setScreen(new ForwardingScreen<>(new ConfigScreen()));
         }
     }
 
     private void onSettingsPress(Button button) {
-        if (minecraft != null) {
-            onClose();
-            minecraft.setScreen(new GeneralConfigScreen());
+        if (getMinecraft() != null) {
+            onCloseAll();
+            getMinecraft().setScreen(new GeneralConfigScreen());
         }
     }
 
@@ -236,7 +238,9 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     }
 
     private void addTab(TabType tabType, Component text, int x, int y) {
-        if (minecraft == null) return;
+        if (getMinecraft() == null) {
+            return;
+        }
 
         var tab = new TwoStateImageButton(x, y,
                 new ImageButton(x, y, BaseTextureUv.TAB_LEFT_ACTIVE_UV, null, null),
@@ -267,24 +271,24 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (currentTab == TabType.COMBINED && addCombinedConditionBtn.mouseClicked(mouseX, mouseY, button)) {
+    public boolean mouseClicked(PointD mousePos, int button) {
+        if (currentTab == TabType.COMBINED && addCombinedConditionBtn.mouseClicked(mousePos.x(), mousePos.y(), button)) {
             return true;
         }
 
         boolean pressedTab = false;
         for (TwoStateImageButton tab : tabs.keySet()) {
-            pressedTab = pressedTab || tab.mouseClicked(mouseX, mouseY, button);
+            pressedTab = pressedTab || tab.mouseClicked(mousePos.x(), mousePos.y(), button);
         }
-        pressedTab = pressedTab || folderButton.mouseClicked(mouseX, mouseY, button);
-        pressedTab = pressedTab || reloadButton.mouseClicked(mouseX, mouseY, button);
-        pressedTab = pressedTab || settingsButton.mouseClicked(mouseX, mouseY, button);
-        pressedTab = pressedTab || helpButton.mouseClicked(mouseX, mouseY, button);
-        return super.mouseClicked(mouseX, mouseY, button) | pressedTab;
+        pressedTab = pressedTab || folderButton.mouseClicked(mousePos.x(), mousePos.y(), button);
+        pressedTab = pressedTab || reloadButton.mouseClicked(mousePos.x(), mousePos.y(), button);
+        pressedTab = pressedTab || settingsButton.mouseClicked(mousePos.x(), mousePos.y(), button);
+        pressedTab = pressedTab || helpButton.mouseClicked(mousePos.x(), mousePos.y(), button);
+        return pressedTab;
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull GuiGraphics guiGraphics, Point mousePos, float partialTick) {
         // Background
         drawContainer(guiGraphics, bounds);
         drawRect(BaseTextureUv.RL, guiGraphics,
@@ -304,44 +308,35 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
                 addonBounds.x2() + 2, addonBounds.y2()), BaseTextureUv.CONTAINER_UV_B);
         drawRect(BaseTextureUv.RL, guiGraphics, Rect.fromCoordinates(addonBounds.x() + 4, addonBounds.y() + 3,
                 addonBounds.x2() + 2, addonBounds.y2() - 4), BaseTextureUv.CONTAINER_UV_C);
-        folderButton.render(guiGraphics, mouseX, mouseY, 0);
-        reloadButton.render(guiGraphics, mouseX, mouseY, 0);
-        settingsButton.render(guiGraphics, mouseX, mouseY, 0);
-        helpButton.render(guiGraphics, mouseX, mouseY, 0);
-
-        // Left column
-        conditionSearchBox.render(guiGraphics, mouseX, mouseY, partialTick);
-        conditionList.render(guiGraphics, mouseX, mouseY, partialTick);
+        folderButton.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
+        reloadButton.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
+        settingsButton.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
+        helpButton.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
 
         // Right column
-        if (minecraft != null && priorityField.visible)
-            drawScrollingString(guiGraphics, minecraft.font, Component.translatable("menu.biomebeats.priority"),
+        if (getMinecraft() != null && priorityField.isVisible())
+            drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.priority"),
                     new Rect(boundsR.x() + ELEMENT_SPACING, boundsR.y(), boundsR.w() / 2, ELEMENT_HEIGHT), 0,
                     BiomeBeatsColor.WHITE.getHex());
-        priorityField.render(guiGraphics, mouseX, mouseY, partialTick);
-        musicSearchBox.render(guiGraphics, mouseX, mouseY, partialTick);
-        musicList.render(guiGraphics, mouseX, mouseY, partialTick);
         for (TwoStateImageButton tab : tabs.keySet()) {
-            tab.render(guiGraphics, mouseX, mouseY, 0);
+            tab.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
         }
 
         // Combined Conditions
         if (currentTab == TabType.COMBINED) {
-            addCombinedConditionBtn.render(guiGraphics, mouseX, mouseY, 0);
+            addCombinedConditionBtn.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
         }
     }
 
     @Override
     public void onClose() {
-        super.onClose();
-        musicList.onClose();
         Constants.MUSIC_MANAGER.stopPreviewMode();
         Constants.CONFIG_IO.removeListener(this);
         Constants.CONFIG_IO.saveConfig(config);
     }
 
     private void setRightColumnVisibility(boolean visible) {
-        musicList.setVisibility(visible);
+        musicList.setVisible(visible);
         priorityField.setVisible(visible && !(currentCondition instanceof NoOtherMusicCondition));
         musicSearchBox.setVisible(visible);
     }
@@ -418,8 +413,8 @@ public class ConfigScreen extends Screen implements ConfigChangeListener {
     public void returnToThisScreen() {
         currentCondition = null;
 
-        if (this.minecraft != null) {
-            this.minecraft.setScreen(this);
+        if (this.getMinecraft() != null) {
+            this.getMinecraft().setScreen(new ForwardingScreen<>(this));
         }
     }
 

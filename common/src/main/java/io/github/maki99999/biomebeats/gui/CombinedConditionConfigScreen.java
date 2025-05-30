@@ -3,8 +3,9 @@ package io.github.maki99999.biomebeats.gui;
 import io.github.maki99999.biomebeats.Constants;
 import io.github.maki99999.biomebeats.condition.CombinedCondition;
 import io.github.maki99999.biomebeats.condition.Condition;
-import io.github.maki99999.biomebeats.util.BiomeBeatsColor;
-import io.github.maki99999.biomebeats.util.Rect;
+import io.github.maki99999.biomebeats.gui.common.TextButton;
+import io.github.maki99999.biomebeats.gui.util.BiomeBeatsColor;
+import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
@@ -14,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static io.github.maki99999.biomebeats.util.DrawUtils.drawContainer;
-import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
+import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawContainer;
+import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawScrollingString;
 
 public class CombinedConditionConfigScreen extends Screen {
     private static final int MAX_WIDTH = 250;

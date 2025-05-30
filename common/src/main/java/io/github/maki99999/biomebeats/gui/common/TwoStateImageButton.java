@@ -1,7 +1,7 @@
-package io.github.maki99999.biomebeats.gui;
+package io.github.maki99999.biomebeats.gui.common;
 
-import io.github.maki99999.biomebeats.util.BiomeBeatsColor;
-import io.github.maki99999.biomebeats.util.Rect;
+import io.github.maki99999.biomebeats.gui.util.BiomeBeatsColor;
+import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static io.github.maki99999.biomebeats.util.DrawUtils.drawScrollingString;
+import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawScrollingString;
 
 public class TwoStateImageButton extends ImageButton {
     private final ImageButton positiveButton;
