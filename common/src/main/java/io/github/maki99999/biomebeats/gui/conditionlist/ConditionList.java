@@ -3,6 +3,7 @@ package io.github.maki99999.biomebeats.gui.conditionlist;
 import io.github.maki99999.biomebeats.condition.CombinedCondition;
 import io.github.maki99999.biomebeats.condition.Condition;
 import io.github.maki99999.biomebeats.gui.common.ScrollContainer;
+import io.github.maki99999.biomebeats.gui.common.UiElement;
 import io.github.maki99999.biomebeats.gui.util.BiomeBeatsColor;
 import io.github.maki99999.biomebeats.gui.util.Point;
 import io.github.maki99999.biomebeats.gui.util.PointD;
@@ -82,22 +83,35 @@ public class ConditionList extends ScrollContainer {
     }
 
     @Override
-    protected boolean mouseClickedInContent(PointD mousePos, int button) {
+    public boolean mouseClickedAll(PointD mousePos, int button) {
+        for (UiElement child : getChildren()) {
+            if (child.isMouseOver(mousePos.translate(-getX(), -getY()).toIntPoint())
+                    && child.mouseClickedAll(mousePos.translate(-getX(), -getY()), button)) {
+                setFocusedElement(child);
+                setDraggingElement(child);
+                return true;
+            }
+        }
+
         for (ConditionListEntry child : entries) {
-            if (child.isMouseOver(mousePos.toIntPoint()) && child.mouseClickedAll(mousePos, button)) {
+            if (child.isMouseOver(mousePos.translate(-getX(), -getY()).toIntPoint())
+                    && child.mouseClickedAll(mousePos.translate(-getX(), -getY()), button)) {
                 selectedChild = child;
                 onSelected.onSelected(child.getCondition());
                 setFocusedElement(child);
+                setDraggingElement(child);
                 return true;
             }
         }
 
         if (isMouseOver(mousePos) && mouseClicked(mousePos, button)) {
             setFocusedElement(this);
+            setDraggingElement(this);
             return true;
         }
 
         setFocusedElement(null);
+        setDraggingElement(null);
         return false;
     }
 

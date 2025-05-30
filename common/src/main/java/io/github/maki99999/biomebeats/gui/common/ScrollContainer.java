@@ -127,12 +127,8 @@ public abstract class ScrollContainer extends UiElement {
             return false;
         }
 
-        return mouseClickedInContent(mousePos.translate(-getX(), -getY() + scrollAmount), button)
-                || updateScrolling(mousePos, button)
-                || super.mouseClicked(mousePos, button);
+        return updateScrolling(mousePos, button) || super.mouseClicked(mousePos, button);
     }
-
-    protected abstract boolean mouseClickedInContent(PointD mousePos, int button);
 
     @Override
     public boolean mouseReleased(PointD mousePos, int button) {

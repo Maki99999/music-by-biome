@@ -1,6 +1,7 @@
 package io.github.maki99999.biomebeats.gui.musiclist;
 
 import io.github.maki99999.biomebeats.gui.common.ScrollContainer;
+import io.github.maki99999.biomebeats.gui.common.UiElement;
 import io.github.maki99999.biomebeats.gui.util.Point;
 import io.github.maki99999.biomebeats.gui.util.PointD;
 import io.github.maki99999.biomebeats.music.MusicGroup;
@@ -131,20 +132,33 @@ public class MusicList extends ScrollContainer {
     }
 
     @Override
-    protected boolean mouseClickedInContent(PointD mousePos, int button) {
-        for (MusicListEntryGroup child : entryGroups) {
-            if (child.isMouseOver(mousePos.toIntPoint()) && child.mouseClickedAll(mousePos, button)) {
+    public boolean mouseClickedAll(PointD mousePos, int button) {
+        for (UiElement child : getChildren()) {
+            if (child.isMouseOver(mousePos.translate(-getX(), -getY()).toIntPoint())
+                    && child.mouseClickedAll(mousePos.translate(-getX(), -getY()), button)) {
                 setFocusedElement(child);
+                setDraggingElement(child);
+                return true;
+            }
+        }
+
+        for (MusicListEntryGroup child : entryGroups) {
+            if (child.isMouseOver(mousePos.translate(-getX(), -getY()).toIntPoint())
+                    && child.mouseClickedAll(mousePos.translate(-getX(), -getY()), button)) {
+                setFocusedElement(child);
+                setDraggingElement(child);
                 return true;
             }
         }
 
         if (isMouseOver(mousePos) && mouseClicked(mousePos, button)) {
             setFocusedElement(this);
+            setDraggingElement(this);
             return true;
         }
 
         setFocusedElement(null);
+        setDraggingElement(null);
         return false;
     }
 

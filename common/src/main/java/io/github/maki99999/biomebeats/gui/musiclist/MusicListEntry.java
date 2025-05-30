@@ -35,6 +35,7 @@ class MusicListEntry extends UiElement implements PreviewListener {
         volumeModifierEditBox.setResponder(this::onVolumeModifierChange);
         volumeModifierEditBox.setFilter(s -> s.matches("^\\d{0,2}\\.?\\d{0,4}$"));
         volumeModifierEditBox.setVisible(false);
+        volumeModifierEditBox.setValue("" + musicTrack.getVolumeMultiplier());
 
         checkbox = addChild(new TwoStateImageButton1(Component.literal("Checkbox"), null, 0, 0,
                 new LayeredImageButton1(Component.literal("Checkbox"), null, 0, 0,
