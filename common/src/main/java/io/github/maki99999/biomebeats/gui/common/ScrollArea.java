@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
+//TODO completely replace with other class
 public abstract class ScrollArea extends AbstractScrollArea {
     public ScrollArea(Rect bounds, Component message) {
         super(bounds.x(), bounds.y(), bounds.w(), bounds.h(), message);

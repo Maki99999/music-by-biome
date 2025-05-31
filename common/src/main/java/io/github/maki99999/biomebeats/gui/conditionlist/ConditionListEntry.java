@@ -59,7 +59,7 @@ class ConditionListEntry extends UiElement {
         drawIndicator(guiGraphics);
 
         drawScrollingString(guiGraphics, minecraft.font, getName(), getTextRect(),
-                (int) -conditionList.getScrollAmount(), BiomeBeatsColor.WHITE.getHex());
+                0, BiomeBeatsColor.WHITE.getHex());
     }
 
     private @NotNull Rect getTextRect() {

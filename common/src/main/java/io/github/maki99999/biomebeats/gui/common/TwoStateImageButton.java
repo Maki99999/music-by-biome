@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawScrollingString;
 
+//TODO completely replace with other class
 public class TwoStateImageButton extends ImageButton {
     private final ImageButton positiveButton;
     private final ImageButton negativeButton;

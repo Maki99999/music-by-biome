@@ -65,7 +65,7 @@ public abstract class ScrollContainer extends UiElement {
             return;
         }
         super.renderTooltips(guiGraphics, mousePos, absolutePos);
-        renderTooltipsInContent(guiGraphics, mousePos.translate(-getX(), -getY()), absolutePos);
+        renderTooltipsInContent(guiGraphics, mousePos.translate(-getX(), -getY() + (int) scrollAmount), absolutePos);
     }
 
     protected abstract void renderTooltipsInContent(GuiGraphics guiGraphics, Point mousePos, Point absolutePos);

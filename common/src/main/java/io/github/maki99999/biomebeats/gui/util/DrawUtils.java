@@ -118,11 +118,13 @@ public class DrawUtils {
                 BaseTextureUv.CONTAINER_INNER_UV);
     }
 
+    //TODO remove yScissorOffset
     public static void drawScrollingString(GuiGraphics guiGraphics, Font font, Component text, Rect bounds,
                                            int yScissorOffset, int color) {
         drawScrollingString(guiGraphics, font, text, bounds, yScissorOffset, color, false);
     }
 
+    //TODO remove yScissorOffset
     public static void drawScrollingString(GuiGraphics guiGraphics, Font font, Component text, Rect bounds,
                                            int yScissorOffset, int color, boolean centered) {
         int textWidth = font.width(text);

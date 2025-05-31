@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import static io.github.maki99999.biomebeats.gui.BaseTextureUv.RL;
 import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawRect;
 
+//TODO completely replace with other class
 public class ImageButton extends Button {
     private final Rect uv;
 

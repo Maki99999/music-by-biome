@@ -94,8 +94,8 @@ public class ConditionList extends ScrollContainer {
         }
 
         for (ConditionListEntry child : entries) {
-            if (child.isMouseOver(mousePos.translate(-getX(), -getY()).toIntPoint())
-                    && child.mouseClickedAll(mousePos.translate(-getX(), -getY()), button)) {
+            if (child.isMouseOver(mousePos.translate(-getX(), -getY() + getScrollAmount()).toIntPoint())
+                    && child.mouseClickedAll(mousePos.translate(-getX(), -getY() + getScrollAmount()), button)) {
                 selectedChild = child;
                 onSelected.onSelected(child.getCondition());
                 setFocusedElement(child);

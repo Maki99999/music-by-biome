@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawRect;
 
+//TODO completely replace with other class
 public class LayeredImageButton extends ImageButton {
     public LayeredImageButton(int x, int y, Rect uv, OnPress onPress, Tooltip tooltip) {
         super(x, y, uv, onPress, tooltip);

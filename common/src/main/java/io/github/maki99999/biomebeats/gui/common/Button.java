@@ -12,6 +12,7 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
+//TODO completely replace with other class
 public abstract class Button {
     private final WidgetTooltipHolder tooltip = new WidgetTooltipHolder();
 

@@ -56,7 +56,7 @@ class MusicListEntryGroup extends TypedUiContainer<MusicListEntry> {
     protected void render(@NotNull GuiGraphics guiGraphics, Point mousePos, float partialTicks) {
         drawScrollingString(guiGraphics, getMinecraft().font, Component.literal(musicGroup.getName()),
                 new Rect(getX() + 16, getY() + 4, getWidth() - 48, 8),
-                (int) -musicList.getScrollAmount(), BiomeBeatsColor.WHITE.getHex());
+                0, BiomeBeatsColor.WHITE.getHex());
     }
 
     @Override

@@ -104,7 +104,7 @@ class MusicListEntry extends UiElement implements PreviewListener {
                 BiomeBeatsColor.LIGHT_GREY.getHex());
 
         drawScrollingString(guiGraphics, getMinecraft().font, getName(), getTextRect(),
-                (int) -musicListEntryGroup.musicList.getScrollAmount(), BiomeBeatsColor.WHITE.getHex());
+                0, BiomeBeatsColor.WHITE.getHex());
 
         if (isEditing()) {
             renderAddon(guiGraphics);
@@ -120,9 +120,9 @@ class MusicListEntry extends UiElement implements PreviewListener {
         guiGraphics.fill(getX(), getY() + MusicListEntryGroup.CHILDREN_HEIGHT, getX() + getWidth(), getY() + getHeight(), BiomeBeatsColor.LIGHT_GREY.getHex());
 
         Rect symbolBounds = Rect.fromCoordinates(getX(), getY() + MusicListEntryGroup.CHILDREN_HEIGHT, getX() + getMinecraft().font.width("└"), getY() + getHeight());
-        drawScrollingString(guiGraphics, getMinecraft().font, Component.literal("└"), symbolBounds, (int) -musicListEntryGroup.musicList.getScrollAmount(), BiomeBeatsColor.WHITE.getHex());
+        drawScrollingString(guiGraphics, getMinecraft().font, Component.literal("└"), symbolBounds, 0, BiomeBeatsColor.WHITE.getHex());
         Rect textRect = Rect.fromCoordinates(symbolBounds.x2() + 1, getY() + MusicListEntryGroup.CHILDREN_HEIGHT, volumeModifierEditBox.getX() - 2, getY() + getHeight());
-        drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.volume_multiplier"), textRect, (int) -musicListEntryGroup.musicList.getScrollAmount(), BiomeBeatsColor.WHITE.getHex());
+        drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.volume_multiplier"), textRect, 0, BiomeBeatsColor.WHITE.getHex());
     }
 
     public MusicTrack getMusicTrack() {
