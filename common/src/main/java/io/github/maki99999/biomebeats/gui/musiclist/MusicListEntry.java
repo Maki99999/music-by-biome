@@ -1,6 +1,7 @@
 package io.github.maki99999.biomebeats.gui.musiclist;
 
 import io.github.maki99999.biomebeats.Constants;
+import io.github.maki99999.biomebeats.event.MusicTrackUpdateEvent;
 import io.github.maki99999.biomebeats.gui.BaseTextureUv;
 import io.github.maki99999.biomebeats.gui.common.*;
 import io.github.maki99999.biomebeats.gui.util.Point;
@@ -8,6 +9,7 @@ import io.github.maki99999.biomebeats.music.MusicTrack;
 import io.github.maki99999.biomebeats.music.PreviewListener;
 import io.github.maki99999.biomebeats.gui.util.BiomeBeatsColor;
 import io.github.maki99999.biomebeats.gui.util.Rect;
+import io.github.maki99999.biomebeats.util.EventBus;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -83,7 +85,13 @@ class MusicListEntry extends UiElement implements PreviewListener {
             volumeMultiplier = 1;
         }
 
+        if (volumeMultiplier >= 4.1) {
+            volumeModifierEditBox.setValue("" + 4.0);
+            return;
+        }
+
         musicTrack.setVolumeMultiplier(volumeMultiplier);
+        EventBus.publish(new MusicTrackUpdateEvent(musicTrack));
     }
 
     private void onEdit() {
@@ -141,7 +149,7 @@ class MusicListEntry extends UiElement implements PreviewListener {
     @Override
     public void renderTooltips(GuiGraphics guiGraphics, Point mousePos, Point absolutePos) {
         super.renderTooltips(guiGraphics, mousePos, absolutePos);
-        if(getTextRect().contains(mousePos)) {
+        if (getTextRect().contains(mousePos)) {
             guiGraphics.renderTooltip(getMinecraft().font, Component.literal(musicTrack.getPathName()),
                     absolutePos.x(), absolutePos.y());
         }

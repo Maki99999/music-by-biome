@@ -30,7 +30,8 @@ public class JavaStreamPlayer {
     private final Object gainLock = new Object();
     private Thread mainExecutorThread = null;
     private @NotNull PlayerState state;
-    private double targetGain = 1;
+    private double baseTargetGain = 1;
+    private double targetGain = baseTargetGain;
     private double currentGain = targetGain;
     private MusicTrack currentSong = null;
 
@@ -78,12 +79,23 @@ public class JavaStreamPlayer {
         return targetGain;
     }
 
+    double getBaseTargetGain() {
+        return baseTargetGain;
+    }
+
     public void setTargetGain(double targetGain) {
-        this.targetGain = targetGain;
+        baseTargetGain = targetGain;
+        double newTargetGain = baseTargetGain * (currentSong == null ? 1 : currentSong.getVolumeMultiplier());
+
+        if (newTargetGain == this.targetGain) {
+            return;
+        }
+
+        this.targetGain = newTargetGain;
         runOnMain(() -> {
             if (!state.controlsGain()) {
                 synchronized (gainLock) {
-                    currentGain = targetGain;
+                    currentGain = this.targetGain;
                 }
                 player.setGain(currentGain);
             }
@@ -167,7 +179,8 @@ public class JavaStreamPlayer {
 
     public void openPlay(MusicTrack musicTrack) {
         runOnMain(() -> {
-            this.currentSong = musicTrack;
+            currentSong = musicTrack;
+            targetGain = baseTargetGain * musicTrack.getVolumeMultiplier();
 
             Minecraft minecraft = Minecraft.getInstance();
             if (musicTrack instanceof ResourceLocationMusicTrack rlMusicTrack) {

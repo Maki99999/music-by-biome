@@ -7,9 +7,11 @@ import io.github.maki99999.biomebeats.Constants;
 import io.github.maki99999.biomebeats.config.ConfigChangeListener;
 import io.github.maki99999.biomebeats.config.MainConfig;
 import io.github.maki99999.biomebeats.config.MusicTrackConfig;
+import io.github.maki99999.biomebeats.event.MusicTrackUpdateEvent;
 import io.github.maki99999.biomebeats.mixin.MixinWeighedSoundEvents;
 import io.github.maki99999.biomebeats.music.statemachine.JavaStreamPlayer;
 import io.github.maki99999.biomebeats.service.Services;
+import io.github.maki99999.biomebeats.util.EventBus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -40,11 +42,10 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
         javaStreamPlayer = new JavaStreamPlayer("MAIN");
         javaStreamPlayer.addStreamPlayerListener(this);
         initPreviewPlayer();
-        Minecraft minecraft = Minecraft.getInstance();
-        setVolume(minecraft.options.getSoundSourceVolume(SoundSource.MASTER)
-                * minecraft.options.getSoundSourceVolume(SoundSource.MUSIC));
+        updateVolume();
         findMusicTracksAndGroups();
         Constants.CONFIG_IO.addListener(this);
+        EventBus.subscribe(MusicTrackUpdateEvent.class, this::musicTrackUpdated);
     }
 
     private void initPreviewPlayer() {
@@ -52,7 +53,7 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
         previewJavaStreamPlayer.addStreamPlayerListener(new StreamPlayerListener() {
             @Override
             public void opened(Object dataSource, Map<String, Object> properties) {
-                Constants.LOG.debug(String.format("Opened preview stream player %s", dataSource));
+                Constants.LOG.debug("Opened preview stream player {}", dataSource);
             }
 
             @Override
@@ -148,6 +149,12 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
         javaStreamPlayer.resume();
     }
 
+    public void updateVolume() {
+        Minecraft minecraft = Minecraft.getInstance();
+        setVolume(minecraft.options.getSoundSourceVolume(SoundSource.MASTER)
+                * minecraft.options.getSoundSourceVolume(SoundSource.MUSIC));
+    }
+
     public void setVolume(float volume) {
         javaStreamPlayer.setTargetGain(volume * 0.5f);
         previewJavaStreamPlayer.setTargetGain(volume * 0.5f);
@@ -169,7 +176,7 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
 
     @Override
     public void opened(final Object dataSource, final Map<String, Object> properties) {
-        Constants.LOG.debug(String.format("Opened stream player %s", dataSource));
+        Constants.LOG.debug("Opened stream player {}", dataSource);
     }
 
     @Override
@@ -324,6 +331,12 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
                 musicTrack.setCustomName(musicTrackConfig.getCustomName());
                 musicTrack.setVolumeMultiplier(musicTrackConfig.getVolumeMultiplier());
             }
+        }
+    }
+
+    private void musicTrackUpdated(MusicTrackUpdateEvent e) {
+        if (e.musicTrack().equals(currentMusicTrack) || e.musicTrack().equals(currentPreviewTrack)) {
+            updateVolume();
         }
     }
 }

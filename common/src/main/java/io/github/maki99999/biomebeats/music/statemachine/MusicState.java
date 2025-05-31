@@ -14,7 +14,7 @@ public class MusicState extends PlayerState {
             return;
         }
 
-        ctx.setCurrentGain(ctx.getTargetGain());
+        ctx.setCurrentGain(ctx.getBaseTargetGain() * track.getVolumeMultiplier());
         ctx.openPlay(track);
     }
 
