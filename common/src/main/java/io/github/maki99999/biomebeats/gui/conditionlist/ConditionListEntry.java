@@ -17,23 +17,21 @@ import org.jetbrains.annotations.NotNull;
 import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawScrollingString;
 
 class ConditionListEntry extends UiElement {
-    private final ConditionList conditionList;
     private final Minecraft minecraft;
     private final ConditionViewModel vm;
-    private final ImageButton1 editButton;
+    private final ImageButton editButton;
     private final Component tooltipText;
 
     public ConditionListEntry(ConditionList conditionList, Minecraft minecraft, Rect bounds, Condition condition) {
         super(Component.literal(condition.getName()), bounds);
-        this.conditionList = conditionList;
         this.minecraft = minecraft;
         vm = new ConditionViewModel(condition,
                 !Constants.CONDITION_MUSIC_MANAGER.getMusicTracksForCondition(condition.getId()).isEmpty());
 
         if (condition instanceof CombinedCondition combinedCondition) {
-            editButton = addChild(new LayeredImageButton1(Component.translatable("menu.biomebeats.edit"),
-                    Component.translatable("menu.biomebeats.edit"), getWidth() - BaseTextureUv.EDIT_UV.w(), 0,
-                    BaseTextureUv.EDIT_UV, (click) -> conditionList.onEditPress.onEditPress(combinedCondition)));
+            editButton = addChild(new LayeredImageButton(Component.translatable("menu.biomebeats.edit"),
+                                                         Component.translatable("menu.biomebeats.edit"), getWidth() - BaseTextureUv.EDIT_UV.w(), 0,
+                                                         BaseTextureUv.EDIT_UV, (click) -> conditionList.onEditPress.onEditPress(combinedCondition)));
             tooltipText = Component.literal(combinedCondition.getDescription());
         } else {
             editButton = null;
@@ -59,7 +57,7 @@ class ConditionListEntry extends UiElement {
         drawIndicator(guiGraphics);
 
         drawScrollingString(guiGraphics, minecraft.font, getName(), getTextRect(),
-                0, BiomeBeatsColor.WHITE.getHex());
+                            BiomeBeatsColor.WHITE.getHex());
     }
 
     private @NotNull Rect getTextRect() {

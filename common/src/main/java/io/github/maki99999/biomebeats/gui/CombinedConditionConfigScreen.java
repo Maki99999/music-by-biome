@@ -122,19 +122,19 @@ public class CombinedConditionConfigScreen extends UiElement {
         conditionSearchBox.setResponder(this::onConditionSearchUpdate);
 
         if (oldCondition != null) {
-            addChild(new TextButton1(Component.translatable("menu.biomebeats.delete"),
-                                     null,
-                                     new Rect(innerBounds.x1(), innerBounds.y2() - ELEMENT_HEIGHT, 50, ELEMENT_HEIGHT),
-                                     (btn) -> deleteAndClose()));
+            addChild(new TextButton(Component.translatable("menu.biomebeats.delete"),
+                                    null,
+                                    new Rect(innerBounds.x1(), innerBounds.y2() - ELEMENT_HEIGHT, 50, ELEMENT_HEIGHT),
+                                    (btn) -> deleteAndClose()));
         }
 
-        addChild(new TextButton1(Component.translatable("menu.biomebeats.confirm"),
-                                 null,
-                                 new Rect(innerBounds.x2() - 100,
+        addChild(new TextButton(Component.translatable("menu.biomebeats.confirm"),
+                                null,
+                                new Rect(innerBounds.x2() - 100,
                                           innerBounds.y2() - ELEMENT_HEIGHT,
                                           100,
                                           ELEMENT_HEIGHT),
-                                 (btn) -> saveAndClose()));
+                                (btn) -> saveAndClose()));
 
         conditionList = addChild(
                 new ConditionCheckboxList(
@@ -182,7 +182,6 @@ public class CombinedConditionConfigScreen extends UiElement {
                             getMinecraft().font,
                             Component.translatable("menu.biomebeats.name"),
                             new Rect(innerBounds.x(), innerBounds.y(), 80, ELEMENT_HEIGHT),
-                            0,
                             BiomeBeatsColor.WHITE.getHex());
         drawScrollingString(guiGraphics,
                             getMinecraft().font,
@@ -191,7 +190,6 @@ public class CombinedConditionConfigScreen extends UiElement {
                                      innerBounds.y() + ELEMENT_HEIGHT + ELEMENT_SPACING,
                                      80,
                                      ELEMENT_HEIGHT),
-                            0,
                             BiomeBeatsColor.WHITE.getHex());
     }
 }

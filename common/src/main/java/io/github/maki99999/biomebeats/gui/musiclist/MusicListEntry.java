@@ -19,9 +19,9 @@ import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawScrollingStr
 class MusicListEntry extends UiElement implements PreviewListener {
     private final MusicListEntryGroup musicListEntryGroup;
     private final MusicTrack musicTrack;
-    private final TwoStateImageButton1 previewButton;
-    private final ImageButton1 editButton;
-    private final TwoStateImageButton1 checkbox;
+    private final TwoStateImageButton previewButton;
+    private final ImageButton editButton;
+    private final TwoStateImageButton checkbox;
     private final EditBoxWrapper volumeModifierEditBox;
 
     private boolean editing = false;
@@ -39,20 +39,20 @@ class MusicListEntry extends UiElement implements PreviewListener {
         volumeModifierEditBox.setVisible(false);
         volumeModifierEditBox.setValue("" + musicTrack.getVolumeMultiplier());
 
-        checkbox = addChild(new TwoStateImageButton1(Component.literal("Checkbox"), null, 0, 0,
-                new LayeredImageButton1(Component.literal("Checkbox"), null, 0, 0,
-                        BaseTextureUv.CHECKBOX_CHECKED_UV, null),
-                new LayeredImageButton1(Component.literal("Checkbox"), null, 0, 0,
-                        BaseTextureUv.BUTTON_BASE_INVERTED_UV, null),
-                (c, newValue)
+        checkbox = addChild(new TwoStateImageButton(Component.literal("Checkbox"), null, 0, 0,
+                                                    new LayeredImageButton(Component.literal("Checkbox"), null, 0, 0,
+                                                                           BaseTextureUv.CHECKBOX_CHECKED_UV, null),
+                                                    new LayeredImageButton(Component.literal("Checkbox"), null, 0, 0,
+                                                                           BaseTextureUv.BUTTON_BASE_INVERTED_UV, null),
+                                                    (c, newValue)
                         -> musicListEntryGroup.musicList.onMusicTrackToggle.onMusicTrackToggle(musicTrack, newValue), false));
 
-        previewButton = addChild(new TwoStateImageButton1(Component.literal("Play / Stop"), null,
+        previewButton = addChild(new TwoStateImageButton(Component.literal("Play / Stop"), null,
                 getWidth() - BaseTextureUv.PLAY_UV.w(), 0,
-                new LayeredImageButton1(Component.translatable("menu.biomebeats.stop"), Component.translatable("menu.biomebeats.stop"), getWidth() - BaseTextureUv.PLAY_UV.w(), 0,
-                        BaseTextureUv.STOP_UV, null),
-                new LayeredImageButton1(Component.translatable("menu.biomebeats.play"), Component.translatable("menu.biomebeats.play"), getWidth() - BaseTextureUv.PLAY_UV.w(), 0,
-                        BaseTextureUv.PLAY_UV, null), (btn, newValue) -> {
+                                                         new LayeredImageButton(Component.translatable("menu.biomebeats.stop"), Component.translatable("menu.biomebeats.stop"), getWidth() - BaseTextureUv.PLAY_UV.w(), 0,
+                                                                                BaseTextureUv.STOP_UV, null),
+                                                         new LayeredImageButton(Component.translatable("menu.biomebeats.play"), Component.translatable("menu.biomebeats.play"), getWidth() - BaseTextureUv.PLAY_UV.w(), 0,
+                                                                                BaseTextureUv.PLAY_UV, null), (btn, newValue) -> {
             if (newValue) {
                 Constants.MUSIC_MANAGER.playPreviewTrack(musicTrack);
             } else {
@@ -60,9 +60,9 @@ class MusicListEntry extends UiElement implements PreviewListener {
             }
 
         }, false));
-        editButton = addChild(new LayeredImageButton1(Component.translatable("menu.biomebeats.edit"), Component.translatable("menu.biomebeats.edit"),
+        editButton = addChild(new LayeredImageButton(Component.translatable("menu.biomebeats.edit"), Component.translatable("menu.biomebeats.edit"),
                 getWidth() - previewButton.getWidth() - BaseTextureUv.EDIT_UV.w(), 0,
-                BaseTextureUv.EDIT_UV, btn -> onEdit()));
+                                                     BaseTextureUv.EDIT_UV, btn -> onEdit()));
 
         Constants.MUSIC_MANAGER.addPreviewListener(this);
     }
@@ -112,7 +112,7 @@ class MusicListEntry extends UiElement implements PreviewListener {
                 BiomeBeatsColor.LIGHT_GREY.getHex());
 
         drawScrollingString(guiGraphics, getMinecraft().font, getName(), getTextRect(),
-                0, BiomeBeatsColor.WHITE.getHex());
+                            BiomeBeatsColor.WHITE.getHex());
 
         if (isEditing()) {
             renderAddon(guiGraphics);
@@ -128,9 +128,11 @@ class MusicListEntry extends UiElement implements PreviewListener {
         guiGraphics.fill(getX(), getY() + MusicListEntryGroup.CHILDREN_HEIGHT, getX() + getWidth(), getY() + getHeight(), BiomeBeatsColor.LIGHT_GREY.getHex());
 
         Rect symbolBounds = Rect.fromCoordinates(getX(), getY() + MusicListEntryGroup.CHILDREN_HEIGHT, getX() + getMinecraft().font.width("└"), getY() + getHeight());
-        drawScrollingString(guiGraphics, getMinecraft().font, Component.literal("└"), symbolBounds, 0, BiomeBeatsColor.WHITE.getHex());
+        drawScrollingString(guiGraphics, getMinecraft().font, Component.literal("└"), symbolBounds,
+                            BiomeBeatsColor.WHITE.getHex());
         Rect textRect = Rect.fromCoordinates(symbolBounds.x2() + 1, getY() + MusicListEntryGroup.CHILDREN_HEIGHT, volumeModifierEditBox.getX() - 2, getY() + getHeight());
-        drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.volume_multiplier"), textRect, 0, BiomeBeatsColor.WHITE.getHex());
+        drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.volume_multiplier"), textRect,
+                            BiomeBeatsColor.WHITE.getHex());
     }
 
     public MusicTrack getMusicTrack() {

@@ -37,15 +37,15 @@ public class GeneralConfigScreen extends UiElement {
         topGrid = new GridLayout(mainAreaBounds, 2, 2, SPACING);
         dangerGrid = new GridLayout(dangerBounds, 2, 2, SPACING);
 
-        addChild(new TextButton1(Component.translatable("menu.biomebeats.reset-to-default"),
-                Component.translatable("menu.biomebeats.reset-to-default-tooltip"),
-                dangerGrid.getCell(0, 1),
-                this::onResetToDefault));
+        addChild(new TextButton(Component.translatable("menu.biomebeats.reset-to-default"),
+                                Component.translatable("menu.biomebeats.reset-to-default-tooltip"),
+                                dangerGrid.getCell(0, 1),
+                                this::onResetToDefault));
 
-        addChild(new TextButton1(Component.translatable("menu.biomebeats.clear-config"),
-                Component.translatable("menu.biomebeats.clear-config-tooltip"),
-                dangerGrid.getCell(1, 1),
-                this::onClearConfig));
+        addChild(new TextButton(Component.translatable("menu.biomebeats.clear-config"),
+                                Component.translatable("menu.biomebeats.clear-config-tooltip"),
+                                dangerGrid.getCell(1, 1),
+                                this::onClearConfig));
 
         Rect fadeTimeEditBoxBounds = topGrid.getCell(0, 1);
         fadeTimeEditBox = addChild(new EditBoxWrapper(Component.literal("1 s"), fadeTimeEditBoxBounds));
@@ -71,20 +71,20 @@ public class GeneralConfigScreen extends UiElement {
 
         if (getMinecraft() != null) {
             drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.fade-time"),
-                    topGrid.getCell(0, 0), 0, BiomeBeatsColor.WHITE.getHex());
+                                topGrid.getCell(0, 0), BiomeBeatsColor.WHITE.getHex());
             drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.break-time"),
-                    topGrid.getCell(1, 0), 0, BiomeBeatsColor.WHITE.getHex());
+                                topGrid.getCell(1, 0), BiomeBeatsColor.WHITE.getHex());
             drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.configs"),
-                    dangerGrid.getCell(0, 0), 0, BiomeBeatsColor.WHITE.getHex());
+                                dangerGrid.getCell(0, 0), BiomeBeatsColor.WHITE.getHex());
         }
     }
 
-    private void onResetToDefault(Button1 button) {
+    private void onResetToDefault(Button button) {
         Constants.CONFIG_IO.resetConfig();
         loadSettings();
     }
 
-    private void onClearConfig(Button1 button) {
+    private void onClearConfig(Button button) {
         Constants.CONFIG_IO.clearConfig();
         loadSettings();
     }

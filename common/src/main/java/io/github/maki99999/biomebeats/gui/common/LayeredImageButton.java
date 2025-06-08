@@ -1,33 +1,26 @@
 package io.github.maki99999.biomebeats.gui.common;
 
 import io.github.maki99999.biomebeats.gui.BaseTextureUv;
+import io.github.maki99999.biomebeats.gui.util.Point;
 import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawRect;
 
-//TODO completely replace with other class
 public class LayeredImageButton extends ImageButton {
-    public LayeredImageButton(int x, int y, Rect uv, OnPress onPress, Tooltip tooltip) {
-        super(x, y, uv, onPress, tooltip);
+    public LayeredImageButton(Component name, Component tooltip, int x, int y, Rect uv, OnPress onPress) {
+        super(name, tooltip, x, y, uv, onPress);
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int mouseYScissorOffset) {
-        if (!isActive()) return;
-
-        Rect renderingUv;
-        if (isActive()) {
-            renderingUv = isHovering(guiGraphics, mouseX, mouseY, mouseYScissorOffset)
-                    ? BaseTextureUv.BUTTON_BASE_FOCUSED_UV
-                    : BaseTextureUv.BUTTON_BASE_UV;
-        } else {
-            renderingUv = BaseTextureUv.BUTTON_BASE_DISABLED_UV;
-        }
+    public void render(@NotNull GuiGraphics guiGraphics, Point mousePos, float deltaTime) {
+        Rect renderingUv = isMouseOver(mousePos)
+                ? BaseTextureUv.BUTTON_BASE_FOCUSED_UV
+                : BaseTextureUv.BUTTON_BASE_UV;
 
         drawRect(BaseTextureUv.RL, guiGraphics, new Rect(getX(), getY(), getUv().w(), getUv().h()), renderingUv);
-        super.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
+        super.render(guiGraphics, mousePos, deltaTime);
     }
 }

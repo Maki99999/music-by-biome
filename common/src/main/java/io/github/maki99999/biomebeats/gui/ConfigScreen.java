@@ -12,7 +12,6 @@ import io.github.maki99999.biomebeats.gui.common.*;
 import io.github.maki99999.biomebeats.gui.conditionlist.ConditionList;
 import io.github.maki99999.biomebeats.gui.musiclist.MusicList;
 import io.github.maki99999.biomebeats.gui.util.Point;
-import io.github.maki99999.biomebeats.gui.util.PointD;
 import io.github.maki99999.biomebeats.music.MusicGroup;
 import io.github.maki99999.biomebeats.music.MusicTrack;
 import io.github.maki99999.biomebeats.service.Services;
@@ -20,7 +19,6 @@ import io.github.maki99999.biomebeats.gui.util.BiomeBeatsColor;
 import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -49,10 +47,6 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
     private EditBoxWrapper conditionSearchBox;
     private EditBoxWrapper musicSearchBox;
     private EditBoxWrapper priorityField;
-    private LayeredImageButton folderButton;
-    private LayeredImageButton reloadButton;
-    private LayeredImageButton settingsButton;
-    private LayeredImageButton helpButton;
     private Rect bounds;
     private Rect boundsL;
     private Rect boundsR;
@@ -116,14 +110,30 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
         musicSearchBox.setHint(Component.translatable("menu.biomebeats.search.music"));
         musicSearchBox.setResponder(this::onMusicSearchUpdate);
 
-        folderButton = new LayeredImageButton(addonBounds.x() + 4, addonBounds.y() + 4, BaseTextureUv.FOLDER_UV,
-                this::onFolderPress, Tooltip.create(Component.translatable("menu.biomebeats.open_music_folder")));
-        reloadButton = new LayeredImageButton(addonBounds.x() + 4, addonBounds.y() + 22, BaseTextureUv.RELOAD_UV,
-                this::onReloadPress, Tooltip.create(Component.translatable("menu.biomebeats.reload")));
-        settingsButton = new LayeredImageButton(addonBounds.x() + 4, addonBounds.y() + 40, BaseTextureUv.SETTINGS_UV,
-                this::onSettingsPress, Tooltip.create(Component.translatable("menu.biomebeats.settings")));
-        helpButton = new LayeredImageButton(addonBounds.x() + 4, addonBounds.y() + 58, BaseTextureUv.HELP_UV,
-                this::onHelpPress, Tooltip.create(Component.translatable("menu.biomebeats.help")));
+        addChild(new LayeredImageButton(Component.translatable("menu.biomebeats.open_music_folder"),
+                                        Component.translatable("menu.biomebeats.open_music_folder"),
+                                         addonBounds.x() + 4,
+                                         addonBounds.y() + 4,
+                                        BaseTextureUv.FOLDER_UV,
+                                        this::onFolderPress));
+        addChild(new LayeredImageButton(Component.translatable("menu.biomebeats.reload"),
+                                        Component.translatable("menu.biomebeats.reload"),
+                                         addonBounds.x() + 4,
+                                         addonBounds.y() + 22,
+                                        BaseTextureUv.RELOAD_UV,
+                                        this::onReloadPress));
+        addChild(new LayeredImageButton(Component.translatable("menu.biomebeats.settings"),
+                                        Component.translatable("menu.biomebeats.settings"),
+                                         addonBounds.x() + 4,
+                                         addonBounds.y() + 40,
+                                        BaseTextureUv.SETTINGS_UV,
+                                        this::onSettingsPress));
+        addChild(new LayeredImageButton(Component.translatable("menu.biomebeats.help"),
+                                        Component.translatable("menu.biomebeats.help"),
+                                         addonBounds.x() + 4,
+                                         addonBounds.y() + 58,
+                                        BaseTextureUv.HELP_UV,
+                                        this::onHelpPress));
 
         musicList = addChild(new MusicList(
                 new Rect(boundsR.x(), boundsR.y() + ELEMENT_HEIGHT * 2 + ELEMENT_SPACING,
@@ -139,10 +149,13 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
         addTab(TabType.COMBINED, Component.translatable("menu.biomebeats.combined"), bounds.x() - 57, bounds.y() + 70);
 
         // Combined Condition
-        addCombinedConditionBtn = new LayeredImageButton(boundsL.x2() - BaseTextureUv.PLUS_UV.w() - 2,
-                boundsL.y2() - BaseTextureUv.PLUS_UV.h() - 2, BaseTextureUv.PLUS_UV,
-                (btn) -> openCombinedConditionScreen(null),
-                Tooltip.create(Component.translatable("menu.biomebeats.add")));
+        addCombinedConditionBtn = addChild(new LayeredImageButton(Component.translatable("menu.biomebeats.add"),
+                                                                  Component.translatable("menu.biomebeats.add"),
+                                                                   boundsL.x2() - BaseTextureUv.PLUS_UV.w() - 2,
+                                                                   boundsL.y2() - BaseTextureUv.PLUS_UV.h() - 2,
+                                                                  BaseTextureUv.PLUS_UV,
+                                                                  (btn) -> openCombinedConditionScreen(null)));
+        addCombinedConditionBtn.setVisible(false);
 
         if (currentCondition == null) {
             setRightColumnVisibility(false);
@@ -251,10 +264,12 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
             return;
         }
 
-        var tab = new TwoStateImageButton(x, y,
-                new ImageButton(x, y, BaseTextureUv.TAB_LEFT_ACTIVE_UV, null, null),
-                new ImageButton(x, y, BaseTextureUv.TAB_LEFT_INACTIVE_UV, null, null),
-                this::onTabSelected, null, text);
+        TwoStateImageButton tab = addChild(new TwoStateImageButton(
+                text, null, x, y,
+                new ImageButton(null, null, x, y, BaseTextureUv.TAB_LEFT_ACTIVE_UV, null),
+                new ImageButton(null, null, x, y, BaseTextureUv.TAB_LEFT_INACTIVE_UV, null),
+                this::onTabSelected, true
+        ));
         tabs.put(tab, tabType);
         tab.setState(currentTab == tabType);
     }
@@ -270,6 +285,7 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
         }
 
         currentTab = tabs.get(tab);
+        addCombinedConditionBtn.setVisible(currentTab == TabType.COMBINED);
         updateCurrentConditions("");
         currentCondition = null;
         conditionSearchBox.setValue("");
@@ -277,23 +293,6 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
                 ? boundsL.h() - 2 * ELEMENT_HEIGHT - ELEMENT_SPACING
                 : boundsL.h() - ELEMENT_HEIGHT);
         setRightColumnVisibility(false);
-    }
-
-    @Override
-    public boolean mouseClicked(PointD mousePos, int button) {
-        if (currentTab == TabType.COMBINED && addCombinedConditionBtn.mouseClicked(mousePos.x(), mousePos.y(), button)) {
-            return true;
-        }
-
-        boolean pressedTab = false;
-        for (TwoStateImageButton tab : tabs.keySet()) {
-            pressedTab = pressedTab || tab.mouseClicked(mousePos.x(), mousePos.y(), button);
-        }
-        pressedTab = pressedTab || folderButton.mouseClicked(mousePos.x(), mousePos.y(), button);
-        pressedTab = pressedTab || reloadButton.mouseClicked(mousePos.x(), mousePos.y(), button);
-        pressedTab = pressedTab || settingsButton.mouseClicked(mousePos.x(), mousePos.y(), button);
-        pressedTab = pressedTab || helpButton.mouseClicked(mousePos.x(), mousePos.y(), button);
-        return pressedTab;
     }
 
     @Override
@@ -317,24 +316,12 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
                 addonBounds.x2() + 2, addonBounds.y2()), BaseTextureUv.CONTAINER_UV_B);
         drawRect(BaseTextureUv.RL, guiGraphics, Rect.fromCoordinates(addonBounds.x() + 4, addonBounds.y() + 3,
                 addonBounds.x2() + 2, addonBounds.y2() - 4), BaseTextureUv.CONTAINER_UV_C);
-        folderButton.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
-        reloadButton.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
-        settingsButton.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
-        helpButton.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
 
         // Right column
         if (getMinecraft() != null && priorityField.isVisible())
             drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.priority"),
-                    new Rect(boundsR.x() + ELEMENT_SPACING, boundsR.y(), boundsR.w() / 2, ELEMENT_HEIGHT), 0,
-                    BiomeBeatsColor.WHITE.getHex());
-        for (TwoStateImageButton tab : tabs.keySet()) {
-            tab.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
-        }
-
-        // Combined Conditions
-        if (currentTab == TabType.COMBINED) {
-            addCombinedConditionBtn.render(guiGraphics, mousePos.x(), mousePos.y(), 0);
-        }
+                    new Rect(boundsR.x() + ELEMENT_SPACING, boundsR.y(), boundsR.w() / 2, ELEMENT_HEIGHT),
+                                BiomeBeatsColor.WHITE.getHex());
     }
 
     @Override

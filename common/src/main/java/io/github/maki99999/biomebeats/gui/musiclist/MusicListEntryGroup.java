@@ -26,13 +26,14 @@ class MusicListEntryGroup extends TypedUiContainer<MusicListEntry> {
         super(message, new Rect(x, y, w, 0));
         this.musicList = musicList;
         this.musicGroup = musicGroup;
-        TwoStateImageButton1 collapseButton = addChild(new TwoStateImageButton1(Component.translatable("menu.biomebeats.expand_collapse"), Component.translatable("menu.biomebeats.expand_collapse"), w - 24, 1,
-                new ImageButton1(Component.translatable("menu.biomebeats.expand_collapse"), null,
+        TwoStateImageButton
+                collapseButton = addChild(new TwoStateImageButton(Component.translatable("menu.biomebeats.expand_collapse"), Component.translatable("menu.biomebeats.expand_collapse"), w - 24, 1,
+                                                                  new ImageButton(Component.translatable("menu.biomebeats.expand_collapse"), null,
                         w - 24, 1, BaseTextureUv.ACCORDION_OPEN_UV, null),
-                new ImageButton1(Component.translatable("menu.biomebeats.expand_collapse"), null,
+                                                                  new ImageButton(Component.translatable("menu.biomebeats.expand_collapse"), null,
                         w - 24, 1, BaseTextureUv.ACCORDION_CLOSE_UV, null),
-                (btn, newValue) -> musicList.onGroupToggle.onGroupToggle(musicGroup.getName(), newValue),
-                false
+                                                                  (btn, newValue) -> musicList.onGroupToggle.onGroupToggle(musicGroup.getName(), newValue),
+                                                                  false
         ));
         collapseButton.setState(isCollapsed);
 
@@ -56,7 +57,7 @@ class MusicListEntryGroup extends TypedUiContainer<MusicListEntry> {
     protected void render(@NotNull GuiGraphics guiGraphics, Point mousePos, float partialTicks) {
         drawScrollingString(guiGraphics, getMinecraft().font, Component.literal(musicGroup.getName()),
                 new Rect(getX() + 16, getY() + 4, getWidth() - 48, 8),
-                0, BiomeBeatsColor.WHITE.getHex());
+                            BiomeBeatsColor.WHITE.getHex());
     }
 
     @Override

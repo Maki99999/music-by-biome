@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawScrollingString;
 
 class ConditionCheckboxListEntry extends UiElement {
-    private final TwoStateImageButton1 checkbox;
+    private final TwoStateImageButton checkbox;
     @NotNull
     private final Condition condition;
 
@@ -21,26 +21,26 @@ class ConditionCheckboxListEntry extends UiElement {
         super(Component.literal(condition.getName()), bounds);
         this.condition = condition;
 
-        checkbox = addChild(new TwoStateImageButton1(Component.literal("Checkbox"),
-                                          null,
-                                          0,
-                                          0,
-                                          new LayeredImageButton1(Component.literal("Checkbox"),
-                                                                  null,
-                                                                  0,
-                                                                  0,
-                                                                  BaseTextureUv.CHECKBOX_CHECKED_UV,
-                                                                  null),
-                                          new LayeredImageButton1(Component.literal("Checkbox"),
-                                                                  null,
-                                                                  0,
-                                                                  0,
-                                                                  BaseTextureUv.BUTTON_BASE_INVERTED_UV,
-                                                                  null),
-                                          (c, newValue) -> entryGroup.conditionCheckboxList.onConditionToggle.onConditionToggle(
+        checkbox = addChild(new TwoStateImageButton(Component.literal("Checkbox"),
+                                                    null,
+                                                    0,
+                                                    0,
+                                                    new LayeredImageButton(Component.literal("Checkbox"),
+                                                                           null,
+                                                                           0,
+                                                                           0,
+                                                                           BaseTextureUv.CHECKBOX_CHECKED_UV,
+                                                                           null),
+                                                    new LayeredImageButton(Component.literal("Checkbox"),
+                                                                           null,
+                                                                           0,
+                                                                           0,
+                                                                           BaseTextureUv.BUTTON_BASE_INVERTED_UV,
+                                                                           null),
+                                                    (c, newValue) -> entryGroup.conditionCheckboxList.onConditionToggle.onConditionToggle(
                                                   condition,
                                                   newValue),
-                                          false));
+                                                    false));
 
     }
 
@@ -56,7 +56,6 @@ class ConditionCheckboxListEntry extends UiElement {
                             getMinecraft().font,
                             getName(),
                             getTextRect(),
-                            0,
                             BiomeBeatsColor.WHITE.getHex());
     }
 

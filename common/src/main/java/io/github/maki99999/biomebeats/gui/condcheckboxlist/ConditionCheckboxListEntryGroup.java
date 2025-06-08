@@ -31,26 +31,26 @@ class ConditionCheckboxListEntryGroup extends TypedUiContainer<ConditionCheckbox
                                            boolean isCollapsed) {
         super(message, new Rect(x, y, w, 0));
         this.conditionCheckboxList = conditionCheckboxList;
-        TwoStateImageButton1 collapseButton = addChild(
-                new TwoStateImageButton1(Component.translatable("menu.biomebeats.expand_collapse"),
-                                         Component.translatable("menu.biomebeats.expand_collapse"),
+        TwoStateImageButton collapseButton = addChild(
+                new TwoStateImageButton(Component.translatable("menu.biomebeats.expand_collapse"),
+                                        Component.translatable("menu.biomebeats.expand_collapse"),
                                          w - 24,
-                                         1,
-                                         new ImageButton1(Component.translatable("menu.biomebeats.expand_collapse"),
-                                                          null,
+                                        1,
+                                        new ImageButton(Component.translatable("menu.biomebeats.expand_collapse"),
+                                                        null,
                                                           w - 24,
-                                                          1,
-                                                          BaseTextureUv.ACCORDION_OPEN_UV,
-                                                          null),
-                                         new ImageButton1(Component.translatable("menu.biomebeats.expand_collapse"),
-                                                          null,
+                                                        1,
+                                                        BaseTextureUv.ACCORDION_OPEN_UV,
+                                                        null),
+                                        new ImageButton(Component.translatable("menu.biomebeats.expand_collapse"),
+                                                        null,
                                                           w - 24,
-                                                          1,
-                                                          BaseTextureUv.ACCORDION_CLOSE_UV,
-                                                          null),
-                                         (btn, newValue) -> conditionCheckboxList.onGroupToggle.onGroupToggle(typeName,
+                                                        1,
+                                                        BaseTextureUv.ACCORDION_CLOSE_UV,
+                                                        null),
+                                        (btn, newValue) -> conditionCheckboxList.onGroupToggle.onGroupToggle(typeName,
                                                                                                               newValue),
-                                         false));
+                                        false));
         collapseButton.setState(isCollapsed);
 
         for (Condition condition : conditions) {
@@ -75,7 +75,6 @@ class ConditionCheckboxListEntryGroup extends TypedUiContainer<ConditionCheckbox
                             getMinecraft().font,
                             getName(),
                             new Rect(getX() + 16, getY() + 4, getWidth() - 48, 8),
-                            0,
                             BiomeBeatsColor.WHITE.getHex());
     }
 

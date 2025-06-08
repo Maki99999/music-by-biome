@@ -1,45 +1,45 @@
 package io.github.maki99999.biomebeats.gui.common;
 
 import io.github.maki99999.biomebeats.gui.util.BiomeBeatsColor;
+import io.github.maki99999.biomebeats.gui.util.Point;
+import io.github.maki99999.biomebeats.gui.util.PointD;
 import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static io.github.maki99999.biomebeats.gui.util.DrawUtils.drawScrollingString;
 
-//TODO completely replace with other class
 public class TwoStateImageButton extends ImageButton {
     private final ImageButton positiveButton;
     private final ImageButton negativeButton;
     private final OnValueChange onValueChange;
-    private final Component text;
+    private final boolean nameVisible;
     private boolean state = false;
 
-    public TwoStateImageButton(int x, int y, ImageButton positiveButton, ImageButton negativeButton,
-                               OnValueChange onValueChange,
-                               @Nullable Tooltip tooltip, @Nullable Component text) {
-        super(x, y, positiveButton.getUv(), null, tooltip);
+    public TwoStateImageButton(Component name, Component tooltip, int x, int y, ImageButton positiveButton, ImageButton negativeButton,
+                               OnValueChange onValueChange, boolean nameVisible) {
+        super(name, tooltip, x, y, positiveButton.getUv(), null);
         this.positiveButton = positiveButton;
         this.negativeButton = negativeButton;
         this.onValueChange = onValueChange;
-        this.text = text;
+        this.nameVisible = nameVisible;
         this.setOnPress(this::onValueChange);
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int mouseYScissorOffset) {
-        if (state)
-            positiveButton.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
-        else
-            negativeButton.render(guiGraphics, mouseX, mouseY, mouseYScissorOffset);
+    public void render(@NotNull GuiGraphics guiGraphics, Point mousePos, float deltaTime) {
+        if (state) {
+            positiveButton.render(guiGraphics, mousePos, deltaTime);
+        } else {
+            negativeButton.render(guiGraphics, mousePos, deltaTime);
+        }
 
-        if (text != null)
-            drawScrollingString(guiGraphics, Minecraft.getInstance().font, text, new Rect(getX() + 8, getY(),
-                    getUv().w() - 12, getUv().h()), 0, BiomeBeatsColor.WHITE.getHex());
+        if (nameVisible) {
+            drawScrollingString(guiGraphics, Minecraft.getInstance().font, getName(), new Rect(getX() + 8, getY(),
+                    getUv().w() - 12, getUv().h()), BiomeBeatsColor.WHITE.getHex());
+        }
     }
 
     @Override
@@ -67,6 +67,32 @@ public class TwoStateImageButton extends ImageButton {
 
     public void toggle() {
         state = !state;
+    }
+
+    @Override
+    public void renderTooltips(GuiGraphics guiGraphics, Point mousePos, Point absolutePos) {
+        super.renderTooltips(guiGraphics, mousePos, absolutePos);
+
+        if (state) {
+            positiveButton.renderTooltips(guiGraphics, mousePos, absolutePos);
+        } else {
+            negativeButton.renderTooltips(guiGraphics, mousePos, absolutePos);
+        }
+    }
+
+    @Override
+    public boolean mouseClicked(PointD mousePos, int button) {
+        if (state) {
+            if (positiveButton.mouseClicked(mousePos, button)) {
+                return true;
+            }
+        } else {
+            if (negativeButton.mouseClicked(mousePos, button)) {
+                return true;
+            }
+        }
+
+        return super.mouseClicked(mousePos, button);
     }
 
     public interface OnValueChange {
