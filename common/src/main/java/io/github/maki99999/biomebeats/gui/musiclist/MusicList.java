@@ -60,8 +60,7 @@ public class MusicList extends ScrollContainer {
             entryGroup.renderAll(guiGraphics, mousePos, partialTicks);
             height += entryGroup.getHeight();
             if (i != entryGroups.size() - 1) {
-                guiGraphics.fill(getX(), getY() + height, getX() + getWidth(), getY() + height + 1,
-                        BiomeBeatsColor.BLACK.getHex());
+                guiGraphics.fill(0, height, getWidth(), height + 1, BiomeBeatsColor.BLACK.getHex());
                 height += 5;
             }
         }

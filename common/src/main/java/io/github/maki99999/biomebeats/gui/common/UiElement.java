@@ -310,7 +310,7 @@ public abstract class UiElement {
         this.x = x;
     }
 
-    protected int getY() {
+    public int getY() {
         return y;
     }
 

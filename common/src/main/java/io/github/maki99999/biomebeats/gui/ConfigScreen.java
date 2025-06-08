@@ -156,8 +156,17 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
     private void openCombinedConditionScreen(CombinedCondition combinedCondition) {
         if (getMinecraft() != null) {
             getMinecraft().setScreen(null);
-            getMinecraft().setScreen(new CombinedConditionConfigScreen(this, combinedCondition,
-                    conditions.values().stream().flatMap(Collection::stream).collect(Collectors.toList())));
+            getMinecraft().setScreen(
+                    new ForwardingScreen<>(
+                            new CombinedConditionConfigScreen(this,
+                                                              combinedCondition,
+                                                              conditions.values()
+                                                                        .stream()
+                                                                        .flatMap(Collection::stream)
+                                                                        .collect(Collectors.toList())
+                            )
+                    )
+            );
         }
     }
 
