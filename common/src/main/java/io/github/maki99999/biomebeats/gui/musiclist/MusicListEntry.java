@@ -23,16 +23,28 @@ class MusicListEntry extends UiElement implements PreviewListener {
     private final ImageButton editButton;
     private final TwoStateImageButton checkbox;
     private final EditBoxWrapper volumeModifierEditBox;
+    private final EditBoxWrapper customNameEditBox;
 
     private boolean editing = false;
+    private Component displayName;
 
     public MusicListEntry(MusicListEntryGroup musicListEntryGroup, MusicTrack musicTrack, Rect bounds) {
         super(Component.literal(musicTrack.getName()), bounds);
+        displayName = Component.literal(musicTrack.getDisplayName());
         this.musicListEntryGroup = musicListEntryGroup;
         this.musicTrack = musicTrack;
 
+        customNameEditBox = addChild(new EditBoxWrapper(Component.translatable("menu.biomebeats.custom_name"),
+                                                        new Rect(0, MusicListEntryGroup.CHILDREN_HEIGHT * 2, getWidth(), MusicListEntryGroup.CHILDREN_HEIGHT)));
+        customNameEditBox.setHint(Component.literal(musicTrack.getName()));
+        customNameEditBox.setResponder(this::onCustomNameChange);
+        customNameEditBox.setVisible(false);
+        if (musicTrack.getCustomName() != null) {
+            customNameEditBox.setValue(musicTrack.getCustomName());
+        }
+
         volumeModifierEditBox = addChild(new EditBoxWrapper(Component.translatable("menu.biomebeats.volume_multiplier"), new Rect(getWidth() - 60,
-                MusicListEntryGroup.CHILDREN_HEIGHT, 60, MusicListEntryGroup.CHILDREN_HEIGHT)));
+                MusicListEntryGroup.CHILDREN_HEIGHT * 3, 60, MusicListEntryGroup.CHILDREN_HEIGHT)));
         volumeModifierEditBox.setHint(Component.literal("0"));
         volumeModifierEditBox.setResponder(this::onVolumeModifierChange);
         volumeModifierEditBox.setFilter(s -> s.matches("^\\d{0,2}\\.?\\d{0,4}$"));
@@ -74,7 +86,8 @@ class MusicListEntry extends UiElement implements PreviewListener {
     public void setEditing(boolean editing) {
         this.editing = editing;
         volumeModifierEditBox.setVisible(editing);
-        setHeight(MusicListEntryGroup.CHILDREN_HEIGHT * (editing ? 2 : 1));
+        customNameEditBox.setVisible(editing);
+        setHeight(MusicListEntryGroup.CHILDREN_HEIGHT * (editing ? 4 : 1));
     }
 
     private void onVolumeModifierChange(String s) {
@@ -94,6 +107,11 @@ class MusicListEntry extends UiElement implements PreviewListener {
         EventBus.publish(new MusicTrackUpdateEvent(musicTrack));
     }
 
+    private void onCustomNameChange(String newName) {
+        musicTrack.setCustomName(newName);
+        displayName = Component.literal(musicTrack.getDisplayName());
+    }
+
     private void onEdit() {
         for (MusicListEntry sibling : musicListEntryGroup.getTypedChildren()) {
             sibling.setEditing(sibling == this && !isEditing());
@@ -111,7 +129,7 @@ class MusicListEntry extends UiElement implements PreviewListener {
         guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + MusicListEntryGroup.CHILDREN_HEIGHT,
                 BiomeBeatsColor.LIGHT_GREY.getHex());
 
-        drawScrollingString(guiGraphics, getMinecraft().font, getName(), getTextRect(),
+        drawScrollingString(guiGraphics, getMinecraft().font, displayName, getTextRect(),
                             BiomeBeatsColor.WHITE.getHex());
 
         if (isEditing()) {
@@ -127,12 +145,15 @@ class MusicListEntry extends UiElement implements PreviewListener {
     private void renderAddon(GuiGraphics guiGraphics) {
         guiGraphics.fill(getX(), getY() + MusicListEntryGroup.CHILDREN_HEIGHT, getX() + getWidth(), getY() + getHeight(), BiomeBeatsColor.LIGHT_GREY.getHex());
 
-        Rect symbolBounds = Rect.fromCoordinates(getX(), getY() + MusicListEntryGroup.CHILDREN_HEIGHT, getX() + getMinecraft().font.width("└"), getY() + getHeight());
-        drawScrollingString(guiGraphics, getMinecraft().font, Component.literal("└"), symbolBounds,
-                            BiomeBeatsColor.WHITE.getHex());
-        Rect textRect = Rect.fromCoordinates(symbolBounds.x2() + 1, getY() + MusicListEntryGroup.CHILDREN_HEIGHT, volumeModifierEditBox.getX() - 2, getY() + getHeight());
-        drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.volume_multiplier"), textRect,
-                            BiomeBeatsColor.WHITE.getHex());
+        Rect symbolBounds = new Rect(getX(), getY() + MusicListEntryGroup.CHILDREN_HEIGHT, getMinecraft().font.width("└ "), MusicListEntryGroup.CHILDREN_HEIGHT);
+        drawScrollingString(guiGraphics, getMinecraft().font, Component.literal("└"), symbolBounds, BiomeBeatsColor.WHITE.getHex());
+        Rect textRect = new Rect(symbolBounds.x2() + 1, symbolBounds.y(), getWidth(), MusicListEntryGroup.CHILDREN_HEIGHT);
+        drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.custom_name"), textRect, BiomeBeatsColor.WHITE.getHex());
+
+        symbolBounds = new Rect(symbolBounds.x(), symbolBounds.y2() + MusicListEntryGroup.CHILDREN_HEIGHT, symbolBounds.w(), symbolBounds.h());
+        drawScrollingString(guiGraphics, getMinecraft().font, Component.literal("└"), symbolBounds, BiomeBeatsColor.WHITE.getHex());
+        textRect = Rect.fromCoordinates(symbolBounds.x2() + 1, symbolBounds.y(), volumeModifierEditBox.getX() - 2, symbolBounds.y() + MusicListEntryGroup.CHILDREN_HEIGHT);
+        drawScrollingString(guiGraphics, getMinecraft().font, Component.translatable("menu.biomebeats.volume_multiplier"), textRect, BiomeBeatsColor.WHITE.getHex());
     }
 
     public MusicTrack getMusicTrack() {
@@ -162,6 +183,9 @@ class MusicListEntry extends UiElement implements PreviewListener {
         super.setWidth(width);
         previewButton.setX(getWidth() - BaseTextureUv.PLAY_UV.w());
         editButton.setX(getWidth() - previewButton.getWidth() - BaseTextureUv.EDIT_UV.w());
+
+        customNameEditBox.setWidth(getWidth());
+        volumeModifierEditBox.setX(getWidth() - 60);
     }
 
     @Override

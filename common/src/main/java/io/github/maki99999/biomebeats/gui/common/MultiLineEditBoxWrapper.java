@@ -11,8 +11,7 @@ public class MultiLineEditBoxWrapper extends UiElement {
     private final MultiLineEditBox editBox;
 
     public MultiLineEditBoxWrapper(Component name, Rect bounds) {
-        super(name);
-        setBounds(bounds);
+        super(name, bounds);
         this.editBox = new MultiLineEditBox(getMinecraft().font, bounds.x(), bounds.y(), bounds.w(), bounds.h(), name, name);
     }
 
@@ -76,5 +75,29 @@ public class MultiLineEditBoxWrapper extends UiElement {
 
     public void setCharacterLimit(int limit) {
         editBox.setCharacterLimit(limit);
+    }
+
+    @Override
+    protected void setWidth(int width) {
+        super.setWidth(width);
+        editBox.setWidth(width);
+    }
+
+    @Override
+    public void setHeight(int height) {
+        super.setHeight(height);
+        editBox.setHeight(height);
+    }
+
+    @Override
+    public void setX(int x) {
+        super.setX(x);
+        editBox.setX(x);
+    }
+
+    @Override
+    protected void setY(int y) {
+        super.setY(y);
+        editBox.setY(y);
     }
 }

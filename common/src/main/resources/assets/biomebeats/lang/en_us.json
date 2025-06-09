@@ -34,5 +34,6 @@
   "menu.biomebeats.configs": "Configurations:",
   "menu.biomebeats.fade-time": "Fade In and Out Time:",
   "menu.biomebeats.break-time": "Time Between Songs:",
-  "menu.biomebeats.volume_multiplier": "Volume Multiplier"
+  "menu.biomebeats.volume_multiplier": "Volume Multiplier",
+  "menu.biomebeats.custom_name": "Custom Name"
 }

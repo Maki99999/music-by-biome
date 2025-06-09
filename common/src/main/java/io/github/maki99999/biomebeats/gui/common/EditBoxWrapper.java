@@ -13,15 +13,18 @@ public class EditBoxWrapper extends UiElement {
     private final EditBox editBox;
 
     public EditBoxWrapper(Component name, Rect bounds) {
-        super(name);
-        setBounds(bounds);
+        super(name, bounds);
         this.editBox = new EditBox(getMinecraft().font, bounds.x(), bounds.y(), bounds.w(), bounds.h(), name);
         editBox.setBordered(true);
     }
 
     @Override
     protected void render(GuiGraphics guiGraphics, Point mousePos, float deltaTime) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.enableScissor(getX() + 1, getY() + 1, getX() + getWidth() - 2, getY() + getHeight() - 2);
         editBox.render(guiGraphics, mousePos.x(), mousePos.y(), deltaTime);
+        guiGraphics.disableScissor();
+        guiGraphics.pose().popPose();
     }
 
     @Override
@@ -87,5 +90,29 @@ public class EditBoxWrapper extends UiElement {
 
     public void setFilter(Predicate<String> filter) {
         editBox.setFilter(filter);
+    }
+
+    @Override
+    public void setWidth(int width) {
+        super.setWidth(width);
+        editBox.setWidth(width);
+    }
+
+    @Override
+    public void setHeight(int height) {
+        super.setHeight(height);
+        editBox.setHeight(height);
+    }
+
+    @Override
+    public void setX(int x) {
+        super.setX(x);
+        editBox.setX(x);
+    }
+
+    @Override
+    protected void setY(int y) {
+        super.setY(y);
+        editBox.setY(y);
     }
 }

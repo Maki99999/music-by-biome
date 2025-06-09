@@ -93,11 +93,17 @@ public class MusicList extends ScrollContainer {
         List<MusicGroup> sortedMusic = new ArrayList<>();
 
         for (MusicGroup musicGroup : sortedMusicGroups) {
-            sortedMusic.add(new MusicGroup(musicGroup.getName(), musicGroup.getMusicTracks().stream()
-                    .filter(m -> !collapsedMusicGroups.contains(musicGroup.getName()) && m.getName().toLowerCase().contains(filter))
-                    .sorted(Comparator.comparing((MusicTrack t) -> !checkedMusicTracks.contains(t))
-                            .thenComparing(MusicTrack::getName))
-                    .toList()));
+            sortedMusic.add(new MusicGroup(musicGroup.getName(),
+                                           musicGroup.getMusicTracks()
+                                                     .stream()
+                                                     .filter(m -> !collapsedMusicGroups.contains(musicGroup.getName())
+                                                                  && ((m.getCustomName() != null && m.getCustomName()
+                                                                                                     .toLowerCase()
+                                                                                                     .contains(filter))
+                                                                      || m.getName().toLowerCase().contains(filter)))
+                                                     .sorted(Comparator.comparing((MusicTrack t) -> !checkedMusicTracks.contains(
+                                                             t)).thenComparing(MusicTrack::getDisplayName))
+                                                     .toList()));
         }
 
         updateVisibleMusicTracks(sortedMusic, collapsedMusicGroups);
