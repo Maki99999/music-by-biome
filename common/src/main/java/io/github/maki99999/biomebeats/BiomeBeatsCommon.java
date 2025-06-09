@@ -1,6 +1,7 @@
 package io.github.maki99999.biomebeats;
 
 import io.github.maki99999.biomebeats.gui.DebugHud;
+import io.github.maki99999.biomebeats.gui.common.ForwardingScreen;
 import io.github.maki99999.biomebeats.util.MenuChangeListener;
 import io.github.maki99999.biomebeats.gui.ConfigScreen;
 import io.github.maki99999.biomebeats.service.Services;
@@ -70,7 +71,7 @@ public class BiomeBeatsCommon {
         Constants.BIOME_MANAGER.tick();
 
         while (Constants.CONFIG_KEY_MAPPING.consumeClick()) {
-            Minecraft.getInstance().setScreen(new ConfigScreen());
+            Minecraft.getInstance().setScreen(new ForwardingScreen<>(new ConfigScreen()));
         }
 
         while (Constants.OPEN_DEBUG_SCREEN_KEY_MAPPING.consumeClick()) {

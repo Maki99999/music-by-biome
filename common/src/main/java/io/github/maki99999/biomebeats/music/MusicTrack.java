@@ -17,6 +17,14 @@ public abstract class MusicTrack {
         return name;
     }
 
+    public String getDisplayName() {
+        if (customName == null || customName.isEmpty() || customName.isBlank()) {
+            return name;
+        } else {
+            return customName;
+        }
+    }
+
     public String getPathName() {
         return pathName;
     }

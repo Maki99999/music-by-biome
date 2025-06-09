@@ -1,4 +1,4 @@
-package io.github.maki99999.biomebeats.util;
+package io.github.maki99999.biomebeats.gui.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -118,13 +118,12 @@ public class DrawUtils {
                 BaseTextureUv.CONTAINER_INNER_UV);
     }
 
-    public static void drawScrollingString(GuiGraphics guiGraphics, Font font, Component text, Rect bounds,
-                                           int yScissorOffset, int color) {
-        drawScrollingString(guiGraphics, font, text, bounds, yScissorOffset, color, false);
+    public static void drawScrollingString(GuiGraphics guiGraphics, Font font, Component text, Rect bounds, int color) {
+        drawScrollingString(guiGraphics, font, text, bounds, color, false);
     }
 
-    public static void drawScrollingString(GuiGraphics guiGraphics, Font font, Component text, Rect bounds,
-                                           int yScissorOffset, int color, boolean centered) {
+    public static void drawScrollingString(GuiGraphics guiGraphics, Font font, Component text, Rect bounds, int color,
+                                           boolean centered) {
         int textWidth = font.width(text);
         int textPosY = (bounds.y1() + bounds.y2() - 9) / 2 + 1;
         int availableWidth = bounds.x2() - bounds.x1();
@@ -135,8 +134,7 @@ public class DrawUtils {
             double scrollFactor =
                     Math.sin((Math.PI / 2) * Math.cos((Math.PI * 2) * currentTime / scrollSpeed)) / 2.0 + 0.5;
             double scrollOffset = Mth.lerp(scrollFactor, 0.0, overflowWidth);
-            guiGraphics.enableScissor(bounds.x1(), bounds.y1() + yScissorOffset, bounds.x2() + 1,
-                    bounds.y2() + yScissorOffset);
+            guiGraphics.enableScissor(bounds.x1(), bounds.y1(), bounds.x2() + 1, bounds.y2());
             guiGraphics.drawString(font, text, bounds.x1() - (int) scrollOffset, textPosY, color);
             guiGraphics.disableScissor();
         } else if (centered) {

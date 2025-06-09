@@ -1,4 +1,4 @@
-package io.github.maki99999.biomebeats.util;
+package io.github.maki99999.biomebeats.gui.util;
 
 public final class GridLayout {
     private final int startX;
