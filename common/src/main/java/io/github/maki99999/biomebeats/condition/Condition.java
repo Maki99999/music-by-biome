@@ -11,6 +11,7 @@ public abstract class Condition {
     private String name;
     private int priority;
     private boolean met = false;
+    private boolean metInitialized = false;
 
     public Condition(String id, ConditionType type, String name) {
         this.id = id;
@@ -52,8 +53,9 @@ public abstract class Condition {
     }
 
     protected final void setConditionMet(boolean met) {
-        if (this.met != met) {
+        if (!metInitialized || this.met != met) {
             this.met = met;
+            metInitialized = true;
             EventBus.publish(new ConditionChangeEvent(this));
         }
     }
