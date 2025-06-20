@@ -2,7 +2,6 @@ package io.github.maki99999.biomebeats.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,10 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainConfig {
-    public static final String CURRENT_VERSION = "1";
+    public static final int CURRENT_VERSION = 2;
 
-    @NotNull
-    private String version = CURRENT_VERSION;
+    private int version = CURRENT_VERSION;
     @JsonIgnore
     private boolean newConfig = false;
     @JsonDeserialize(using = MusicTrackIdsByConditionIdDeserializer.class)
@@ -23,11 +21,11 @@ public class MainConfig {
     private Collection<CombinedConditionConfig> combinedConditionConfigs = new ArrayList<>();
     private GeneralConfig generalConfig = new GeneralConfig();
 
-    public @NotNull String getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(@NotNull String version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 
