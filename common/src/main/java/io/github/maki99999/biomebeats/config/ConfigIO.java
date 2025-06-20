@@ -81,6 +81,7 @@ public class ConfigIO {
             } catch (IOException e) {
                 Constants.LOG.error("Failed to load configuration from {}", configFilePath, e);
             }
+            ConfigMigrator.migrate(config);
         } else {
             Constants.LOG.warn("Configuration file {} does not exist", configFilePath);
         }
