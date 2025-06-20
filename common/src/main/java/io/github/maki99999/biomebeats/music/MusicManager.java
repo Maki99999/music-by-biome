@@ -64,7 +64,7 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
             public void statusUpdated(StreamPlayerEvent event) {
                 final Status status = event.getPlayerStatus();
                 Constants.LOG.debug("New preview music player status: {}", status.name());
-                if (status == Status.EOM || status == Status.STOPPED) {
+                if (status == Status.EOM) {
                     currentPreviewTrack = null;
                     previewListeners.forEach(listener -> listener.onPreviewChanged(null));
                 }

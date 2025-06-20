@@ -166,7 +166,7 @@ class MusicListEntry extends UiElement implements PreviewListener {
 
     @Override
     public void onPreviewChanged(MusicTrack previewTrack) {
-        previewButton.setState(previewTrack == musicTrack);
+        previewButton.setState(previewTrack != null && previewTrack.equals(musicTrack));
     }
 
     @Override
