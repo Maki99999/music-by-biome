@@ -158,7 +158,7 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
         addCombinedConditionBtn.setVisible(false);
 
         if (currentCondition == null) {
-            setRightColumnVisibility(false);
+            onTabChanged();
         } else {
             setRightColumnVisibility(true);
             updateCheckedMusicTracks();
@@ -233,8 +233,7 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
 
     private void onSettingsPress(Button button) {
         if (getMinecraft() != null) {
-            onCloseAll();
-            getMinecraft().setScreen(new ForwardingScreen<>(new GeneralConfigScreen()));
+            getMinecraft().setScreen(new ForwardingScreen<>(new GeneralConfigScreen(this)));
         }
     }
 
@@ -285,6 +284,10 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
         }
 
         currentTab = tabs.get(tab);
+        onTabChanged();
+    }
+
+    private void onTabChanged() {
         addCombinedConditionBtn.setVisible(currentTab == TabType.COMBINED);
         updateCurrentConditions("");
         currentCondition = null;
