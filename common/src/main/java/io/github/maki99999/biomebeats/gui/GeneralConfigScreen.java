@@ -11,6 +11,7 @@ import static io.github.maki99999.biomebeats.gui.util.DrawUtils.*;
 public class GeneralConfigScreen extends UiElement {
     private static final int ELEMENT_HEIGHT = 17;
     private static final int SPACING = 4;
+    private final ConfigScreen configScreen;
     private Rect bounds;
     private Rect dangerBounds;
     private EditBoxWrapper fadeTimeEditBox;
@@ -18,8 +19,9 @@ public class GeneralConfigScreen extends UiElement {
     private GridLayout topGrid;
     private GridLayout dangerGrid;
 
-    public GeneralConfigScreen() {
+    public GeneralConfigScreen(ConfigScreen configScreen) {
         super(Component.literal("BiomeBeats settings config screen"));
+        this.configScreen = configScreen;
     }
 
     @Override
@@ -96,10 +98,6 @@ public class GeneralConfigScreen extends UiElement {
 
     @Override
     public void onClose() {
-        if (getMinecraft() != null) {
-            getMinecraft().setScreen(new ForwardingScreen<>(new ConfigScreen()));
-        }
-
         try {
             Constants.CONFIG_IO.getGeneralConfig().setBreakTime(Integer.parseInt(breakTimeEditBox.getValue()));
         } catch (NumberFormatException e) {
@@ -111,5 +109,7 @@ public class GeneralConfigScreen extends UiElement {
         } catch (NumberFormatException e) {
             Constants.CONFIG_IO.getGeneralConfig().setDefaultFadeTime();
         }
+
+        configScreen.returnToThisScreen();
     }
 }

@@ -233,8 +233,7 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
 
     private void onSettingsPress(Button button) {
         if (getMinecraft() != null) {
-            onCloseAll();
-            getMinecraft().setScreen(new ForwardingScreen<>(new GeneralConfigScreen()));
+            getMinecraft().setScreen(new ForwardingScreen<>(new GeneralConfigScreen(this)));
         }
     }
 
