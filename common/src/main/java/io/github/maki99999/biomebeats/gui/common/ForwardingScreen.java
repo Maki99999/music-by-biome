@@ -81,7 +81,7 @@ public class ForwardingScreen<T extends UiElement> extends Screen implements Con
 
     @Override
     public void onClose() {
-        root.onCloseAll();
         super.onClose();
+        root.onCloseAll();
     }
 }
