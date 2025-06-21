@@ -158,7 +158,7 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
         addCombinedConditionBtn.setVisible(false);
 
         if (currentCondition == null) {
-            setRightColumnVisibility(false);
+            onTabChanged();
         } else {
             setRightColumnVisibility(true);
             updateCheckedMusicTracks();
@@ -285,6 +285,10 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
         }
 
         currentTab = tabs.get(tab);
+        onTabChanged();
+    }
+
+    private void onTabChanged() {
         addCombinedConditionBtn.setVisible(currentTab == TabType.COMBINED);
         updateCurrentConditions("");
         currentCondition = null;
