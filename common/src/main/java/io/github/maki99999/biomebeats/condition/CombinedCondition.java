@@ -44,21 +44,23 @@ public class CombinedCondition extends Condition {
         }
 
         if (condition.isConditionMet()) {
-            metConditionIds.add(condition.getId());
+            if (!metConditionIds.contains(condition.getId())) {
+                metConditionIds.add(condition.getId());
+            }
         } else {
             metConditionIds.remove(condition.getId());
         }
         updateConditionMet();
     }
 
-    public boolean isEmpty() {
-        return conditionIds.isEmpty()
-                && (getName() == null || getName().isEmpty())
-                && (description == null || description.isEmpty());
-    }
-
     private void updateConditionMet() {
-        setConditionMet(!conditionIds.isEmpty() && metConditionIds.size() == conditionIds.size());
+        if (metConditionIds.size() > conditionIds.size()) {
+            Constants.LOG.error("Invalid state: {} conditions met, but only {} possible.",
+                                metConditionIds.size(),
+                                conditionIds.size());
+        }
+
+        setConditionMet(!conditionIds.isEmpty() && metConditionIds.size() >= conditionIds.size());
     }
 
     public void dispose() {
