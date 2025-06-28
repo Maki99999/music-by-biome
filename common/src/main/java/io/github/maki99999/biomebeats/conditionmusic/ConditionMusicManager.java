@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.Musics;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -167,11 +167,11 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
                 Biome biome = biomeRegistry.getValue(biomeRl);
                 if (biome == null) continue;
 
-                Optional<SimpleWeightedRandomList<Music>> biomeBgms = biome.getBackgroundMusic();
+                Optional<WeightedList<Music>> biomeBgms = biome.getBackgroundMusic();
                 if (biomeBgms.isEmpty()) continue;
 
                 for (var biomeBgm : biomeBgms.get().unwrap()) {
-                    addMusicToCondition(musicTracks, biomeBgm.data(), condition.getId());
+                    addMusicToCondition(musicTracks, biomeBgm.value(), condition.getId());
                 }
             }
         } catch (IOException e) {
