@@ -29,7 +29,7 @@ public class BiomeBeats {
         }
     }
 
-    @EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(value = Dist.CLIENT)
     static class ModClientEvents {
         @SubscribeEvent
         public static void eventRegisterKeyMappingsEvent(RegisterKeyMappingsEvent event) {
