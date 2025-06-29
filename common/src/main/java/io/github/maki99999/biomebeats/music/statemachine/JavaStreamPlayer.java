@@ -122,8 +122,7 @@ public class JavaStreamPlayer {
         state.close();
         stopAndResetGain();
         player.reset();
-        Executors.newSingleThreadExecutor().close();
-        mainExecutor.close();
+        mainExecutor.shutdownNow();
     }
 
     public void addStreamPlayerListener(StreamPlayerListener listener) {

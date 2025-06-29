@@ -46,8 +46,8 @@ public class ForwardingScreen<T extends UiElement> extends Screen implements Con
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        return root.mouseScrolledAll(new PointD(mouseX, mouseY), scrollX, scrollY);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
+        return root.mouseScrolledAll(new PointD(mouseX, mouseY), 0, scrollY);
     }
 
     @Override

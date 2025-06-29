@@ -242,7 +242,7 @@ public class ConfigScreen extends UiElement implements ConfigChangeListener {
     }
 
     private void onFolderPress(Button imageButton) {
-        Util.getPlatform().openPath(Services.PLATFORM.getModConfigFolder().resolve(Constants.MUSIC_FOLDER));
+        Util.getPlatform().openUri(Services.PLATFORM.getModConfigFolder().resolve(Constants.MUSIC_FOLDER).toUri());
     }
 
     private void initData() {

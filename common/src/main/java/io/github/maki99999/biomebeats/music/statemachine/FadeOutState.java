@@ -47,11 +47,14 @@ public class FadeOutState extends PlayerState {
     }
 
     void processQueue() {
-        switch (queue) {
-            case PlaybackIntent.Stop ignored -> ctx.setStateIdle();
-            case PlaybackIntent.Pause ignored -> ctx.setStatePause();
-            case PlaybackIntent.PauseWithSong(MusicTrack song) -> ctx.setStatePause(song);
-            case PlaybackIntent.Play(MusicTrack song) -> ctx.setStateFadeIn(song);
+        if (queue instanceof PlaybackIntent.Stop) {
+            ctx.setStateIdle();
+        } else if (queue instanceof PlaybackIntent.Pause) {
+            ctx.setStatePause();
+        } else if (queue instanceof PlaybackIntent.PauseWithSong intent) {
+            ctx.setStatePause(intent.song());
+        } else if (queue instanceof PlaybackIntent.Play intent) {
+            ctx.setStateFadeIn(intent.song());
         }
     }
 
@@ -88,6 +91,6 @@ public class FadeOutState extends PlayerState {
     @Override
     public void close() {
         fadeTask.cancel(true);
-        executorService.close();
+        executorService.shutdownNow();
     }
 }

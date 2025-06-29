@@ -232,10 +232,10 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
 
     private void addRecentMusicTrack(MusicTrack musicTrack) {
         recentMusicTracks.remove(musicTrack);
-        recentMusicTracks.addFirst(musicTrack);
+        recentMusicTracks.add(0, musicTrack);
 
         if (recentMusicTracks.size() > 5) {
-            recentMusicTracks.removeLast();
+            recentMusicTracks.remove(recentMusicTracks.size() - 1);
         }
     }
 

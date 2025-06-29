@@ -28,10 +28,10 @@ public class BiomeManager {
 
     private void updateMostRecentBiomes(Holder<Biome> currentBiome) {
         mostRecentBiomes.remove(currentBiome);
-        mostRecentBiomes.addFirst(currentBiome);
+        mostRecentBiomes.add(0, currentBiome);
 
         if (mostRecentBiomes.size() > MOST_RECENT_BIOMES_COUNT) {
-            mostRecentBiomes.removeLast();
+            mostRecentBiomes.remove(mostRecentBiomes.size() - 1);
         }
     }
 

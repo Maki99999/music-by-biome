@@ -1,6 +1,5 @@
 package io.github.maki99999.biomebeats.gui.common;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.maki99999.biomebeats.gui.util.Point;
 import io.github.maki99999.biomebeats.gui.util.PointD;
 import io.github.maki99999.biomebeats.gui.util.Rect;
@@ -14,8 +13,8 @@ import org.lwjgl.glfw.GLFW;
 import static io.github.maki99999.biomebeats.gui.util.DrawUtils.enableAdjustedScissor;
 
 public abstract class ScrollContainer extends UiElement {
-    private static final ResourceLocation SCROLLER_SPRITE = ResourceLocation.withDefaultNamespace("widget/scroller");
-    private static final ResourceLocation SCROLLER_BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("widget/scroller_background");
+    private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("widget/scroller");
+    private static final ResourceLocation SCROLLER_BACKGROUND_SPRITE = new ResourceLocation("widget/scroller_background");
     protected static final int SCROLLBAR_WIDTH = 6;
     private static final double SCROLL_RATE = 30d;
 
@@ -54,10 +53,11 @@ public abstract class ScrollContainer extends UiElement {
         if (isScrollbarVisible()) {
             int i = getScrollerHeight();
             int j = getX() + getWidth() - SCROLLBAR_WIDTH;
-            int k = Math.max(getY(), (int) scrollAmount * (getHeight() - i) / getMaxScrollAmount() + getY());
-            RenderSystem.enableBlend();
-            guiGraphics.blitSprite(SCROLLER_SPRITE, j, k, SCROLLBAR_WIDTH, i);
-            RenderSystem.disableBlend();
+            int k = getX() + getWidth();
+            int l = Math.max(getY(), (int)this.scrollAmount * (getHeight() - i) / this.getMaxScrollAmount() + this.getY());
+            int m = l + i;
+            guiGraphics.fill(j, l, k, m, -8355712);
+            guiGraphics.fill(j, l, k - 1, m - 1, -4144960);
         }
     }
 

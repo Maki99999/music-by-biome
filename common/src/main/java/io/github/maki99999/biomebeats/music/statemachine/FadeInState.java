@@ -71,6 +71,6 @@ public class FadeInState extends PlayerState {
     @Override
     public void close() {
         fadeTask.cancel(true);
-        executorService.close();
+        executorService.shutdownNow();
     }
 }

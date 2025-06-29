@@ -27,7 +27,7 @@ public class DebugHud {
         Minecraft mc = Minecraft.getInstance();
         Font font = mc.font;
 
-        if (mc.getDebugOverlay().showDebugScreen() || mc.options.hideGui || !enabled) {
+        if (mc.options.renderDebug || mc.options.hideGui || !enabled) {
             return;
         }
 

@@ -37,7 +37,7 @@ public class MultiLineEditBoxWrapper extends UiElement {
 
     @Override
     protected boolean mouseScrolled(PointD mousePos, double scrollX, double scrollY) {
-        return editBox.mouseScrolled(mousePos.x(), mousePos.y(), scrollX, scrollY);
+        return editBox.mouseScrolled(mousePos.x(), mousePos.y(), scrollY);
     }
 
     @Override
@@ -86,7 +86,6 @@ public class MultiLineEditBoxWrapper extends UiElement {
     @Override
     public void setHeight(int height) {
         super.setHeight(height);
-        editBox.setHeight(height);
     }
 
     @Override

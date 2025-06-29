@@ -7,15 +7,18 @@ import static net.minecraft.client.resources.language.I18n.get;
 
 public final class MusicGroup {
     private final String name;
+    private Type type;
     private final Collection<? extends MusicTrack> musicTracks;
 
     public MusicGroup(String namespace, Type type, Collection<? extends MusicTrack> musicTracks) {
-        this.name = formatToTitleCase(namespace) + " (" + get(type.getTranslationKey()) + ")";
+        this.name = formatToTitleCase(namespace);
+        this.type = type;
         this.musicTracks = musicTracks;
     }
 
     public MusicGroup(Collection<FileMusicTrack> musicTracks) {
-        this.name = get(Type.CUSTOM.getTranslationKey());
+        this.name = null;
+        this.type = Type.CUSTOM;
         this.musicTracks = musicTracks;
     }
 
@@ -25,7 +28,16 @@ public final class MusicGroup {
     }
 
     public String getName() {
-        return name;
+        if (name != null && type == null) {
+            return name;
+        }
+        if (name == null && type != null) {
+            return get(type.getTranslationKey());
+        }
+        if (name != null) {
+            return "%s (%s)".formatted(name, get(type.getTranslationKey()));
+        }
+        return "";
     }
 
     public Collection<? extends MusicTrack> getMusicTracks() {return musicTracks;}

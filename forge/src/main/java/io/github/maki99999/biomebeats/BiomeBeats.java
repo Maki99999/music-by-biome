@@ -24,7 +24,7 @@ public class BiomeBeats {
         }
 
         @SubscribeEvent
-        public static void eventClientTickEventPost(TickEvent.ClientTickEvent.Post event) {
+        public static void eventClientTickEventPost(TickEvent.ClientTickEvent event) {
             BiomeBeatsCommon.tick();
         }
     }

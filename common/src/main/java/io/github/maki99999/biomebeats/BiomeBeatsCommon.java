@@ -8,7 +8,6 @@ import io.github.maki99999.biomebeats.service.Services;
 import io.github.maki99999.biomebeats.util.TickListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -63,11 +62,14 @@ public class BiomeBeatsCommon {
 
             Constants.LOG.debug("Debug logging mode.");
         }
-
-        BiomeBeatsCommon.addMenuChangeListener(BiomeBeatsCommon::onMenuChanged);
     }
 
     public static void tick() {
+        if (!initAfterSetupDone && !Minecraft.getInstance().getSoundManager().getAvailableSounds().isEmpty()) {
+            initAfterSetupDone = true;
+            BiomeBeatsCommon.initAfterSetup();
+        }
+
         Constants.BIOME_MANAGER.tick();
 
         while (Constants.CONFIG_KEY_MAPPING.consumeClick()) {
@@ -90,6 +92,7 @@ public class BiomeBeatsCommon {
         Constants.CONDITION_MANAGER.init();
         Constants.CONDITION_MUSIC_MANAGER.init();
         Constants.CONFIG_IO.loadConfig();
+        notifyMenuChangeListeners(Minecraft.getInstance().screen, Minecraft.getInstance().player);
     }
 
     public static void close() {
@@ -112,14 +115,6 @@ public class BiomeBeatsCommon {
 
     public static void addTickListener(TickListener listener) {
         TICK_LISTENERS.add(listener);
-    }
-
-    public static void onMenuChanged(Screen screen, Player player) {
-        if (!initAfterSetupDone && screen.getClass() == TitleScreen.class) {
-            initAfterSetupDone = true;
-            BiomeBeatsCommon.initAfterSetup();
-            notifyMenuChangeListeners(screen, player);
-        }
     }
 
     public static void reload() {

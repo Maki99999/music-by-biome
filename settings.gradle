@@ -47,5 +47,4 @@ plugins {
 rootProject.name = 'music-by-biome'
 include("common")
 include("fabric")
-include("neoforge")
 include('forge')
