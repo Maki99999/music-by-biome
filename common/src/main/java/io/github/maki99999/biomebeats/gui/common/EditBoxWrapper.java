@@ -9,6 +9,8 @@ import net.minecraft.network.chat.Component;
 
 import java.util.function.Predicate;
 
+import static io.github.maki99999.biomebeats.gui.util.DrawUtils.enableAdjustedScissor;
+
 public class EditBoxWrapper extends UiElement {
     private final EditBox editBox;
 
@@ -21,7 +23,7 @@ public class EditBoxWrapper extends UiElement {
     @Override
     protected void render(GuiGraphics guiGraphics, Point mousePos, float deltaTime) {
         guiGraphics.pose().pushPose();
-        guiGraphics.enableScissor(getX() + 1, getY() + 1, getX() + getWidth() - 2, getY() + getHeight() - 2);
+        enableAdjustedScissor(guiGraphics, getX() + 1, getY() + 1, getX() + getWidth() - 2, getY() + getHeight() - 2);
         editBox.render(guiGraphics, mousePos.x(), mousePos.y(), deltaTime);
         guiGraphics.disableScissor();
         guiGraphics.pose().popPose();

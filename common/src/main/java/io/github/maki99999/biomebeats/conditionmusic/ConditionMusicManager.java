@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.Musics;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -161,18 +160,16 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
         }
 
         try (Level level = player.level()) {
-            Registry<Biome> biomeRegistry = level.registryAccess().lookupOrThrow(Registries.BIOME);
+            Registry<Biome> biomeRegistry = level.registryAccess().registryOrThrow(Registries.BIOME);
             for (Condition condition : biomeConditions) {
                 ResourceLocation biomeRl = ((BiomeCondition) condition).getBiomeRl();
-                Biome biome = biomeRegistry.getValue(biomeRl);
+                Biome biome = biomeRegistry.get(biomeRl);
                 if (biome == null) continue;
 
-                Optional<SimpleWeightedRandomList<Music>> biomeBgms = biome.getBackgroundMusic();
-                if (biomeBgms.isEmpty()) continue;
+                Optional<Music> biomeBgm = biome.getBackgroundMusic();
+                if (biomeBgm.isEmpty()) continue;
 
-                for (var biomeBgm : biomeBgms.get().unwrap()) {
-                    addMusicToCondition(musicTracks, biomeBgm.data(), condition.getId());
-                }
+                addMusicToCondition(musicTracks, biomeBgm.get(), condition.getId());
             }
         } catch (IOException e) {
             Constants.LOG.error(e.getMessage(), e);
@@ -187,7 +184,7 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
         }
 
         MixinWeighedSoundEvents musicSoundEvents = (MixinWeighedSoundEvents) Minecraft.getInstance().getSoundManager()
-                .getSoundEvent(music.getEvent().value().location());
+                .getSoundEvent(music.getEvent().value().getLocation());
         if (musicSoundEvents == null) {
             return;
         }

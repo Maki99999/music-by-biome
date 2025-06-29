@@ -1,15 +1,17 @@
 package io.github.maki99999.biomebeats.gui.common;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.maki99999.biomebeats.gui.util.Point;
 import io.github.maki99999.biomebeats.gui.util.PointD;
 import io.github.maki99999.biomebeats.gui.util.Rect;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
+
+import static io.github.maki99999.biomebeats.gui.util.DrawUtils.enableAdjustedScissor;
 
 public abstract class ScrollContainer extends UiElement {
     private static final ResourceLocation SCROLLER_SPRITE = ResourceLocation.withDefaultNamespace("widget/scroller");
@@ -33,7 +35,7 @@ public abstract class ScrollContainer extends UiElement {
         }
         renderBackground(guiGraphics);
 
-        guiGraphics.enableScissor(getX(), getY() + 1, getX() + getWidth(), getY() - 1 + getHeight());
+        enableAdjustedScissor(guiGraphics, getX(), getY() + 1, getX() + getWidth(), getY() - 1 + getHeight());
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(getX(), getY() - scrollAmount, 0);
 
@@ -50,13 +52,13 @@ public abstract class ScrollContainer extends UiElement {
 
     protected void renderScrollbar(GuiGraphics guiGraphics) {
         if (isScrollbarVisible()) {
-            int i = scrollBarX();
-            int j = getScrollerHeight();
-            int k = scrollBarY();
-            guiGraphics.blitSprite(RenderType::guiTextured, SCROLLER_BACKGROUND_SPRITE, i, getY(), SCROLLBAR_WIDTH, getHeight());
-            guiGraphics.blitSprite(RenderType::guiTextured, SCROLLER_SPRITE, i, k, SCROLLBAR_WIDTH, j);
+            int i = getScrollerHeight();
+            int j = getX() + getWidth() - SCROLLBAR_WIDTH;
+            int k = Math.max(getY(), (int) scrollAmount * (getHeight() - i) / getMaxScrollAmount() + getY());
+            RenderSystem.enableBlend();
+            guiGraphics.blitSprite(SCROLLER_SPRITE, j, k, SCROLLBAR_WIDTH, i);
+            RenderSystem.disableBlend();
         }
-
     }
 
     @Override

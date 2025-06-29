@@ -107,7 +107,7 @@ public class CombinedConditionConfigScreen extends UiElement {
                                                                          ELEMENT_HEIGHT +
                                                                          ELEMENT_SPACING,
                                                                          innerBounds.w() - 80,
-                                                                         2 * ELEMENT_HEIGHT)));
+                                                                         2 * ELEMENT_HEIGHT + 3)));
         if (oldCondition != null) descriptionField.setValue(oldCondition.getDescription());
         descriptionField.setCharacterLimit(42);
 

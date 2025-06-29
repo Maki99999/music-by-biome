@@ -5,7 +5,7 @@ import io.github.maki99999.biomebeats.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.sounds.MusicInfo;
+import net.minecraft.sounds.Music;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,9 +23,9 @@ public abstract class MixinMinecraft {
     }
 
     @Inject(method = "getSituationalMusic", at = @At("HEAD"), cancellable = true)
-    private void getSituationalMusic(final CallbackInfoReturnable<MusicInfo> cir) {
+    private void getSituationalMusic(final CallbackInfoReturnable<Music> cir) {
         // Always play the empty sound event as music
-        cir.setReturnValue(new MusicInfo(Constants.EMPTY_MUSIC));
+        cir.setReturnValue(Constants.EMPTY_MUSIC);
     }
 
     @Inject(method = "setScreen", at = @At("HEAD"))
