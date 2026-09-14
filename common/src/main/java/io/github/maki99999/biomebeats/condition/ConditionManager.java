@@ -29,7 +29,7 @@ public class ConditionManager implements ConfigChangeListener {
     private static final Collection<CombinedCondition> COMBINED_CONDITIONS = new ArrayList<>();
     private final Collection<ActiveConditionsListener> activeConditionsListener = new HashSet<>();
     private final Collection<Condition> activeConditions = new HashSet<>();
-    private boolean firstTickWithLevel = true;
+    private Level initializedLevel;
     private boolean needsToNotifyListeners = true;
 
     public ConditionManager() {
@@ -132,8 +132,11 @@ public class ConditionManager implements ConfigChangeListener {
 
     public void tick() {
         Minecraft minecraft = Minecraft.getInstance();
-        if (firstTickWithLevel && minecraft.level != null) {
-            firstTickWithLevel = false;
+        if (minecraft.level == null) {
+            initializedLevel = null;
+        } else if (minecraft.level != initializedLevel) {
+            initializedLevel = minecraft.level;
+            clearBiomeConditions();
             initBiomeConditions(minecraft.level);
             Constants.CONFIG_IO.updateConfigListeners();
         }
@@ -143,6 +146,22 @@ public class ConditionManager implements ConfigChangeListener {
 
             for (ActiveConditionsListener listener : activeConditionsListener) {
                 listener.onActiveConditionsChanged(activeConditions);
+            }
+        }
+    }
+
+    private void clearBiomeConditions() {
+        Constants.BIOME_MANAGER.reset();
+
+        for (ConditionType type : List.of(ConditionType.BIOME, ConditionType.TAG)) {
+            Collection<Condition> conditions = CONDITIONS_BY_TYPE.remove(type);
+            if (conditions == null) {
+                continue;
+            }
+
+            for (Condition condition : conditions) {
+                CONDITIONS.remove(condition.getId());
+                activeConditions.remove(condition);
             }
         }
     }

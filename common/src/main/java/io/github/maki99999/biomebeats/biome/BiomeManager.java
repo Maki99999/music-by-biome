@@ -86,4 +86,11 @@ public class BiomeManager {
     public void clearBiomeChangeListeners() {
         biomeChangeListener.clear();
     }
+
+    public void reset() {
+        clearBiomeChangeListeners();
+        mostRecentBiomes.clear();
+        resetCandidateBiome();
+        lastNotifiedBiome = null;
+    }
 }
