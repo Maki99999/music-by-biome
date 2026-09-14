@@ -40,6 +40,7 @@ public class DayTimeCondition extends Condition implements TickListener {
     }
 
     private static boolean isNight(long dayTime) {
-        return dayTime >= 12786 && dayTime <= 23216;
+        var normalizedDayTime = Math.floorMod(dayTime, 24000L);
+        return normalizedDayTime >= 12786 && normalizedDayTime <= 23216;
     }
 }
