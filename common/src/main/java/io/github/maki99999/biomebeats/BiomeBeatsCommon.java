@@ -2,13 +2,10 @@ package io.github.maki99999.biomebeats;
 
 import io.github.maki99999.biomebeats.gui.DebugHud;
 import io.github.maki99999.biomebeats.gui.common.ForwardingScreen;
-import io.github.maki99999.biomebeats.util.MenuChangeListener;
 import io.github.maki99999.biomebeats.gui.ConfigScreen;
 import io.github.maki99999.biomebeats.service.Services;
 import io.github.maki99999.biomebeats.util.TickListener;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -27,7 +24,6 @@ import java.util.Set;
 
 public class BiomeBeatsCommon {
     private static final Logger DEBUG_LOGGER = LoggerFactory.getLogger(Constants.LOG.getName() + "Debug");
-    private static final Set<MenuChangeListener> MENU_CHANGE_LISTENERS = new HashSet<>();
     private static final Set<TickListener> TICK_LISTENERS = new HashSet<>();
     private static boolean initAfterSetupDone = false;
 
@@ -92,7 +88,6 @@ public class BiomeBeatsCommon {
         Constants.CONDITION_MANAGER.init();
         Constants.CONDITION_MUSIC_MANAGER.init();
         Constants.CONFIG_IO.loadConfig();
-        notifyMenuChangeListeners(Minecraft.getInstance().screen, Minecraft.getInstance().player);
     }
 
     public static void close() {
@@ -103,23 +98,12 @@ public class BiomeBeatsCommon {
         }
     }
 
-    public static void addMenuChangeListener(MenuChangeListener listener) {
-        MENU_CHANGE_LISTENERS.add(listener);
-    }
-
-    public static void notifyMenuChangeListeners(Screen screen, Player player) {
-        for (MenuChangeListener listener : MENU_CHANGE_LISTENERS) {
-            listener.onMenuChanged(screen, player);
-        }
-    }
-
     public static void addTickListener(TickListener listener) {
         TICK_LISTENERS.add(listener);
     }
 
     public static void reload() {
-        Constants.CONFIG_IO.loadConfig();
-        Constants.BIOME_MANAGER.clearBiomeChangeListeners();
         Constants.MUSIC_MANAGER.reloadMusicTracksAndGroups();
+        Constants.CONFIG_IO.loadConfig();
     }
 }

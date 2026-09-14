@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class BiomeManager {
     private static final int MOST_RECENT_BIOMES_COUNT = 5;
@@ -18,8 +19,9 @@ public class BiomeManager {
     private final Collection<BiomeChangeListener> biomeChangeListener = new HashSet<>();
     private final List<Holder<Biome>> mostRecentBiomes = new ArrayList<>();
 
-    private Holder<Biome> lastBiome;
-    private long ticksNotInCurrentBiome = Integer.MAX_VALUE;
+    private Holder<Biome> candidateBiome;
+    private Holder<Biome> lastNotifiedBiome;
+    private int ticksInCandidateBiome;
 
     public void tick() {
         Minecraft minecraft = Minecraft.getInstance();
@@ -43,32 +45,52 @@ public class BiomeManager {
         if (level != null && player != null) {
             var currentBiome = level.getBiome(player.blockPosition());
             updateMostRecentBiomes(currentBiome);
-            if (lastBiome != currentBiome) {
-                ticksNotInCurrentBiome++;
-                if (ticksNotInCurrentBiome > TICKS_BEFORE_NOTIFYING) {
-                    for (BiomeChangeListener listener : biomeChangeListener) {
-                        listener.onBiomeChanged(currentBiome);
-                    }
-                    lastBiome = currentBiome;
-                }
-            } else {
-                ticksNotInCurrentBiome = 0;
+
+            if (lastNotifiedBiome == null) {
+                notifyBiomeChanged(currentBiome);
+                resetCandidateBiome();
+            } else if (Objects.equals(lastNotifiedBiome, currentBiome)) {
+                resetCandidateBiome();
+            } else if (!Objects.equals(candidateBiome, currentBiome)) {
+                candidateBiome = currentBiome;
+                ticksInCandidateBiome = 1;
+            } else if (++ticksInCandidateBiome >= TICKS_BEFORE_NOTIFYING) {
+                notifyBiomeChanged(currentBiome);
+                resetCandidateBiome();
             }
         } else {
-            ticksNotInCurrentBiome = Integer.MAX_VALUE;
-            for (BiomeChangeListener listener : biomeChangeListener) {
-                listener.onBiomeChanged(null);
+            resetCandidateBiome();
+            if (lastNotifiedBiome != null) {
+                notifyBiomeChanged(null);
             }
-            lastBiome = null;
         }
+    }
+
+    private void notifyBiomeChanged(Holder<Biome> biome) {
+        lastNotifiedBiome = biome;
+        for (BiomeChangeListener listener : biomeChangeListener) {
+            listener.onBiomeChanged(biome);
+        }
+    }
+
+    private void resetCandidateBiome() {
+        candidateBiome = null;
+        ticksInCandidateBiome = 0;
     }
 
     public void addBiomeChangeListener(BiomeChangeListener listener) {
         biomeChangeListener.add(listener);
-        listener.onBiomeChanged(lastBiome);
+        listener.onBiomeChanged(lastNotifiedBiome);
     }
 
     public void clearBiomeChangeListeners() {
         biomeChangeListener.clear();
+    }
+
+    public void reset() {
+        clearBiomeChangeListeners();
+        mostRecentBiomes.clear();
+        resetCandidateBiome();
+        lastNotifiedBiome = null;
     }
 }

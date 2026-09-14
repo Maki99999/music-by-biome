@@ -5,10 +5,13 @@ import io.github.maki99999.biomebeats.event.ConditionChangeEvent;
 import io.github.maki99999.biomebeats.util.EventBus;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class CombinedCondition extends Condition {
     private final Collection<String> conditionIds = new ArrayList<>();
     private final Collection<String> metConditionIds = new ArrayList<>();
+    private final Consumer<ConditionChangeEvent> conditionChangeListener =
+            event -> onConditionChanged(event.condition());
 
     private String description;
 
@@ -16,7 +19,7 @@ public class CombinedCondition extends Condition {
         super(id, ConditionType.COMBINED, name);
         this.description = description;
         setConditionIds(conditionIds);
-        EventBus.subscribe(ConditionChangeEvent.class, e -> onConditionChanged(e.condition()));
+        EventBus.subscribe(ConditionChangeEvent.class, conditionChangeListener);
     }
 
     /**
@@ -64,7 +67,7 @@ public class CombinedCondition extends Condition {
     }
 
     public void dispose() {
-        EventBus.unsubscribe(ConditionChangeEvent.class, e -> onConditionChanged(e.condition()));
+        EventBus.unsubscribe(ConditionChangeEvent.class, conditionChangeListener);
     }
 
     public void setConditionIds(Collection<String> conditionIds) {
