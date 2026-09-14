@@ -183,7 +183,11 @@ public class ConditionManager implements ConfigChangeListener {
 
     @Override
     public void afterConfigChange(MainConfig config) {
-        COMBINED_CONDITIONS.stream().map(Condition::getId).forEach(CONDITIONS::remove);
+        for (CombinedCondition combinedCondition : COMBINED_CONDITIONS) {
+            combinedCondition.dispose();
+            CONDITIONS.remove(combinedCondition.getId());
+            activeConditions.remove(combinedCondition);
+        }
         COMBINED_CONDITIONS.clear();
 
         for (CombinedConditionConfig conditionConfig : config.getCombinedConditionConfigs()) {
@@ -201,13 +205,11 @@ public class ConditionManager implements ConfigChangeListener {
             }
         }
 
-        for (ActiveConditionsListener listener : activeConditionsListener) {
-            listener.onActiveConditionsChanged(activeConditions);
-        }
-
         if (config.isNewConfig()) {
             addDefaultConfig();
         }
+
+        needsToNotifyListeners = true;
     }
 
     private void addDefaultConfig() {
@@ -261,6 +263,9 @@ public class ConditionManager implements ConfigChangeListener {
         combinedCondition.dispose();
         CONDITIONS.remove(combinedCondition.getId());
         COMBINED_CONDITIONS.remove(combinedCondition);
+        if (activeConditions.remove(combinedCondition)) {
+            needsToNotifyListeners = true;
+        }
     }
 
     public boolean isConditionMet(String conditionId) {
