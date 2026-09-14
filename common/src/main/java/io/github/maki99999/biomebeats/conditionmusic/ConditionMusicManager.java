@@ -21,7 +21,6 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -123,8 +122,8 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
                         .filter(m -> m instanceof ResourceLocationMusicTrack)
                         .map(m -> (ResourceLocationMusicTrack) m).toList();
 
-        addMusicToCondition(musicTracks, Musics.CREDITS, ScreenCondition.WIN_SCREEN);
-        addMusicToCondition(musicTracks, Musics.MENU, ScreenCondition.MAIN_MENU);
+        addMusicToCondition(musicTracks, Musics.CREDITS, ScreenCondition.ScreenType.WIN_SCREEN.getId());
+        addMusicToCondition(musicTracks, Musics.MENU, ScreenCondition.ScreenType.MAIN_MENU.getId());
         addMusicToCondition(musicTracks, Musics.CREATIVE, InGameModeCondition.getId(GameType.CREATIVE));
         addMusicToCondition(musicTracks, Musics.GAME, NoOtherMusicCondition.ID);
 
@@ -156,26 +155,23 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
         Collection<? extends Condition> biomeConditions = Constants.CONDITION_MANAGER.getBiomeConditions();
 
         Player player = Minecraft.getInstance().player;
-        if (player == null) {
+        Level level = player == null ? null : player.level();
+        if (level == null) {
             return;
         }
 
-        try (Level level = player.level()) {
-            Registry<Biome> biomeRegistry = level.registryAccess().lookupOrThrow(Registries.BIOME);
-            for (Condition condition : biomeConditions) {
-                ResourceLocation biomeRl = ((BiomeCondition) condition).getBiomeRl();
-                Biome biome = biomeRegistry.getValue(biomeRl);
-                if (biome == null) continue;
+        Registry<Biome> biomeRegistry = level.registryAccess().lookupOrThrow(Registries.BIOME);
+        for (Condition condition : biomeConditions) {
+            ResourceLocation biomeRl = ((BiomeCondition) condition).getBiomeRl();
+            Biome biome = biomeRegistry.getValue(biomeRl);
+            if (biome == null) continue;
 
-                Optional<WeightedList<Music>> biomeBgms = biome.getBackgroundMusic();
-                if (biomeBgms.isEmpty()) continue;
+            Optional<WeightedList<Music>> biomeBgms = biome.getBackgroundMusic();
+            if (biomeBgms.isEmpty()) continue;
 
-                for (var biomeBgm : biomeBgms.get().unwrap()) {
-                    addMusicToCondition(musicTracks, biomeBgm.value(), condition.getId());
-                }
+            for (var biomeBgm : biomeBgms.get().unwrap()) {
+                addMusicToCondition(musicTracks, biomeBgm.value(), condition.getId());
             }
-        } catch (IOException e) {
-            Constants.LOG.error(e.getMessage(), e);
         }
     }
 
@@ -206,14 +202,19 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
     }
 
     public void addTrackToCondition(String conditionId, MusicTrack track) {
-        musicTracksByConditionId.computeIfAbsent(conditionId, k -> new HashSet<>()).add(track);
+        if (musicTracksByConditionId.computeIfAbsent(conditionId, k -> new HashSet<>()).add(track)) {
+            Constants.CONDITION_MANAGER.requestActiveConditionsRefresh();
+        }
     }
 
     public void removeTrackToCondition(String conditionId, MusicTrack track) {
         if (musicTracksByConditionId.containsKey(conditionId)) {
-            musicTracksByConditionId.get(conditionId).remove(track);
+            boolean removed = musicTracksByConditionId.get(conditionId).remove(track);
             if (musicTracksByConditionId.get(conditionId).isEmpty()) {
                 musicTracksByConditionId.remove(conditionId);
+            }
+            if (removed) {
+                Constants.CONDITION_MANAGER.requestActiveConditionsRefresh();
             }
         }
     }

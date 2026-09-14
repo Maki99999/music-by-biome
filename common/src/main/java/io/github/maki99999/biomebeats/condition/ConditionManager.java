@@ -8,7 +8,6 @@ import io.github.maki99999.biomebeats.config.MainConfig;
 import io.github.maki99999.biomebeats.event.ConditionChangeEvent;
 import io.github.maki99999.biomebeats.util.EventBus;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.WinScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.GameType;
@@ -30,7 +29,7 @@ public class ConditionManager implements ConfigChangeListener {
     private static final Collection<CombinedCondition> COMBINED_CONDITIONS = new ArrayList<>();
     private final Collection<ActiveConditionsListener> activeConditionsListener = new HashSet<>();
     private final Collection<Condition> activeConditions = new HashSet<>();
-    private boolean firstTickWithLevel = true;
+    private Level initializedLevel;
     private boolean needsToNotifyListeners = true;
 
     public ConditionManager() {
@@ -85,15 +84,15 @@ public class ConditionManager implements ConfigChangeListener {
     }
 
     public Collection<? extends Condition> getTagConditions() {
-        return CONDITIONS_BY_TYPE.get(ConditionType.TAG);
+        return CONDITIONS_BY_TYPE.getOrDefault(ConditionType.TAG, Collections.emptyList());
     }
 
     public Collection<? extends Condition> getBiomeConditions() {
-        return CONDITIONS_BY_TYPE.get(ConditionType.BIOME);
+        return CONDITIONS_BY_TYPE.getOrDefault(ConditionType.BIOME, Collections.emptyList());
     }
 
     public Collection<? extends Condition> getOtherConditions() {
-        return CONDITIONS_BY_TYPE.get(ConditionType.OTHER);
+        return CONDITIONS_BY_TYPE.getOrDefault(ConditionType.OTHER, Collections.emptyList());
     }
 
     public Collection<CombinedCondition> getCombinedConditions() {
@@ -106,8 +105,10 @@ public class ConditionManager implements ConfigChangeListener {
     }
 
     private void initOtherConditions() {
-        createCondition(ScreenCondition.MAIN_MENU, () -> new ScreenCondition(ScreenCondition.MAIN_MENU, "In Main Menu", null));
-        createCondition(ScreenCondition.WIN_SCREEN, () -> new ScreenCondition(ScreenCondition.WIN_SCREEN, "In Win Screen", WinScreen.class));
+        createCondition(ScreenCondition.ScreenType.MAIN_MENU.getId(),
+                () -> new ScreenCondition("In Main Menu", ScreenCondition.ScreenType.MAIN_MENU));
+        createCondition(ScreenCondition.ScreenType.WIN_SCREEN.getId(),
+                () -> new ScreenCondition("In Win Screen", ScreenCondition.ScreenType.WIN_SCREEN));
         createCondition(DayTimeCondition.IS_DAY, () -> new DayTimeCondition(true));
         createCondition(DayTimeCondition.IS_NIGHT, () -> new DayTimeCondition(false));
         createCondition(BossOverlayWithMusicCondition.ID, BossOverlayWithMusicCondition::new);
@@ -131,8 +132,11 @@ public class ConditionManager implements ConfigChangeListener {
 
     public void tick() {
         Minecraft minecraft = Minecraft.getInstance();
-        if (firstTickWithLevel && minecraft.level != null) {
-            firstTickWithLevel = false;
+        if (minecraft.level == null) {
+            initializedLevel = null;
+        } else if (minecraft.level != initializedLevel) {
+            initializedLevel = minecraft.level;
+            clearBiomeConditions();
             initBiomeConditions(minecraft.level);
             Constants.CONFIG_IO.updateConfigListeners();
         }
@@ -142,6 +146,22 @@ public class ConditionManager implements ConfigChangeListener {
 
             for (ActiveConditionsListener listener : activeConditionsListener) {
                 listener.onActiveConditionsChanged(activeConditions);
+            }
+        }
+    }
+
+    private void clearBiomeConditions() {
+        Constants.BIOME_MANAGER.reset();
+
+        for (ConditionType type : List.of(ConditionType.BIOME, ConditionType.TAG)) {
+            Collection<Condition> conditions = CONDITIONS_BY_TYPE.remove(type);
+            if (conditions == null) {
+                continue;
+            }
+
+            for (Condition condition : conditions) {
+                CONDITIONS.remove(condition.getId());
+                activeConditions.remove(condition);
             }
         }
     }
@@ -158,6 +178,10 @@ public class ConditionManager implements ConfigChangeListener {
 
     public void addListener(ActiveConditionsListener listener) {
         activeConditionsListener.add(listener);
+    }
+
+    public void requestActiveConditionsRefresh() {
+        needsToNotifyListeners = true;
     }
 
     public Collection<Condition> getConditions() {
@@ -183,7 +207,11 @@ public class ConditionManager implements ConfigChangeListener {
 
     @Override
     public void afterConfigChange(MainConfig config) {
-        COMBINED_CONDITIONS.stream().map(Condition::getId).forEach(CONDITIONS::remove);
+        for (CombinedCondition combinedCondition : COMBINED_CONDITIONS) {
+            combinedCondition.dispose();
+            CONDITIONS.remove(combinedCondition.getId());
+            activeConditions.remove(combinedCondition);
+        }
         COMBINED_CONDITIONS.clear();
 
         for (CombinedConditionConfig conditionConfig : config.getCombinedConditionConfigs()) {
@@ -201,13 +229,11 @@ public class ConditionManager implements ConfigChangeListener {
             }
         }
 
-        for (ActiveConditionsListener listener : activeConditionsListener) {
-            listener.onActiveConditionsChanged(activeConditions);
-        }
-
         if (config.isNewConfig()) {
             addDefaultConfig();
         }
+
+        needsToNotifyListeners = true;
     }
 
     private void addDefaultConfig() {
@@ -236,9 +262,9 @@ public class ConditionManager implements ConfigChangeListener {
 
         findCondition(c -> c instanceof IsUnderWaterCondition).setPriority(2);
         findCondition(c -> c instanceof ScreenCondition screenCondition
-                && Objects.equals(screenCondition.getScreen(), WinScreen.class)).setPriority(6);
+                && screenCondition.getScreenType().equals(ScreenCondition.ScreenType.WIN_SCREEN)).setPriority(6);
         findCondition(c -> c instanceof ScreenCondition screenCondition
-                && screenCondition.getScreen() == null).setPriority(5);
+                && screenCondition.getScreenType().equals(ScreenCondition.ScreenType.MAIN_MENU)).setPriority(5);
         findCondition(c -> c instanceof InGameModeCondition inGameModeCondition
                 && inGameModeCondition.getName().contains("Creative")).setPriority(1);
     }
@@ -261,6 +287,9 @@ public class ConditionManager implements ConfigChangeListener {
         combinedCondition.dispose();
         CONDITIONS.remove(combinedCondition.getId());
         COMBINED_CONDITIONS.remove(combinedCondition);
+        if (activeConditions.remove(combinedCondition)) {
+            needsToNotifyListeners = true;
+        }
     }
 
     public boolean isConditionMet(String conditionId) {
