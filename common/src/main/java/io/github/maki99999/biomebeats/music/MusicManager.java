@@ -92,6 +92,8 @@ public class MusicManager implements StreamPlayerListener, ConfigChangeListener 
 
     public void stopPreviewTrack() {
         previewJavaStreamPlayer.stop();
+        currentPreviewTrack = null;
+        previewListeners.forEach(listener -> listener.onPreviewChanged(null));
     }
 
     public void startPreviewMode() {
