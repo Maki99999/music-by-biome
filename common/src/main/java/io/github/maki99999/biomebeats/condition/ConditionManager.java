@@ -8,7 +8,6 @@ import io.github.maki99999.biomebeats.config.MainConfig;
 import io.github.maki99999.biomebeats.event.ConditionChangeEvent;
 import io.github.maki99999.biomebeats.util.EventBus;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.WinScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.GameType;
@@ -106,8 +105,10 @@ public class ConditionManager implements ConfigChangeListener {
     }
 
     private void initOtherConditions() {
-        createCondition(ScreenCondition.MAIN_MENU, () -> new ScreenCondition(ScreenCondition.MAIN_MENU, "In Main Menu", null));
-        createCondition(ScreenCondition.WIN_SCREEN, () -> new ScreenCondition(ScreenCondition.WIN_SCREEN, "In Win Screen", WinScreen.class));
+        createCondition(ScreenCondition.ScreenType.MAIN_MENU.getId(),
+                () -> new ScreenCondition("In Main Menu", ScreenCondition.ScreenType.MAIN_MENU));
+        createCondition(ScreenCondition.ScreenType.WIN_SCREEN.getId(),
+                () -> new ScreenCondition("In Win Screen", ScreenCondition.ScreenType.WIN_SCREEN));
         createCondition(DayTimeCondition.IS_DAY, () -> new DayTimeCondition(true));
         createCondition(DayTimeCondition.IS_NIGHT, () -> new DayTimeCondition(false));
         createCondition(BossOverlayWithMusicCondition.ID, BossOverlayWithMusicCondition::new);
@@ -238,9 +239,9 @@ public class ConditionManager implements ConfigChangeListener {
 
         findCondition(c -> c instanceof IsUnderWaterCondition).setPriority(2);
         findCondition(c -> c instanceof ScreenCondition screenCondition
-                && Objects.equals(screenCondition.getScreen(), WinScreen.class)).setPriority(6);
+                && screenCondition.getScreenType().equals(ScreenCondition.ScreenType.WIN_SCREEN)).setPriority(6);
         findCondition(c -> c instanceof ScreenCondition screenCondition
-                && screenCondition.getScreen() == null).setPriority(5);
+                && screenCondition.getScreenType().equals(ScreenCondition.ScreenType.MAIN_MENU)).setPriority(5);
         findCondition(c -> c instanceof InGameModeCondition inGameModeCondition
                 && inGameModeCondition.getName().contains("Creative")).setPriority(1);
     }

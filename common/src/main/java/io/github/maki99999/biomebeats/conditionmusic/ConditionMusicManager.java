@@ -122,8 +122,8 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
                         .filter(m -> m instanceof ResourceLocationMusicTrack)
                         .map(m -> (ResourceLocationMusicTrack) m).toList();
 
-        addMusicToCondition(musicTracks, Musics.CREDITS, ScreenCondition.WIN_SCREEN);
-        addMusicToCondition(musicTracks, Musics.MENU, ScreenCondition.MAIN_MENU);
+        addMusicToCondition(musicTracks, Musics.CREDITS, ScreenCondition.ScreenType.WIN_SCREEN.getId());
+        addMusicToCondition(musicTracks, Musics.MENU, ScreenCondition.ScreenType.MAIN_MENU.getId());
         addMusicToCondition(musicTracks, Musics.CREATIVE, InGameModeCondition.getId(GameType.CREATIVE));
         addMusicToCondition(musicTracks, Musics.GAME, NoOtherMusicCondition.ID);
 
