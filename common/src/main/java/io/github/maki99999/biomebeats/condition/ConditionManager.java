@@ -161,6 +161,10 @@ public class ConditionManager implements ConfigChangeListener {
         activeConditionsListener.add(listener);
     }
 
+    public void requestActiveConditionsRefresh() {
+        needsToNotifyListeners = true;
+    }
+
     public Collection<Condition> getConditions() {
         return CONDITIONS.values();
     }

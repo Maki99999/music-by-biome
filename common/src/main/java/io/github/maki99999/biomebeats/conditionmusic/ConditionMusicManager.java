@@ -202,14 +202,19 @@ public class ConditionMusicManager implements ActiveConditionsListener, ConfigCh
     }
 
     public void addTrackToCondition(String conditionId, MusicTrack track) {
-        musicTracksByConditionId.computeIfAbsent(conditionId, k -> new HashSet<>()).add(track);
+        if (musicTracksByConditionId.computeIfAbsent(conditionId, k -> new HashSet<>()).add(track)) {
+            Constants.CONDITION_MANAGER.requestActiveConditionsRefresh();
+        }
     }
 
     public void removeTrackToCondition(String conditionId, MusicTrack track) {
         if (musicTracksByConditionId.containsKey(conditionId)) {
-            musicTracksByConditionId.get(conditionId).remove(track);
+            boolean removed = musicTracksByConditionId.get(conditionId).remove(track);
             if (musicTracksByConditionId.get(conditionId).isEmpty()) {
                 musicTracksByConditionId.remove(conditionId);
+            }
+            if (removed) {
+                Constants.CONDITION_MANAGER.requestActiveConditionsRefresh();
             }
         }
     }
