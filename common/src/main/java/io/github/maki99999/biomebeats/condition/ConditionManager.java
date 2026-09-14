@@ -84,15 +84,15 @@ public class ConditionManager implements ConfigChangeListener {
     }
 
     public Collection<? extends Condition> getTagConditions() {
-        return CONDITIONS_BY_TYPE.get(ConditionType.TAG);
+        return CONDITIONS_BY_TYPE.getOrDefault(ConditionType.TAG, Collections.emptyList());
     }
 
     public Collection<? extends Condition> getBiomeConditions() {
-        return CONDITIONS_BY_TYPE.get(ConditionType.BIOME);
+        return CONDITIONS_BY_TYPE.getOrDefault(ConditionType.BIOME, Collections.emptyList());
     }
 
     public Collection<? extends Condition> getOtherConditions() {
-        return CONDITIONS_BY_TYPE.get(ConditionType.OTHER);
+        return CONDITIONS_BY_TYPE.getOrDefault(ConditionType.OTHER, Collections.emptyList());
     }
 
     public Collection<CombinedCondition> getCombinedConditions() {
